@@ -1,0 +1,43 @@
+/**
+ * Fab.module.css
+ * Expected classes: .fab, .extended, .icon, .label
+ * Tokens consumed: --color-primary (#147a7e), --color-primary-dark, --color-white, --shadow-button-primary, --radius-full (9999px), --space-md, --space-lg, --font-size-base
+ */
+.fab {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  height: 52px;
+  min-width: 52px;
+  padding: var(--space-md);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 4px 14px rgba(20, 122, 126, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  z-index: 200;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.fab:hover {
+  background-color: var(--color-primary-dark);
+  transform: scale(1.05);
+}
+
+.extended {
+  padding: var(--space-md) var(--space-xl);
+}
+
+.icon {
+  font-size: 18px;
+}
+
+.label {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}

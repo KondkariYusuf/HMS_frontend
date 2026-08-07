@@ -1,0 +1,115 @@
+/**
+ * SideNavBar.module.css
+ * Expected classes: .sidebar, .brandBlock, .brandTitle, .brandSubtitle, .navContainer, .navGroup, .groupTitle, .navList, .navItem, .navLink, .active, .footerBlock, .footerLink
+ * Tokens consumed: --sidebar-width, --color-sidebar-bg (#0b555a), --color-white, --space-md, --space-lg, --radius-md
+ */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--color-sidebar-bg, #0b555a);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.brandBlock {
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brandTitle {
+  font-size: var(--font-size-xl);
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+.brandSubtitle {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.navContainer {
+  flex: 1;
+  margin-top: var(--space-md);
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.groupTitle {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  padding-left: var(--space-sm);
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navItem {
+  width: 100%;
+}
+
+.navLink {
+  display: block;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--color-white);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.footerBlock {
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.footerLink {
+  text-align: left;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--font-size-sm);
+  transition: color 0.2s ease;
+}
+
+.footerLink:hover {
+  color: var(--color-white);
+}

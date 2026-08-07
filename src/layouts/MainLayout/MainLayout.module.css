@@ -1,0 +1,23 @@
+/**
+ * MainLayout.module.css
+ * Expected classes: .layoutShell, .mainContent, .pageContainer
+ * Tokens consumed: --sidebar-width (260px), --topnav-height (64px), --color-bg (#f7f9fa), --space-xl
+ */
+.layoutShell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.mainContent {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  margin-top: var(--topnav-height);
+  padding: var(--space-xl);
+  min-height: calc(100vh - var(--topnav-height));
+}
+
+.pageContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}

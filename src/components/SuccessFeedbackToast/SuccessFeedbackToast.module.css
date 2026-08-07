@@ -1,0 +1,9 @@
+/**
+ * SuccessFeedbackToast.module.css
+ * Expected classes: .wrapper
+ * Tokens consumed: --space-xl
+ */
+.wrapper {
+  position: relative;
+  z-index: 650;
+}

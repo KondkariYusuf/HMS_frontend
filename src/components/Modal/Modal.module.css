@@ -1,0 +1,65 @@
+/**
+ * Modal.module.css
+ * Expected classes: .backdrop, .dialog, .header, .title, .closeBtn, .body, .footer
+ * Tokens consumed: --color-surface (#ffffff), --color-border (#e5e7eb), --color-text-primary, --color-text-muted, --radius-lg, --space-md, --space-lg, --space-xl, --font-size-lg
+ */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+}
+
+.dialog {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 540px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.closeBtn {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+}
+
+.closeBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.body {
+  padding: var(--space-lg);
+  flex: 1;
+}
+
+.footer {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  background-color: var(--color-bg);
+}

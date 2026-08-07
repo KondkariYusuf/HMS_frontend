@@ -1,0 +1,8 @@
+/**
+ * Billing/Reports/Index.module.css
+ */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}

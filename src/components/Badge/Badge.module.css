@@ -1,0 +1,46 @@
+/**
+ * Badge.module.css
+ * Expected classes: .badge, .in-house, .arriving, .checked-out, .vip, .regular, .error
+ * Tokens consumed: --color-primary, --color-primary-tint, --color-error, --radius-full (9999px), --space-xs, --space-sm, --font-size-xs
+ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: capitalize;
+  line-height: 1.2;
+}
+
+.in-house {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.arriving {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.checked-out {
+  background-color: #f3f4f6;
+  color: var(--color-text-secondary);
+}
+
+.vip {
+  background-color: #fae8ff;
+  color: #86198f;
+}
+
+.regular {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.error {
+  background-color: #fee2e2;
+  color: var(--color-error);
+}

@@ -1,0 +1,12 @@
+/**
+ * Auth/ForgotPassword/Index.module.css
+ * Reuses Auth container layout styles.
+ */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  padding: var(--space-lg);
+}

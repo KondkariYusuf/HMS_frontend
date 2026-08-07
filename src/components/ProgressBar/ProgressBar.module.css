@@ -1,0 +1,48 @@
+/**
+ * ProgressBar.module.css
+ * Expected classes: .container, .barTrack, .segment, .legendContainer, .legendItem, .dot, .legendLabel
+ * Tokens consumed: --radius-full (9999px), --color-border (#e5e7eb), --color-text-secondary (#6b7280), --space-xs, --space-sm, --font-size-xs
+ */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+.barTrack {
+  display: flex;
+  height: 10px;
+  width: 100%;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background-color: var(--color-border);
+}
+
+.segment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.legendContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+}
+
+.legendLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}

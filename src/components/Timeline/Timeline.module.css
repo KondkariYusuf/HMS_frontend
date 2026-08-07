@@ -1,0 +1,94 @@
+/**
+ * Timeline.module.css
+ * Expected classes: .timeline, .item, .markerContainer, .dot, .line, .info, .success, .warning, .error, .content, .header, .title, .time, .description
+ * Tokens consumed: --color-primary (#147a7e), --color-error (#b91c1c), --color-border (#e5e7eb), --color-text-primary, --color-text-secondary, --color-text-muted, --radius-full, --space-xs, --space-sm, --space-md, --font-size-xs, --font-size-sm, --font-size-base
+ */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.item {
+  display: flex;
+  gap: var(--space-md);
+  position: relative;
+  padding-bottom: var(--space-lg);
+}
+
+.item:last-child {
+  padding-bottom: 0;
+}
+
+.item:last-child .line {
+  display: none;
+}
+
+.markerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.info {
+  background-color: var(--color-primary);
+}
+
+.success {
+  background-color: #10b981;
+}
+
+.warning {
+  background-color: #f59e0b;
+}
+
+.error {
+  background-color: var(--color-error);
+}
+
+.line {
+  width: 2px;
+  flex: 1;
+  background-color: var(--color-border);
+  margin-top: var(--space-xs);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
