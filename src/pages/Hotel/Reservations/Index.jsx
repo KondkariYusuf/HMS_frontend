@@ -1,29 +1,81 @@
 /**
  * @file Hotel/Reservations/Index.jsx
- * @description Reservation calendar, room allocation, and folio management.
- * @figmaFrame Figma frame: Hotel - Reservations (11-bookings-folio.md)
+ * @description Master Front Desk & Bookings domain screen integrating Upcoming Bookings, Past Archive, and Modals.
+ * @figmaFrame Figma frame: Premium Upcoming Bookings Management & Refined Past Bookings Archive
  */
-import React from 'react';
-import DataTable from '@components/DataTable/DataTable';
+import React, { useState } from 'react';
 import Button from '@components/Button/Button';
+import UpcomingBookings from './UpcomingBookings';
+import PastArchive from './PastArchive';
+import FutureBookingModal from '@components/FutureBookingModal/FutureBookingModal';
+import RoomBookingModal from '@components/RoomBookingModal/RoomBookingModal';
 import styles from './Index.module.css';
 
 export default function HotelReservationsPage() {
+  const [activeTab, setActiveTab] = useState('upcoming');
+  const [isFutureModalOpen, setIsFutureModalOpen] = useState(false);
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+
   return (
     <div className={styles.page} data-testid="hotel-reservations-page">
       <header className={styles.header}>
-        <div>
-          <h1 className={styles.title}>Reservations & Folio Management</h1>
+        <div className={styles.headerInfo}>
+          <h1 className={styles.title}>Front Desk & Reservations Management</h1>
           <p className={styles.subtitle}>
-            [ Screen Stub — API Group: Bookings & Folio (11-bookings-folio.md) ]
+            Manage guest reservations, room allocations, check-ins, and stay archives
           </p>
         </div>
-        <Button variant="primary">+ New Reservation</Button>
+        <div className={styles.headerActions}>
+          <Button variant="secondary" onClick={() => setIsRoomModalOpen(true)}>
+            Instant Room Allocation
+          </Button>
+          <Button variant="primary" onClick={() => setIsFutureModalOpen(true)}>
+            + New Reservation
+          </Button>
+        </div>
       </header>
 
-      <div className={styles.overviewCard}>
-        <DataTable />
-      </div>
+      {/* Main Tab Navigation */}
+      <nav className={styles.navTabs}>
+        <button
+          className={`${styles.navTabBtn} ${
+            activeTab === 'upcoming' ? styles.navTabBtnActive : ''
+          }`}
+          onClick={() => setActiveTab('upcoming')}
+        >
+          Upcoming & Active Bookings
+        </button>
+        <button
+          className={`${styles.navTabBtn} ${
+            activeTab === 'archive' ? styles.navTabBtnActive : ''
+          }`}
+          onClick={() => setActiveTab('archive')}
+        >
+          Past Stays Archive
+        </button>
+      </nav>
+
+      {/* Tab Content */}
+      <main>
+        {activeTab === 'upcoming' ? (
+          <UpcomingBookings
+            onOpenFutureModal={() => setIsFutureModalOpen(true)}
+            onOpenRoomModal={() => setIsRoomModalOpen(true)}
+          />
+        ) : (
+          <PastArchive />
+        )}
+      </main>
+
+      {/* Overlays */}
+      <FutureBookingModal
+        isOpen={isFutureModalOpen}
+        onClose={() => setIsFutureModalOpen(false)}
+      />
+      <RoomBookingModal
+        isOpen={isRoomModalOpen}
+        onClose={() => setIsRoomModalOpen(false)}
+      />
     </div>
   );
 }
