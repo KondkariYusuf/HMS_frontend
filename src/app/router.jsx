@@ -55,6 +55,8 @@ import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
+import MonthlySalaryPage from '@pages/Finance/MonthlySalary/Index';
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -80,6 +82,11 @@ export const router = createBrowserRouter([
         path: 'analytics',
         element: <AnalyticsPage />,
       },
+      {
+        path: 'finance/monthly-salary',
+        element: <MonthlySalaryPage />,
+      },
+
       /* Hotel Domain Routes */
       { path: 'hotel/rooms', element: <HotelRoomsPage /> },
       { path: 'hotel/guests', element: <HotelGuestsPage /> },
