@@ -59,7 +59,8 @@ import AdminSettingsPage from '@pages/Admin/Settings/Index';
 /* 8. Staff & Housekeeping Domain */
 import StaffDashboardPage from '@pages/Staff/Dashboard/Index';
 import StaffAttendencePage from '@pages/Staff/Attendence/Index';
-import StaffAdvancesPage from '@pages/Staff/Advances/Index';  
+import StaffAdvancesPage from '@pages/Staff/Advances/Index';
+import HousekeepingPage from '@pages/Staff/Housekeeping/Index';
 
 export const router = createBrowserRouter([
   /* Public Auth Routes */
@@ -215,6 +216,10 @@ export const router = createBrowserRouter([
       {
         path: 'staff/advances',
         element: <StaffAdvancesPage />,
+      },
+      {
+        path: 'staff/housekeeping',
+        element: <HousekeepingPage />,
       },
 
       /* Fallback Legacy Aliases */
