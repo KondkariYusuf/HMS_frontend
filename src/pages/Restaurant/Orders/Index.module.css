@@ -1,0 +1,339 @@
+/**
+ * @file Index.module.css
+ * @description CSS Module styling for Frame 2: Refined Food Orders Dashboard.
+ * @reference Frame: Redefined food order dashboard.jpeg
+ */
+
+.pageContainer {
+  padding: var(--space-xl);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+}
+
+/* Header Row */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+.headerTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-xs) 0;
+  letter-spacing: -0.5px;
+}
+
+.headerSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.refreshButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-button-primary);
+  transition: background-color 0.2s ease;
+}
+
+.refreshButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Filter Tabs */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.filterPill {
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterPill:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filterPillActive {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.filterPillActive:hover {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+}
+
+/* Orders Grid */
+.ordersGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .ordersGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ordersGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.orderCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--color-primary-tint);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tableTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.orderMeta {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin: 2px 0 0 0;
+  font-weight: 500;
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+}
+
+.statusCompleted {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.statusInProgress {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.statusPending {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+/* Card Body Items */
+.cardBody {
+  padding: var(--space-lg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-base);
+}
+
+.itemName {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.itemPrice {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.cardFooter {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-surface);
+}
+
+.totalLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+}
+
+.totalAmount {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+/* Bottom Summary Grid */
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 900px) {
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.performanceCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.performanceText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.performanceTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.performanceSub {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.performanceStats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.statGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Popular Highlight Card */
+.popularCard {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-xs);
+  box-shadow: var(--shadow-card);
+}
+
+.popularLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  opacity: 0.8;
+}
+
+.popularTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin: 0;
+}
+
+.popularSub {
+  font-size: var(--font-size-base);
+  opacity: 0.9;
+  margin: 0;
+}
