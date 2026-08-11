@@ -2,6 +2,7 @@
  * @file router.jsx
  * @description React Router v6 master configuration mapping all SyncStays 9 domain modules.
  */
+
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -19,6 +20,7 @@ import AnalyticsPage from '@pages/Analytics/Index';
 
 /* 1. Hotel Domain */
 import HotelRoomsPage from '@pages/Hotel/Rooms/Index';
+import RoomOccupancyTimelinePage from '@pages/Hotel/Rooms/OccupancyTimeline';
 import HotelGuestsPage from '@pages/Hotel/Guests/Index';
 import HotelReservationsPage from '@pages/Hotel/Reservations/Index';
 import HotelCheckInPage from '@pages/Hotel/CheckIn/Index';
@@ -80,52 +82,142 @@ export const router = createBrowserRouter([
         path: 'analytics',
         element: <AnalyticsPage />,
       },
+
       /* Hotel Domain Routes */
-      { path: 'hotel/rooms', element: <HotelRoomsPage /> },
-      { path: 'hotel/guests', element: <HotelGuestsPage /> },
-      { path: 'hotel/reservations', element: <HotelReservationsPage /> },
-      { path: 'hotel/check-in', element: <HotelCheckInPage /> },
+      {
+        path: 'hotel/rooms',
+        element: <HotelRoomsPage />,
+      },
+      {
+        path: 'hotel/rooms/occupancy-timeline',
+        element: <RoomOccupancyTimelinePage />,
+      },
+      {
+        path: 'hotel/guests',
+        element: <HotelGuestsPage />,
+      },
+      {
+        path: 'hotel/reservations',
+        element: <HotelReservationsPage />,
+      },
+      {
+        path: 'hotel/check-in',
+        element: <HotelCheckInPage />,
+      },
 
       /* Restaurant Domain Routes */
-      { path: 'restaurant/pos', element: <RestaurantPOSPage /> },
-      { path: 'restaurant/menu', element: <RestaurantMenuPage /> },
-      { path: 'restaurant/kds', element: <RestaurantKDSPage /> },
-      { path: 'restaurant/tables', element: <RestaurantTablesPage /> },
+      {
+        path: 'restaurant/pos',
+        element: <RestaurantPOSPage />,
+      },
+      {
+        path: 'restaurant/menu',
+        element: <RestaurantMenuPage />,
+      },
+      {
+        path: 'restaurant/kds',
+        element: <RestaurantKDSPage />,
+      },
+      {
+        path: 'restaurant/tables',
+        element: <RestaurantTablesPage />,
+      },
 
       /* Inventory & Purchasing Routes */
-      { path: 'inventory/products', element: <InventoryProductsPage /> },
-      { path: 'inventory/stock', element: <InventoryStockPage /> },
-      { path: 'inventory/suppliers', element: <InventorySuppliersPage /> },
+      {
+        path: 'inventory/products',
+        element: <InventoryProductsPage />,
+      },
+      {
+        path: 'inventory/stock',
+        element: <InventoryStockPage />,
+      },
+      {
+        path: 'inventory/suppliers',
+        element: <InventorySuppliersPage />,
+      },
       {
         path: 'inventory/purchase-orders',
         element: <InventoryPurchaseOrdersPage />,
       },
 
       /* Customers & Loyalty Routes */
-      { path: 'customers/directory', element: <CustomersDirectoryPage /> },
-      { path: 'customers/loyalty', element: <CustomersLoyaltyPage /> },
+      {
+        path: 'customers/directory',
+        element: <CustomersDirectoryPage />,
+      },
+      {
+        path: 'customers/loyalty',
+        element: <CustomersLoyaltyPage />,
+      },
 
       /* Billing Routes */
-      { path: 'billing/invoices', element: <BillingInvoicesPage /> },
-      { path: 'billing/payments', element: <BillingPaymentsPage /> },
-      { path: 'billing/reports', element: <BillingReportsPage /> },
+      {
+        path: 'billing/invoices',
+        element: <BillingInvoicesPage />,
+      },
+      {
+        path: 'billing/payments',
+        element: <BillingPaymentsPage />,
+      },
+      {
+        path: 'billing/reports',
+        element: <BillingReportsPage />,
+      },
 
       /* Notifications & Audit Routes */
-      { path: 'notifications', element: <NotificationsPage /> },
-      { path: 'audit-logs', element: <AuditLogsPage /> },
+      {
+        path: 'notifications',
+        element: <NotificationsPage />,
+      },
+      {
+        path: 'audit-logs',
+        element: <AuditLogsPage />,
+      },
 
       /* Administration Routes */
-      { path: 'admin/users', element: <AdminUsersPage /> },
-      { path: 'admin/rbac', element: <AdminRBACPage /> },
-      { path: 'admin/branches', element: <AdminBranchesPage /> },
-      { path: 'admin/subscription', element: <AdminSubscriptionPage /> },
-      { path: 'admin/settings', element: <AdminSettingsPage /> },
+      {
+        path: 'admin/users',
+        element: <AdminUsersPage />,
+      },
+      {
+        path: 'admin/rbac',
+        element: <AdminRBACPage />,
+      },
+      {
+        path: 'admin/branches',
+        element: <AdminBranchesPage />,
+      },
+      {
+        path: 'admin/subscription',
+        element: <AdminSubscriptionPage />,
+      },
+      {
+        path: 'admin/settings',
+        element: <AdminSettingsPage />,
+      },
 
       /* Fallback Legacy Aliases */
-      { path: 'rooms', element: <HotelRoomsPage /> },
-      { path: 'reservations', element: <HotelReservationsPage /> },
-      { path: 'staff', element: <AdminUsersPage /> },
-      { path: 'settings', element: <AdminSettingsPage /> },
+      {
+        path: 'rooms',
+        element: <HotelRoomsPage />,
+      },
+      {
+        path: 'rooms/occupancy-timeline',
+        element: <RoomOccupancyTimelinePage />,
+      },
+      {
+        path: 'reservations',
+        element: <HotelReservationsPage />,
+      },
+      {
+        path: 'staff',
+        element: <AdminUsersPage />,
+      },
+      {
+        path: 'settings',
+        element: <AdminSettingsPage />,
+      },
     ],
   },
 ]);

@@ -1,60 +1,641 @@
 /**
- * Hotel/Rooms/Index.module.css
+ * @file Hotel/Rooms/Index.module.css
+ * @description Styling for Refined Room Management Dashboard
  */
+
 .page {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 28px;
+  padding-bottom: 84px;
 }
 
-.header {
+/* =========================
+   HEADER
+========================= */
+
+.pageHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
 }
 
 .title {
-  font-size: var(--font-size-2xl);
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .subtitle {
-  font-size: var(--font-size-sm);
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--color-text-secondary);
 }
 
-.overviewCard {
-  background-color: var(--color-surface);
+.configureButton {
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  padding: 11px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.cardTitle {
-  font-size: var(--font-size-lg);
+.configureButton:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.topSearchMobile {
+  display: none;
+}
+
+.searchInput {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 999px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+}
+
+/* =========================
+   KPI CARDS
+========================= */
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.kpiCard {
+  position: relative;
+  min-height: 150px;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.kpiTopAccent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+}
+
+.kpi-vacant .kpiTopAccent {
+  background: #168a8c;
+}
+
+.kpi-occupied .kpiTopAccent {
+  background: #f27d7d;
+}
+
+.kpi-checkout .kpiTopAccent {
+  background: #f4a621;
+}
+
+.kpi-tomorrow .kpiTopAccent {
+  background: #bac5c5;
+}
+
+.kpiContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.kpiLabel {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary);
+}
+
+.kpiValue {
+  display: block;
+  font-size: 34px;
+  line-height: 1;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
-.placeholderGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-lg);
+.kpiSecondary {
+  display: block;
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
 }
 
-.roomCardStub {
-  height: 140px;
-  background-color: var(--color-surface);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
+.kpi-vacant .kpiSecondary {
+  color: #137f81;
+  font-weight: 600;
+}
+
+.urgentText {
+  color: #d42b2b;
+  font-weight: 600;
+}
+
+.kpiIcon {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.icon-vacant {
+  background: #dff5f5;
+  color: #147a7e;
+}
+
+.icon-occupied {
+  background: #fcecea;
+  color: #a65c2b;
+}
+
+.icon-checkout {
+  background: #fff3c7;
+  color: #f39b14;
+}
+
+.icon-tomorrow {
+  background: #e8eded;
+  color: #4f5b5d;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.roomTypeFilters,
+.statusFilters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filterButton,
+.statusFilterButton {
+  border: 1px solid transparent;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(23, 41, 51, 0.04);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.filterButton:hover,
+.statusFilterButton:hover {
+  border-color: rgba(20, 122, 126, 0.18);
+  color: var(--color-primary);
+}
+
+.activeFilter {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.activeFilter:hover {
+  color: #ffffff;
+}
+
+.statusFilterButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.activeStatusFilter {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filterDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.availableDot {
+  background: #147a7e;
+}
+
+.occupiedDot {
+  background: #f26e73;
+}
+
+/* =========================
+   FLOORS
+========================= */
+
+.floorList {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.floorSection {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: var(--shadow-card);
+}
+
+.floorHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.floorAccent {
+  width: 4px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.floorTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.floorMeta {
+  font-size: 13px;
   color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+}
+
+.roomsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* =========================
+   ROOM CARDS
+========================= */
+
+.roomCard {
+  min-height: 205px;
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #edf1f1;
+  border-radius: 14px;
+  box-shadow: 0 5px 18px rgba(29, 52, 58, 0.04);
+}
+
+.roomCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.roomNumber {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.available {
+  background: #dff4f2;
+  color: #108082;
+}
+
+.occupied {
+  background: #fdeeee;
+  color: #f05f66;
+}
+
+.checkout {
+  background: #fff4d5;
+  color: #ef9a18;
+}
+
+.roomInfoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 28px;
+}
+
+.infoLabel {
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.infoValue {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.durationRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.guestAvatars {
+  display: flex;
+  align-items: center;
+}
+
+.guestAvatar {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -4px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #edf1f1;
+  color: #414b4e;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.roomCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid #eef1f1;
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.readyIcon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #147a7e;
+  border-radius: 50%;
+  color: #147a7e;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.actionRequired {
+  font-size: 11px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #d52e2e;
+}
+
+.pendingText {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d52e2e;
+}
+
+/* =========================
+   QUICK RESERVATION
+========================= */
+
+.quickReservationButton {
+  position: fixed;
+  right: 38px;
+  bottom: 32px;
+  z-index: 20;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  border: 0;
+  border-radius: 999px;
+  padding: 15px 24px;
+
+  background: var(--color-primary);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  box-shadow: 0 10px 24px rgba(20, 122, 126, 0.22);
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.quickReservationButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(20, 122, 126, 0.28);
+}
+
+.plusIcon {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 300;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.emptyState {
+  padding: 56px 24px;
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+}
+
+.emptyState h3 {
+  margin: 0 0 7px;
+  font-size: 18px;
+  color: var(--color-text-primary);
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .roomsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    gap: 22px;
+  }
+
+  .topSearchMobile {
+    display: block;
+  }
+
+  .pageHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 27px;
+  }
+
+  .configureButton {
+    width: 100%;
+  }
+
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .roomTypeFilters,
+  .statusFilters {
+    width: 100%;
+  }
+
+  .filterButton,
+  .statusFilterButton {
+    flex: 1 1 auto;
+  }
+
+  .floorSection {
+    padding: 22px;
+  }
+
+  .roomsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .floorHeader {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .floorMeta {
+    width: 100%;
+    padding-left: 16px;
+  }
+
+  .quickReservationButton {
+    right: 20px;
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpiCard {
+    min-height: 130px;
+  }
+
+  .floorSection {
+    padding: 18px;
+  }
+
+  .roomCard {
+    min-height: 185px;
+  }
+
+  .quickReservationButton {
+    padding: 13px 18px;
+    font-size: 13px;
+  }
 }
