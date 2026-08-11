@@ -219,7 +219,7 @@ export const router = createBrowserRouter([
         element: <HousekeepingPage />,
       },
       {
-        path: 'staff/Salary',
+        path: 'staff/salary',
         element: <StaffSalaryPage />,
       },
 
