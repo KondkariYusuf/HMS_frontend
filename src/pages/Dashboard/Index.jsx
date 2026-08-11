@@ -241,8 +241,8 @@ export default function DashboardPage() {
 
                 <span
                   className={`${styles.statusBadge} ${arrival.type === 'arrived'
-                      ? styles.arrived
-                      : styles.pending
+                    ? styles.arrived
+                    : styles.pending
                     }`}
                 >
                   {arrival.status}
