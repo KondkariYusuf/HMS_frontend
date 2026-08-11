@@ -1,7 +1,8 @@
 /**
  * @file router.jsx
- * @description React Router v6 master configuration mapping all SyncStays 9 domain modules.
+ * @description React Router v6 master configuration for SyncStays.
  */
+
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -55,7 +56,13 @@ import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
+/* 8. Staff & Housekeeping Domain */
+import StaffDashboardPage from '@pages/Staff/Dashboard/Index';
+import StaffDirectoryPage from '@pages/Staff/Directory/Index';
+import StaffAttendencePage from '@pages/Staff/Attendence/Index';
+
 export const router = createBrowserRouter([
+  /* Public Auth Routes */
   {
     path: '/login',
     element: <LoginPage />,
@@ -68,64 +75,161 @@ export const router = createBrowserRouter([
     path: '/forgot-password',
     element: <ForgotPasswordPage />,
   },
+
+  /* Authenticated Application */
   {
     path: '/',
     element: <MainLayout />,
     children: [
+      /* Dashboard */
       {
         index: true,
         element: <DashboardPage />,
       },
+
+      /* Analytics */
       {
         path: 'analytics',
         element: <AnalyticsPage />,
       },
+
       /* Hotel Domain Routes */
-      { path: 'hotel/rooms', element: <HotelRoomsPage /> },
-      { path: 'hotel/guests', element: <HotelGuestsPage /> },
-      { path: 'hotel/reservations', element: <HotelReservationsPage /> },
-      { path: 'hotel/check-in', element: <HotelCheckInPage /> },
+      {
+        path: 'hotel/rooms',
+        element: <HotelRoomsPage />,
+      },
+      {
+        path: 'hotel/guests',
+        element: <HotelGuestsPage />,
+      },
+      {
+        path: 'hotel/reservations',
+        element: <HotelReservationsPage />,
+      },
+      {
+        path: 'hotel/check-in',
+        element: <HotelCheckInPage />,
+      },
 
       /* Restaurant Domain Routes */
-      { path: 'restaurant/pos', element: <RestaurantPOSPage /> },
-      { path: 'restaurant/menu', element: <RestaurantMenuPage /> },
-      { path: 'restaurant/kds', element: <RestaurantKDSPage /> },
-      { path: 'restaurant/tables', element: <RestaurantTablesPage /> },
+      {
+        path: 'restaurant/pos',
+        element: <RestaurantPOSPage />,
+      },
+      {
+        path: 'restaurant/menu',
+        element: <RestaurantMenuPage />,
+      },
+      {
+        path: 'restaurant/kds',
+        element: <RestaurantKDSPage />,
+      },
+      {
+        path: 'restaurant/tables',
+        element: <RestaurantTablesPage />,
+      },
 
       /* Inventory & Purchasing Routes */
-      { path: 'inventory/products', element: <InventoryProductsPage /> },
-      { path: 'inventory/stock', element: <InventoryStockPage /> },
-      { path: 'inventory/suppliers', element: <InventorySuppliersPage /> },
+      {
+        path: 'inventory/products',
+        element: <InventoryProductsPage />,
+      },
+      {
+        path: 'inventory/stock',
+        element: <InventoryStockPage />,
+      },
+      {
+        path: 'inventory/suppliers',
+        element: <InventorySuppliersPage />,
+      },
       {
         path: 'inventory/purchase-orders',
         element: <InventoryPurchaseOrdersPage />,
       },
 
       /* Customers & Loyalty Routes */
-      { path: 'customers/directory', element: <CustomersDirectoryPage /> },
-      { path: 'customers/loyalty', element: <CustomersLoyaltyPage /> },
+      {
+        path: 'customers/directory',
+        element: <CustomersDirectoryPage />,
+      },
+      {
+        path: 'customers/loyalty',
+        element: <CustomersLoyaltyPage />,
+      },
 
       /* Billing Routes */
-      { path: 'billing/invoices', element: <BillingInvoicesPage /> },
-      { path: 'billing/payments', element: <BillingPaymentsPage /> },
-      { path: 'billing/reports', element: <BillingReportsPage /> },
+      {
+        path: 'billing/invoices',
+        element: <BillingInvoicesPage />,
+      },
+      {
+        path: 'billing/payments',
+        element: <BillingPaymentsPage />,
+      },
+      {
+        path: 'billing/reports',
+        element: <BillingReportsPage />,
+      },
 
       /* Notifications & Audit Routes */
-      { path: 'notifications', element: <NotificationsPage /> },
-      { path: 'audit-logs', element: <AuditLogsPage /> },
+      {
+        path: 'notifications',
+        element: <NotificationsPage />,
+      },
+      {
+        path: 'audit-logs',
+        element: <AuditLogsPage />,
+      },
 
       /* Administration Routes */
-      { path: 'admin/users', element: <AdminUsersPage /> },
-      { path: 'admin/rbac', element: <AdminRBACPage /> },
-      { path: 'admin/branches', element: <AdminBranchesPage /> },
-      { path: 'admin/subscription', element: <AdminSubscriptionPage /> },
-      { path: 'admin/settings', element: <AdminSettingsPage /> },
+      {
+        path: 'admin/users',
+        element: <AdminUsersPage />,
+      },
+      {
+        path: 'admin/rbac',
+        element: <AdminRBACPage />,
+      },
+      {
+        path: 'admin/branches',
+        element: <AdminBranchesPage />,
+      },
+      {
+        path: 'admin/subscription',
+        element: <AdminSubscriptionPage />,
+      },
+      {
+        path: 'admin/settings',
+        element: <AdminSettingsPage />,
+      },
+
+      /* Staff & Housekeeping Routes */
+      {
+        path: 'staff',
+        element: <StaffDashboardPage />,
+      },
+      {
+        path: 'staff/directory',
+        element: <StaffDirectoryPage />,
+      },
+      {
+        path: 'staff/Attendence',
+        element: <StaffAttendencePage />,
+      },
 
       /* Fallback Legacy Aliases */
-      { path: 'rooms', element: <HotelRoomsPage /> },
-      { path: 'reservations', element: <HotelReservationsPage /> },
-      { path: 'staff', element: <AdminUsersPage /> },
-      { path: 'settings', element: <AdminSettingsPage /> },
+      {
+        path: 'rooms',
+        element: <HotelRoomsPage />,
+      },
+      {
+        path: 'reservations',
+        element: <HotelReservationsPage />,
+      },
+      {
+        path: 'settings',
+        element: <AdminSettingsPage />,
+      },
     ],
   },
 ]);
