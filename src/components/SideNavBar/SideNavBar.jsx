@@ -3,6 +3,7 @@
  * @description Primary navigation sidebar for SyncStays HMS categorized into grouped domain sections.
  * @figmaFrame Figma frame: Navigation - SideNavBar
  */
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './SideNavBar.module.css';
@@ -16,6 +17,7 @@ export default function SideNavBar() {
         { path: '/analytics', label: 'Analytics' },
       ],
     },
+
     {
       title: 'HOTEL',
       items: [
@@ -25,6 +27,7 @@ export default function SideNavBar() {
         { path: '/hotel/guests', label: 'Guest Directory' },
       ],
     },
+
     {
       title: 'RESTAURANT',
       items: [
@@ -34,6 +37,7 @@ export default function SideNavBar() {
         { path: '/restaurant/tables', label: 'Tables & Areas' },
       ],
     },
+
     {
       title: 'INVENTORY & SUPPLY',
       items: [
@@ -42,6 +46,7 @@ export default function SideNavBar() {
         { path: '/inventory/purchase-orders', label: 'Purchase Orders' },
       ],
     },
+
     {
       title: 'CUSTOMERS & BILLING',
       items: [
@@ -50,6 +55,21 @@ export default function SideNavBar() {
         { path: '/billing/reports', label: 'Revenue Reports' },
       ],
     },
+
+    {
+      title: 'FINANCE & MAINTENANCE',
+      items: [
+        {
+          path: '/finance/monthly-salary',
+          label: 'Yearly Salary Summary',
+        },
+        {
+          path: '/finance/cash-register',
+          label: 'Cash Register',
+        },
+      ],
+    },
+
     {
       title: 'ADMINISTRATION',
       items: [
@@ -67,10 +87,12 @@ export default function SideNavBar() {
         <h1 className={styles.brandTitle}>Grand Horizon</h1>
         <span className={styles.brandSubtitle}>SyncStays Platform</span>
       </div>
+
       <nav className={styles.navContainer}>
         {navGroups.map((group) => (
           <div key={group.title} className={styles.navGroup}>
             <span className={styles.groupTitle}>{group.title}</span>
+
             <ul className={styles.navList}>
               {group.items.map((item) => (
                 <li key={item.path} className={styles.navItem}>
@@ -91,10 +113,12 @@ export default function SideNavBar() {
           </div>
         ))}
       </nav>
+
       <div className={styles.footerBlock}>
         <NavLink to="/notifications" className={styles.footerLink}>
           Notifications
         </NavLink>
+
         <NavLink to="/login" className={styles.footerLink}>
           Logout
         </NavLink>
