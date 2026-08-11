@@ -1,147 +1,324 @@
 import React from 'react';
-import DataTable from '@components/DataTable/DataTable';
 import styles from './Index.module.css';
 
-const AttendenceColumns = [
-    { key: 'guest', title: 'Employee' },
-    { key: 'room', title: 'Department / Role' },
-    { key: 'dates', title: 'Check-in / Out' },
-    { key: 'status', title: 'Status' },
-    { key: 'actions', title: 'Actions' },
-];
-
-const AttendenceData = [
+const attendanceSummary = [
     {
-        id: 'att-101',
-        guest: {
-            name: 'Sarah Johnson',
-            tag: 'EMP-101',
-        },
-        room: 'Housekeeping',
-        dates: '08:00 AM - 05:00 PM',
-        status: 'in-house',
+        id: 'present',
+        label: 'PRESENT',
+        value: '42',
+        icon: '👤',
+        variant: 'present',
     },
     {
-        id: 'att-102',
-        guest: {
-            name: 'Mark Davis',
-            tag: 'EMP-102',
-        },
-        room: 'Front Desk',
-        dates: '09:15 AM - 05:30 PM',
-        status: 'in-house',
+        id: 'double',
+        label: 'DOUBLE',
+        value: '08',
+        icon: '👥',
+        variant: 'double',
     },
     {
-        id: 'att-103',
-        guest: {
-            name: 'Lina Zhang',
-            tag: 'EMP-103',
-        },
-        room: 'F&B Service',
-        dates: '--',
-        status: 'absent',
+        id: 'leave',
+        label: 'LEAVE',
+        value: '03',
+        icon: '🛏',
+        variant: 'leave',
     },
     {
-        id: 'att-104',
-        guest: {
-            name: 'David Miller',
-            tag: 'EMP-104',
-        },
-        room: 'Maintenance',
-        dates: '08:30 AM - 05:00 PM',
-        status: 'in-house',
+        id: 'absent',
+        label: 'ABSENT',
+        value: '02',
+        icon: '🔕',
+        variant: 'absent',
     },
     {
-        id: 'att-105',
-        guest: {
-            name: 'Sarah Connor',
-            tag: 'EMP-105',
-        },
-        room: 'Front Desk',
-        dates: '07:45 AM - 04:00 PM',
-        status: 'in-house',
+        id: 'unmarked',
+        label: 'UNMARKED',
+        value: '05',
+        icon: '?',
+        variant: 'unmarked',
     },
 ];
 
-export default function StaffAttendence() {
+const staffFilters = [
+    'All Staff',
+    'Managers',
+    'Waiters',
+    'Reception',
+    'Kitchen',
+    'Housekeeping',
+];
+
+const managers = [
+    {
+        id: 'emp-201',
+        name: 'Eleanor Vance',
+        role: 'SHIFT SUPERVISOR',
+        salary: '$4,850 / month',
+        status: 'Present',
+        marked: false,
+    },
+    {
+        id: 'emp-202',
+        name: 'David Chen',
+        role: 'F&B DIRECTOR',
+        salary: '$7,200 / month',
+        status: 'Present',
+        marked: true,
+    },
+    {
+        id: 'emp-203',
+        name: 'Marcus Thorne',
+        role: 'GUEST RELATIONS',
+        salary: '$5,100 / month',
+        status: 'Leave',
+        marked: false,
+    },
+];
+
+const waiters = [
+    {
+        id: 'emp-204',
+        name: 'Sara Lopez',
+        role: 'SERVER LEVEL II',
+        salary: '$2,900 / month',
+        status: 'Present',
+        marked: false,
+        initials: 'SL',
+    },
+    {
+        id: 'emp-205',
+        name: 'Julian Rossi',
+        role: 'BANQUETS SPECIALIST',
+        salary: '$3,150 / month',
+        status: 'Present',
+        marked: false,
+    },
+    {
+        id: 'emp-206',
+        name: 'Maya Patel',
+        role: 'COCKTAIL SERVER',
+        salary: '$3,400 / month',
+        status: 'Present',
+        marked: false,
+    },
+];
+
+const getInitials = (name) => {
+    return name
+        .split(' ')
+        .map((word) => word[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase();
+};
+
+function StaffCard({ staff }) {
+    return (
+        <div
+            className={`${styles.staffCard} ${staff.marked ? styles.markedCard : ''
+                }`}
+        >
+            <div className={styles.cardTop}>
+                <div className={styles.avatar}>
+                    {staff.initials || getInitials(staff.name)}
+                </div>
+
+                <div className={styles.staffInfo}>
+                    <h3 className={styles.staffName}>{staff.name}</h3>
+                    <p className={styles.staffRole}>{staff.role}</p>
+                    <p className={styles.staffSalary}>{staff.salary}</p>
+                </div>
+
+                <button className={styles.moreButton} type="button">
+                    ⋮
+                </button>
+
+                {staff.marked && (
+                    <span className={styles.markedBadge}>
+                        MARKED
+                    </span>
+                )}
+            </div>
+
+            <div className={styles.statusActions}>
+                <button
+                    type="button"
+                    className={`${styles.statusButton} ${styles.presentButton} ${staff.status === 'Present' ? styles.active : ''
+                        }`}
+                >
+                    Present
+                </button>
+
+                <button
+                    type="button"
+                    className={`${styles.statusButton} ${styles.doubleButton}`}
+                >
+                    Double
+                </button>
+
+                <button
+                    type="button"
+                    className={`${styles.statusButton} ${styles.leaveButton} ${staff.status === 'Leave' ? styles.active : ''
+                        }`}
+                >
+                    Leave
+                </button>
+
+                {staff.status === 'Leave' ? (
+                    <button
+                        type="button"
+                        className={`${styles.statusButton} ${styles.absentButton} ${styles.active}`}
+                    >
+                        Absent
+                    </button>
+                ) : (
+                    <button
+                        type="button"
+                        className={styles.helpButton}
+                        aria-label="Unmarked"
+                    >
+                        ?
+                    </button>
+                )}
+
+                {staff.marked && (
+                    <button
+                        type="button"
+                        className={styles.checkButton}
+                        aria-label="Marked"
+                    >
+                        ✓
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function StaffSection({ title, total, staff }) {
+    return (
+        <section className={styles.staffSection}>
+            <div className={styles.sectionHeader}>
+                <div className={styles.sectionTitleWrapper}>
+                    <span className={styles.sectionAccent}></span>
+
+                    <h2 className={styles.sectionTitle}>{title}</h2>
+
+                    <span className={styles.totalBadge}>
+                        {total} Total
+                    </span>
+                </div>
+
+                <button
+                    type="button"
+                    className={styles.selectAllButton}
+                >
+                    Select All
+                </button>
+            </div>
+
+            <div className={styles.staffGrid}>
+                {staff.map((employee) => (
+                    <StaffCard
+                        key={employee.id}
+                        staff={employee}
+                    />
+                ))}
+            </div>
+        </section>
+    );
+}
+
+export default function StaffAttendance() {
     return (
         <div className={styles.page}>
             <header className={styles.header}>
                 <div>
-                    <h1 className={styles.title}>Staff Attendence</h1>
+                    <h1 className={styles.title}>
+                        Daily Attendance Management
+                    </h1>
 
                     <p className={styles.subtitle}>
-                        Manage daily staff Attendence and check-in/check-out records.
+                        Track employee attendance and status across departments.
                     </p>
+                </div>
+
+                <div className={styles.headerActions}>
+                    <label className={styles.dateControl}>
+                        <span className={styles.calendarIcon}>▣</span>
+
+                        <input
+                            type="date"
+                            defaultValue="2023-10-24"
+                            aria-label="Attendance date"
+                        />
+                    </label>
+
+                    <button
+                        type="button"
+                        className={styles.exportButton}
+                    >
+                        ↓ &nbsp; Export PDF
+                    </button>
                 </div>
             </header>
 
-            <div className={styles.controls}>
-                <div className={styles.controlGroup}>
-                    <label className={styles.label} htmlFor="att-date">
-                        Date
-                    </label>
-
-                    <input
-                        id="att-date"
-                        type="date"
-                        className={styles.input}
-                    />
-                </div>
-
-                <div className={styles.controlGroup}>
-                    <label className={styles.label} htmlFor="att-department">
-                        Department
-                    </label>
-
-                    <select
-                        id="att-department"
-                        className={styles.select}
-                        defaultValue="all"
+            <nav className={styles.filterBar}>
+                {staffFilters.map((filter, index) => (
+                    <button
+                        key={filter}
+                        type="button"
+                        className={`${styles.filterButton} ${index === 0 ? styles.activeFilter : ''
+                            }`}
                     >
-                        <option value="all">All Departments</option>
-                        <option value="housekeeping">Housekeeping</option>
-                        <option value="front-desk">Front Desk</option>
-                        <option value="fnb">F&B Service</option>
-                        <option value="maintenance">Maintenance</option>
-                    </select>
-                </div>
+                        {filter}
+                    </button>
+                ))}
+            </nav>
 
-                <div className={styles.controlGroup}>
-                    <label className={styles.label} htmlFor="att-status">
-                        Attendence Status
-                    </label>
-
-                    <select
-                        id="att-status"
-                        className={styles.select}
-                        defaultValue="all"
+            <section className={styles.summaryGrid}>
+                {attendanceSummary.map((item) => (
+                    <div
+                        key={item.id}
+                        className={`${styles.summaryCard} ${styles[item.variant]
+                            }`}
                     >
-                        <option value="all">All Statuses</option>
-                        <option value="present">Present</option>
-                        <option value="absent">Absent</option>
-                        <option value="away">Away</option>
-                    </select>
-                </div>
+                        <div className={styles.summaryIcon}>
+                            {item.icon}
+                        </div>
 
-                <div className={styles.controlGroup}>
-                    <label className={styles.label} htmlFor="att-search">
-                        Search Staff
-                    </label>
+                        <div className={styles.summaryContent}>
+                            <span className={styles.summaryLabel}>
+                                {item.label}
+                            </span>
 
-                    <input
-                        id="att-search"
-                        type="text"
-                        className={styles.input}
-                        placeholder="Search by name or ID..."
-                    />
-                </div>
-            </div>
+                            <strong className={styles.summaryValue}>
+                                {item.value}
+                            </strong>
+                        </div>
+                    </div>
+                ))}
+            </section>
 
-            <DataTable
-                columns={AttendenceColumns}
-                data={AttendenceData}
+            <StaffSection
+                title="Managers"
+                total="12"
+                staff={managers}
             />
+
+            <StaffSection
+                title="Waiters"
+                total="32"
+                staff={waiters}
+            />
+
+            <button
+                type="button"
+                className={styles.floatingButton}
+                aria-label="Attendance action"
+            >
+                ✓
+            </button>
         </div>
     );
 }

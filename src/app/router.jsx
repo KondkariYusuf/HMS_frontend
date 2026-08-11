@@ -58,7 +58,6 @@ import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
 /* 8. Staff & Housekeeping Domain */
 import StaffDashboardPage from '@pages/Staff/Dashboard/Index';
-import StaffDirectoryPage from '@pages/Staff/Directory/Index';
 import StaffAttendencePage from '@pages/Staff/Attendence/Index';
 
 export const router = createBrowserRouter([
@@ -209,13 +208,9 @@ export const router = createBrowserRouter([
         element: <StaffDashboardPage />,
       },
       {
-        path: 'staff/directory',
-        element: <StaffDirectoryPage />,
-      },
-      {
         path: 'staff/Attendence',
         element: <StaffAttendencePage />,
-      },
+      },    
 
       /* Fallback Legacy Aliases */
       {
