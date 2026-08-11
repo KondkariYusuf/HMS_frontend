@@ -1,8 +1,43 @@
 /**
  * Hotel/Reservations/Index.module.css
+ * Container styles for Hotel Reservations module
  */
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.subHeaderBar {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-xs);
+}
+
+.tabGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.tabBtn {
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  padding-bottom: var(--space-xs);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s ease;
+}
+
+.activeTabBtn {
+  color: var(--color-primary-dark);
+  border-bottom-color: var(--color-primary);
 }

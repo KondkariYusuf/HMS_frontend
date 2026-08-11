@@ -1,6 +1,6 @@
 /**
  * MainLayout.module.css
- * Expected classes: .layoutShell, .mainContent, .pageContainer
+ * Main authenticated shell layout styles
  * Tokens consumed: --sidebar-width (260px), --topnav-height (64px), --color-bg (#f7f9fa), --space-xl
  */
 .layoutShell {
@@ -15,9 +15,12 @@
   margin-top: var(--topnav-height);
   padding: var(--space-xl);
   min-height: calc(100vh - var(--topnav-height));
+  width: calc(100vw - var(--sidebar-width));
+  box-sizing: border-box;
 }
 
 .pageContainer {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }

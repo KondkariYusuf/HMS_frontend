@@ -1,27 +1,35 @@
 /**
  * Hotel/Rooms/Index.module.css
+ * Co-located styles for Hotel Rooms management screen consuming tokens.css
  */
 .page {
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .title {
+  font-family: var(--font-family);
   font-size: var(--font-size-2xl);
   font-weight: 700;
   color: var(--color-text-primary);
+  margin: 0;
 }
 
 .subtitle {
+  font-family: var(--font-family);
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+  margin-bottom: 0;
 }
 
 .overviewCard {
@@ -36,25 +44,81 @@
 }
 
 .cardTitle {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .roomGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.roomCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roomTitle {
+  font-family: var(--font-family);
   font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
-.placeholderGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-lg);
+.statusBadge {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 3px var(--space-sm);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
 }
 
-.roomCardStub {
-  height: 140px;
-  background-color: var(--color-surface);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+.vacant {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+}
+
+.maintenance {
+  background-color: var(--color-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+.roomType {
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.roomMeta {
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-sm) 0;
 }
