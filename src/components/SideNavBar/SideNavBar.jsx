@@ -51,6 +51,14 @@ export default function SideNavBar() {
       ],
     },
     {
+      title: 'STAFF',
+      items: [
+        { path: '/staff', label: 'Staff Dashboard' },
+        { path: '/staff/Attendence', label: 'Attendance' },
+        { path: '/staff/advances', label: 'Advances' },
+      ],
+    },
+    {
       title: 'ADMINISTRATION',
       items: [
         { path: '/admin/users', label: 'User Directory' },
