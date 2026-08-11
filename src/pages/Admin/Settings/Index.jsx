@@ -19,7 +19,6 @@ const INITIAL_ROOMS = [
   { room: '105', type: '4B' },
   { room: '106', type: '2B' },
   { room: '107', type: '2B' },
-
   { room: '201', type: '3B' },
   { room: '202', type: '3B' },
   { room: '203', type: '5B' },
@@ -27,7 +26,6 @@ const INITIAL_ROOMS = [
   { room: '205', type: '2B' },
   { room: '206', type: '2B' },
   { room: '207', type: '3B' },
-
   { room: '301', type: '4B' },
   { room: '302', type: '4B' },
   { room: '303', type: '5B' },
@@ -107,18 +105,21 @@ export default function AdminSettingsPage() {
       rooms,
     };
 
-    const blob = new Blob([JSON.stringify(configuration, null, 2)], {
-      type: 'application/json',
-    });
+    const blob = new globalThis.Blob(
+      [JSON.stringify(configuration, null, 2)],
+      {
+        type: 'application/json',
+      },
+    );
 
-    const url = URL.createObjectURL(blob);
+    const url = globalThis.URL.createObjectURL(blob);
     const anchor = document.createElement('a');
 
     anchor.href = url;
     anchor.download = 'hotel-configuration.json';
     anchor.click();
 
-    URL.revokeObjectURL(url);
+    globalThis.URL.revokeObjectURL(url);
   };
 
   return (
@@ -238,7 +239,9 @@ export default function AdminSettingsPage() {
 
             <div className={styles.legend}>
               <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.standardDot}`} />
+                <span
+                  className={`${styles.legendDot} ${styles.standardDot}`}
+                />
                 2B Standard
               </span>
 
@@ -308,7 +311,7 @@ export default function AdminSettingsPage() {
           <span className={styles.noteTitle}>Administrator Note</span>
 
           <p>
-            The room mapping grid is synced with the hotel's physical
+            The room mapping grid is synced with the hotel&apos;s physical
             blueprint. Changing a room type here will affect pricing tiers and
             housekeeping assignment protocols across the platform. Use caution
             when reclassifying occupied rooms.
