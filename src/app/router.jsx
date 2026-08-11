@@ -57,10 +57,10 @@ import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
 /* 8. Staff & Housekeeping Domain */
-import StaffDashboardPage from '@pages/Staff/Dashboard/Index';
 import StaffAttendencePage from '@pages/Staff/Attendence/Index';
 import StaffAdvancesPage from '@pages/Staff/Advances/Index';
 import HousekeepingPage from '@pages/Staff/Housekeeping/Index';
+import StaffSalaryPage from '@pages/Staff/Salary/Index';
 
 export const router = createBrowserRouter([
   /* Public Auth Routes */
@@ -205,10 +205,7 @@ export const router = createBrowserRouter([
       },
 
       /* Staff & Housekeeping Routes */
-      {
-        path: 'staff',
-        element: <StaffDashboardPage />,
-      },
+
       {
         path: 'staff/Attendence',
         element: <StaffAttendencePage />,
@@ -220,6 +217,10 @@ export const router = createBrowserRouter([
       {
         path: 'staff/housekeeping',
         element: <HousekeepingPage />,
+      },
+      {
+        path: 'staff/Salary',
+        element: <StaffSalaryPage />,
       },
 
       /* Fallback Legacy Aliases */

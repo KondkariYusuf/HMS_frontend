@@ -1,0 +1,646 @@
+/**
+ * @file Index.module.css
+ * @description Styles for the Professional Staff & Salary Dashboard.
+ */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    width: 100%;
+    padding-bottom: var(--space-xl);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HEADER
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+}
+
+.headerText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.subtitle {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.exportButton,
+.addEmployeeButton {
+    min-height: 42px;
+    padding: 0 var(--space-lg);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.exportButton {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+}
+
+.exportButton:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.addEmployeeButton {
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-button-primary);
+}
+
+.addEmployeeButton:hover {
+    background: var(--color-primary-dark);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SUMMARY CARDS
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+.summaryCard {
+    min-height: 145px;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.summaryTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.summaryIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.summaryBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.summaryContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
+}
+
+.summaryLabel {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.summaryValue {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.outstanding .summaryBadge {
+    background: #fef2f2;
+    color: var(--color-error);
+}
+
+.outstanding .summaryValue {
+    font-size: var(--font-size-xl);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MAIN GRID
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+    gap: var(--space-lg);
+    align-items: start;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   COMMON CARD HEADER
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-md);
+}
+
+.cardHeader h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.cardHeader p {
+    margin: var(--space-xs) 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ATTENDANCE CARD
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.attendanceCard {
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.attendanceCard .cardHeader {
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.historyButton {
+    border: 0;
+    background: transparent;
+    color: var(--color-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.historyButton:hover {
+    color: var(--color-primary-dark);
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.attendanceTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendanceTable th {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.attendanceTable td {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    vertical-align: middle;
+}
+
+.attendanceTable tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.attendanceTable tbody tr:hover {
+    background: var(--color-bg);
+}
+
+.employeeCell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-full);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.employeeInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.employeeInfo strong {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.employeeInfo span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.role,
+.checkIn {
+    color: var(--color-text-secondary);
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.present {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.absent {
+    background: #fef2f2;
+    color: var(--color-error);
+}
+
+.moreButton {
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.moreButton:hover {
+    color: var(--color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RIGHT COLUMN
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   STAFF DISTRIBUTION
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.distributionCard {
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.distributionList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+}
+
+.distributionItem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.distributionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.distributionHeader span {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.distributionHeader strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+}
+
+.progressTrack {
+    width: 100%;
+    height: 6px;
+    overflow: hidden;
+    border-radius: var(--radius-full);
+    background: var(--color-bg);
+}
+
+.progressBar {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PAYOUT CARD
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.payoutCard {
+    min-height: 185px;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-dark);
+    color: var(--color-white);
+}
+
+.payoutTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.payoutIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--font-size-sm);
+}
+
+.payoutBadge {
+    padding: 5px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.payoutContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+}
+
+.payoutContent span {
+    color: var(--color-white);
+    opacity: 0.8;
+    font-size: var(--font-size-sm);
+}
+
+.payoutContent strong {
+    color: var(--color-white);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+
+.payoutActions {
+    display: grid;
+    grid-template-columns: 1fr 42px;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.payoutActions button {
+    min-height: 38px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.payoutActions button:hover {
+    background: var(--color-primary-tint);
+    color: var(--color-primary-dark);
+}
+
+.payoutActions .printSmallButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   OPERATIONS HUB
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.operationsSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.operationsTitle {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.operationsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+.operationCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    min-height: 135px;
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: var(--shadow-card);
+}
+
+.operationCard:hover {
+    border-color: var(--color-primary);
+}
+
+.operationIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.operationLabel {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESPONSIVE
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .rightColumn {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .header {
+        flex-direction: column;
+    }
+
+    .headerActions {
+        width: 100%;
+    }
+
+    .operationsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .rightColumn {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .page {
+        gap: var(--space-md);
+    }
+
+    .title {
+        font-size: var(--font-size-xl);
+    }
+
+    .headerActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .exportButton,
+    .addEmployeeButton {
+        width: 100%;
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .attendanceCard .cardHeader {
+        flex-direction: column;
+    }
+
+    .attendanceTable {
+        min-width: 700px;
+    }
+
+    .operationsGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
