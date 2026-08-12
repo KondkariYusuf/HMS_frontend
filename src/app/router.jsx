@@ -43,6 +43,7 @@ import CustomersLoyaltyPage from '@pages/Customers/Loyalty/Index';
 import BillingInvoicesPage from '@pages/Billing/Invoices/Index';
 import BillingPaymentsPage from '@pages/Billing/Payments/Index';
 import BillingReportsPage from '@pages/Billing/Reports/Index';
+import SettingsBillingInvoicesPage from '@pages/Settings/BillingInvoices/Index';
 
 /* 6. Notifications & Audit Domain */
 import NotificationsPage from '@pages/Notifications/Index';
@@ -54,6 +55,9 @@ import AdminRBACPage from '@pages/Admin/RBAC/Index';
 import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
+
+/* 8. Maintenance Domain */
+import MaintenanceDashboardPage from '@pages/Maintenance/Index';
 
 export const router = createBrowserRouter([
   {
@@ -110,6 +114,9 @@ export const router = createBrowserRouter([
       { path: 'billing/payments', element: <BillingPaymentsPage /> },
       { path: 'billing/reports', element: <BillingReportsPage /> },
 
+      /* Settings Routes */
+      { path: 'settings/billing-invoices', element: <SettingsBillingInvoicesPage /> },
+
       /* Notifications & Audit Routes */
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'audit-logs', element: <AuditLogsPage /> },
@@ -120,6 +127,9 @@ export const router = createBrowserRouter([
       { path: 'admin/branches', element: <AdminBranchesPage /> },
       { path: 'admin/subscription', element: <AdminSubscriptionPage /> },
       { path: 'admin/settings', element: <AdminSettingsPage /> },
+
+      /* Maintenance Routes */
+      { path: 'maintenance', element: <MaintenanceDashboardPage /> },
 
       /* Fallback Legacy Aliases */
       { path: 'rooms', element: <HotelRoomsPage /> },
