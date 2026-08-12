@@ -27,9 +27,11 @@ import HotelCheckInPage from '@pages/Hotel/CheckIn/Index';
 
 /* 2. Restaurant Domain */
 import RestaurantPOSPage from '@pages/Restaurant/POS/Index';
+import RestaurantOrdersPage from '@pages/Restaurant/Orders/Index';
 import RestaurantMenuPage from '@pages/Restaurant/Menu/Index';
 import RestaurantKDSPage from '@pages/Restaurant/KDS/Index';
 import RestaurantTablesPage from '@pages/Restaurant/Tables/Index';
+import RestaurantAnalyticsPage from '@pages/Restaurant/Analytics/Index';
 
 /* 3. Inventory & Purchasing Domain */
 import InventoryProductsPage from '@pages/Inventory/Products/Index';
@@ -106,9 +108,14 @@ export const router = createBrowserRouter([
       },
 
       /* Restaurant Domain Routes */
+      /* Restaurant Domain Routes */
       {
         path: 'restaurant/pos',
         element: <RestaurantPOSPage />,
+      },
+      {
+        path: 'restaurant/orders',
+        element: <RestaurantOrdersPage />,
       },
       {
         path: 'restaurant/menu',
@@ -122,7 +129,10 @@ export const router = createBrowserRouter([
         path: 'restaurant/tables',
         element: <RestaurantTablesPage />,
       },
-
+      {
+        path: 'restaurant/analytics',
+        element: <RestaurantAnalyticsPage />,
+      },
       /* Inventory & Purchasing Routes */
       {
         path: 'inventory/products',
