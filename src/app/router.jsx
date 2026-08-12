@@ -47,6 +47,7 @@ import CustomersLoyaltyPage from '@pages/Customers/Loyalty/Index';
 import BillingInvoicesPage from '@pages/Billing/Invoices/Index';
 import BillingPaymentsPage from '@pages/Billing/Payments/Index';
 import BillingReportsPage from '@pages/Billing/Reports/Index';
+import SettingsBillingInvoicesPage from '@pages/Settings/BillingInvoices/Index';
 
 /* 6. Notifications & Audit Domain */
 import NotificationsPage from '@pages/Notifications/Index';
@@ -68,6 +69,9 @@ import StaffSalaryPage from '@pages/Staff/Salary/Index';
 /* 9. Finance Domain */
 import MonthlySalaryPage from '@pages/Finance/MonthlySalary/Index';
 import CashRegisterPage from '@pages/Finance/CashRegister/Index';
+
+/* 10. Maintenance Domain */
+import MaintenanceDashboardPage from '@pages/Maintenance/Index';
 
 export const router = createBrowserRouter([
   /* Public Auth Routes */
@@ -201,6 +205,12 @@ export const router = createBrowserRouter([
         element: <BillingReportsPage />,
       },
 
+      /* Settings Routes */
+      {
+        path: 'settings/billing-invoices',
+        element: <SettingsBillingInvoicesPage />,
+      },
+
       /* Notifications & Audit Routes */
       {
         path: 'notifications',
@@ -249,6 +259,12 @@ export const router = createBrowserRouter([
       {
         path: 'staff/salary',
         element: <StaffSalaryPage />,
+      },
+
+      /* Maintenance Routes */
+      {
+        path: 'maintenance',
+        element: <MaintenanceDashboardPage />,
       },
 
       /* Fallback Legacy Aliases */
