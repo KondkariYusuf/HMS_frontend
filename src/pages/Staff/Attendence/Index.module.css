@@ -1,0 +1,702 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* ── 2. HEADER ───────────────────────────────────────────── */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+
+/* ── 3. TITLE ────────────────────────────────────────────── */
+
+.title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-xs) 0;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+
+/* ── 4. HEADER ACTIONS ───────────────────────────────────── */
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+
+/* ── 5. DATE CONTROL ─────────────────────────────────────── */
+
+.dateControl {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+.dateControl input[type='date'] {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    cursor: pointer;
+}
+
+.calendarIcon {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    line-height: 1;
+}
+
+
+/* ── 6. EXPORT BUTTON ────────────────────────────────────── */
+
+.exportButton {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-md);
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-button-primary);
+    transition: background-color 0.15s ease;
+}
+
+.exportButton:hover {
+    background-color: var(--color-primary-dark);
+}
+
+
+/* ── 7. FILTER BAR ───────────────────────────────────────── */
+
+.filterBar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+}
+
+.filterButton {
+    padding: var(--space-xs) var(--space-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.filterButton:hover {
+    background-color: var(--color-primary-tint);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.activeFilter {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.activeFilter:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    color: var(--color-white);
+}
+
+
+/* ── 8. SUMMARY GRID ─────────────────────────────────────── */
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-md);
+}
+
+.summaryCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+
+/* ── 9. SUMMARY ICON ─────────────────────────────────────── */
+
+.summaryIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-md);
+    flex-shrink: 0;
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.present .summaryIcon {
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.double .summaryIcon {
+    background-color: #e0f2f1;
+    color: #00897b;
+}
+
+.leave .summaryIcon {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.absent .summaryIcon {
+    background-color: #fee2e2;
+    color: var(--color-error);
+}
+
+.unmarked .summaryIcon {
+    background-color: #f3f4f6;
+    color: var(--color-text-muted);
+}
+
+
+/* ── 10. SUMMARY LABEL / VALUE ───────────────────────────── */
+
+.summaryContent {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.summaryLabel {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.summaryValue {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+
+/* ── 11. STAFF SECTION ───────────────────────────────────── */
+
+.staffSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sectionTitleWrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.sectionAccent {
+    display: inline-block;
+    width: 3px;
+    height: 18px;
+    background-color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+
+/* ── 12. SECTION TITLE ───────────────────────────────────── */
+
+.sectionTitle {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+
+/* ── 13. TOTAL BADGE ─────────────────────────────────────── */
+
+.totalBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-sm);
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+
+/* ── 14. SELECT ALL BUTTON ───────────────────────────────── */
+
+.selectAllButton {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    font-weight: 500;
+    padding: var(--space-xs) var(--space-md);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.selectAllButton:hover {
+    background-color: var(--color-primary-tint);
+    border-color: var(--color-primary);
+}
+
+
+/* ── 15. STAFF GRID ──────────────────────────────────────── */
+
+.staffGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+}
+
+
+/* ── 16. STAFF CARD ──────────────────────────────────────── */
+
+.staffCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.markedCard {
+    border-color: var(--color-primary-tint);
+    background-color: #fafffe;
+}
+
+
+/* ── 17. CARD TOP ────────────────────────────────────────── */
+
+.cardTop {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+}
+
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+
+/* ── 18. STAFF INFORMATION ───────────────────────────────── */
+
+.staffInfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.staffName {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.staffRole {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0;
+}
+
+.staffSalary {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+
+/* ── 19. MORE BUTTON ─────────────────────────────────────── */
+
+.moreButton {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    line-height: 1;
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.moreButton:hover {
+    background-color: var(--color-primary-tint);
+    color: var(--color-text-secondary);
+}
+
+
+/* ── 20. MARKED BADGE ────────────────────────────────────── */
+
+.markedBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-sm);
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+
+/* ── 21. STATUS ACTIONS ──────────────────────────────────── */
+
+.statusActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+}
+
+
+/* ── 22. STATUS BUTTONS ──────────────────────────────────── */
+
+.statusButton {
+    padding: 3px var(--space-sm);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.presentButton {
+    border-color: var(--color-primary-tint);
+    color: var(--color-primary);
+    background-color: var(--color-primary-tint);
+}
+
+.presentButton:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+}
+
+.doubleButton {
+    border-color: #b2dfdb;
+    color: #00897b;
+    background-color: #e0f2f1;
+}
+
+.doubleButton:hover {
+    background-color: #00897b;
+    color: var(--color-white);
+    border-color: #00897b;
+}
+
+.leaveButton {
+    border-color: #fde68a;
+    color: #92400e;
+    background-color: #fef3c7;
+}
+
+.leaveButton:hover {
+    background-color: #d97706;
+    color: var(--color-white);
+    border-color: #d97706;
+}
+
+.absentButton {
+    border-color: #fecaca;
+    color: var(--color-error);
+    background-color: #fee2e2;
+}
+
+.absentButton:hover {
+    background-color: var(--color-error);
+    color: var(--color-white);
+    border-color: var(--color-error);
+}
+
+.helpButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.helpButton:hover {
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.checkButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-button-primary);
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.checkButton:hover {
+    background-color: var(--color-primary-dark);
+}
+
+
+/* ── 23. ACTIVE STATUS ───────────────────────────────────── */
+
+.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+    font-weight: 700;
+}
+
+.active:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+.absentButton.active {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--color-white);
+}
+
+.absentButton.active:hover {
+    background-color: #991b1b;
+    border-color: #991b1b;
+}
+
+.leaveButton.active {
+    background-color: #d97706;
+    border-color: #d97706;
+    color: var(--color-white);
+}
+
+.leaveButton.active:hover {
+    background-color: #b45309;
+    border-color: #b45309;
+}
+
+
+/* ── 24. FLOATING BUTTON ─────────────────────────────────── */
+
+.floatingButton {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    border: none;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow:
+        0 4px 12px rgba(20, 122, 126, 0.35),
+        var(--shadow-button-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+    z-index: 100;
+}
+
+.floatingButton:hover {
+    background-color: var(--color-primary-dark);
+    transform: scale(1.06);
+}
+
+
+/* ── 25. RESPONSIVE ──────────────────────────────────────── */
+
+@media (max-width: 1200px) {
+    .summaryGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .staffGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .summaryGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .staffGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .page {
+        padding: var(--space-md);
+        gap: var(--space-lg);
+    }
+
+    .headerActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .exportButton {
+        justify-content: center;
+    }
+
+    .filterBar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: var(--space-xs);
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .summaryGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .staffGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .statusActions {
+        flex-wrap: wrap;
+    }
+
+    .floatingButton {
+        bottom: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+    }
+}

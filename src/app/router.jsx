@@ -1,6 +1,6 @@
 /**
  * @file router.jsx
- * @description React Router v6 master configuration mapping all SyncStays 9 domain modules.
+ * @description React Router v6 master configuration for SyncStays.
  */
 
 import React from 'react';
@@ -59,7 +59,14 @@ import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
+/* 8. Staff & Housekeeping Domain */
+import StaffAttendencePage from '@pages/Staff/Attendence/Index';
+import StaffAdvancesPage from '@pages/Staff/Advances/Index';
+import HousekeepingPage from '@pages/Staff/Housekeeping/Index';
+import StaffSalaryPage from '@pages/Staff/Salary/Index';
+
 export const router = createBrowserRouter([
+  /* Public Auth Routes */
   {
     path: '/login',
     element: <LoginPage />,
@@ -72,14 +79,19 @@ export const router = createBrowserRouter([
     path: '/forgot-password',
     element: <ForgotPasswordPage />,
   },
+
+  /* Authenticated Application */
   {
     path: '/',
     element: <MainLayout />,
     children: [
+      /* Dashboard */
       {
         index: true,
         element: <DashboardPage />,
       },
+
+      /* Analytics */
       {
         path: 'analytics',
         element: <AnalyticsPage />,
@@ -108,7 +120,6 @@ export const router = createBrowserRouter([
       },
 
       /* Restaurant Domain Routes */
-      /* Restaurant Domain Routes */
       {
         path: 'restaurant/pos',
         element: <RestaurantPOSPage />,
@@ -133,6 +144,7 @@ export const router = createBrowserRouter([
         path: 'restaurant/analytics',
         element: <RestaurantAnalyticsPage />,
       },
+
       /* Inventory & Purchasing Routes */
       {
         path: 'inventory/products',
@@ -205,6 +217,24 @@ export const router = createBrowserRouter([
       {
         path: 'admin/settings',
         element: <AdminSettingsPage />,
+      },
+
+      /* Staff & Housekeeping Routes */
+      {
+        path: 'staff/Attendence',
+        element: <StaffAttendencePage />,
+      },
+      {
+        path: 'staff/advances',
+        element: <StaffAdvancesPage />,
+      },
+      {
+        path: 'staff/housekeeping',
+        element: <HousekeepingPage />,
+      },
+      {
+        path: 'staff/salary',
+        element: <StaffSalaryPage />,
       },
 
       /* Fallback Legacy Aliases */

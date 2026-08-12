@@ -1,0 +1,754 @@
+/**
+ * @file Index.module.css
+ * @description Styles for the Professional Staff Advances Dashboard.
+ */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    width: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HEADER
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-lg);
+}
+
+.headerText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.subtitle {
+    margin: 0;
+    max-width: 720px;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-shrink: 0;
+}
+
+.monthSelector {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 42px;
+    padding: 0 var(--space-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.calendarIcon {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.monthSelect {
+    min-width: 115px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.giveAdvanceButton {
+    min-height: 42px;
+    padding: 0 var(--space-lg);
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-button-primary);
+    transition: background-color 0.2s ease;
+}
+
+.giveAdvanceButton:hover {
+    background: var(--color-primary-dark);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SUMMARY CARDS
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-lg);
+}
+
+.summaryCard {
+    min-height: 150px;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.summaryTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.summaryIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.summaryBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-full);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.summaryDetails {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: var(--space-lg);
+}
+
+.summaryLabel {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.summaryValue {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.given .summaryIcon {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.given .summaryBadge {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.deducted .summaryIcon {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.deducted .summaryBadge {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.outstanding .summaryIcon {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.outstanding .summaryBadge {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MONTHLY PANELS
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.monthlyGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-lg);
+}
+
+.monthlyCard,
+.howItWorks {
+    min-height: 290px;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+}
+
+.monthlyCard {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.cardHeader h2,
+.howItWorks h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.viewAllButton {
+    border: 0;
+    background: transparent;
+    color: var(--color-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.viewAllButton:hover {
+    color: var(--color-primary-dark);
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 215px;
+    text-align: center;
+}
+
+.emptyIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-full);
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+}
+
+.emptyState p {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.emptyState span {
+    margin-top: var(--space-sm);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    line-height: 1.6;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HOW IT WORKS
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.howItWorks {
+    background: var(--color-primary-tint);
+    border: 1px solid var(--color-primary-tint);
+}
+
+.infoIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--font-size-base);
+    font-weight: 700;
+}
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin: var(--space-lg) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.steps li {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: var(--space-md);
+    align-items: start;
+}
+
+.steps strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.steps span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ADVANCES LEDGER
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.ledgerCard {
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.ledgerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.ledgerHeader h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.ledgerActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.iconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.iconButton:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+}
+
+.table th {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.table td {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: var(--color-bg);
+}
+
+.employeeCell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.employeeAvatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.teal {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.orange {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.gray {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+}
+
+.lightTeal {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.employeeInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.employeeInfo strong {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.employeeInfo span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.givenDate,
+.deductedAmount {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.activeStatus {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.completedStatus {
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+}
+
+.outstandingAmount {
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.zeroOutstanding {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.clearIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.cleared {
+    background: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.notCleared {
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+}
+
+.ledgerFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.pagination button {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+}
+
+.pagination button:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FINANCIAL INSIGHT
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.insightSection {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-xl);
+    align-items: center;
+    padding: var(--space-xl);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.insightContent h2 {
+    margin: 0 0 var(--space-sm);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.insightContent p {
+    max-width: 850px;
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.7;
+}
+
+.insightStats {
+    display: flex;
+    gap: var(--space-xl);
+    margin-top: var(--space-lg);
+}
+
+.insightStats div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.insightStats strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+
+.insightStats span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.healthCard {
+    min-width: 250px;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-tint);
+}
+
+.healthLabel {
+    display: block;
+    margin-bottom: var(--space-sm);
+    color: var(--color-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.healthCard strong {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESPONSIVE
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1200px) {
+
+    .summaryGrid,
+    .monthlyGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .howItWorks {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 900px) {
+    .header {
+        flex-direction: column;
+    }
+
+    .headerActions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .monthlyGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .howItWorks {
+        grid-column: auto;
+    }
+
+    .insightSection {
+        grid-template-columns: 1fr;
+    }
+
+    .healthCard {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .page {
+        gap: var(--space-lg);
+    }
+
+    .title {
+        font-size: var(--font-size-xl);
+    }
+
+    .headerActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .monthSelector,
+    .giveAdvanceButton {
+        width: 100%;
+    }
+
+    .monthSelect {
+        flex: 1;
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .summaryCard {
+        min-height: auto;
+    }
+
+    .ledgerHeader,
+    .ledgerFooter {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ledgerActions {
+        width: 100%;
+    }
+
+    .insightSection {
+        padding: var(--space-lg);
+    }
+
+    .insightStats {
+        gap: var(--space-lg);
+        flex-wrap: wrap;
+    }
+}
