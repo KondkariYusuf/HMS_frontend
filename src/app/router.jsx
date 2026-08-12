@@ -65,6 +65,10 @@ import StaffAdvancesPage from '@pages/Staff/Advances/Index';
 import HousekeepingPage from '@pages/Staff/Housekeeping/Index';
 import StaffSalaryPage from '@pages/Staff/Salary/Index';
 
+/* 9. Finance Domain */
+import MonthlySalaryPage from '@pages/Finance/MonthlySalary/Index';
+import CashRegisterPage from '@pages/Finance/CashRegister/Index';
+
 export const router = createBrowserRouter([
   /* Public Auth Routes */
   {
@@ -95,6 +99,16 @@ export const router = createBrowserRouter([
       {
         path: 'analytics',
         element: <AnalyticsPage />,
+      },
+
+      /* Finance Domain Routes */
+      {
+        path: 'finance/monthly-salary',
+        element: <MonthlySalaryPage />,
+      },
+      {
+        path: 'finance/cash-register',
+        element: <CashRegisterPage />,
       },
 
       /* Hotel Domain Routes */
