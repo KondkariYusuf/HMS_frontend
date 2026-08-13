@@ -618,6 +618,10 @@ export default function SideNavBar() {
             label: 'Invoices & Billing',
           },
           {
+            path: '/billing/payments',
+            label: 'Payment Processing',
+          },
+          {
             path: '/billing/reports',
             label: 'Revenue Reports',
           },
