@@ -20,7 +20,7 @@ export default function LoginPage() {
     <div className={styles.container} data-testid="login-page">
       <div className={styles.card}>
         <div className={styles.brandBlock}>
-          <h1 className={styles.title}>Grand Horizon</h1>
+          <h1 className={styles.title}>Grand Hotel</h1>
           <p className={styles.subtitle}>Sign in to your HMS account</p>
         </div>
         <form onSubmit={handleLogin} className={styles.form}>

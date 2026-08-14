@@ -1,0 +1,411 @@
+.page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1a202c;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+}
+
+.crumbChevron {
+  color: #9ca3af;
+}
+
+.crumbActive {
+  color: #111827;
+}
+
+.mainCard {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.headerIcon {
+  width: 56px;
+  height: 56px;
+  background-color: #e6f2f2;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+}
+
+.headerSubtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.outlineBtn {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.outlineBtn:hover {
+  background: #f9fafb;
+}
+
+.divider {
+  height: 1px;
+  background-color: #f3f4f6;
+  margin: 2.5rem 0;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9ca3af;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: 0.05em;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.formGroup label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  color: #9ca3af;
+  display: flex;
+}
+
+.inputIconRight {
+  position: absolute;
+  right: 1rem;
+  color: #9ca3af;
+  display: flex;
+}
+
+.colorPreview {
+  position: absolute;
+  left: 0.5rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 0.25rem;
+}
+
+.inputWrapper input,
+.inputWrapper select {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  border: none;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  font-weight: 500;
+  outline: none;
+  font-family: inherit;
+  transition: background-color 0.2s;
+}
+
+.inputWrapper input:focus,
+.inputWrapper select:focus {
+  background-color: #e5e7eb;
+}
+
+.inputWrapper select {
+  padding-left: 1rem;
+  appearance: none;
+}
+
+.toggleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggleInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggleIcon {
+  width: 40px;
+  height: 40px;
+  background-color: #e6f2f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggleTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.toggleSubtitle {
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
+.toggleSwitch {
+  width: 52px;
+  height: 28px;
+  border-radius: 9999px;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toggleOn {
+  background-color: #147a7e;
+}
+
+.toggleOff {
+  background-color: #e5e7eb;
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(24px);
+}
+
+.actions {
+  display: flex;
+  justify-content: stretch;
+}
+
+.saveBtn {
+  width: 100%;
+  background-color: #147a7e;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.saveBtn:hover {
+  background-color: #106366;
+}
+
+.proTipBanner {
+  background-color: #f8fbfb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  color: #374151;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.proTipIcon {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.link {
+  color: #147a7e;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: #111827;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  color: #374151;
+}
+
+/* Mock Invoice Layout */
+.invoicePreview {
+  border: 1px solid #e5e7eb;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background-color: #fafafa;
+}
+
+.invoiceHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.invoiceBrand {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.invoiceDetails {
+  text-align: right;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.invoiceTo {
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+}
+
+.invoiceTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+}
+
+.invoiceTable th,
+.invoiceTable td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.invoiceTable th {
+  font-weight: 600;
+  color: #374151;
+}
+
+.invoiceTable .rightAlign {
+  text-align: right;
+}
+
+.invoiceTotal {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}

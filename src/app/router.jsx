@@ -57,6 +57,10 @@ import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
+/* 8. New UI Pages */
+import MaintenanceDashboardPage from '@pages/Maintenance/Dashboard/Index';
+import BillingInvoicesSettingsPage from '@pages/Settings/BillingInvoices/Index';
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -195,6 +199,14 @@ export const router = createBrowserRouter([
       {
         path: 'admin/settings',
         element: <AdminSettingsPage />,
+      },
+      {
+        path: 'settings/billing',
+        element: <BillingInvoicesSettingsPage />,
+      },
+      {
+        path: 'maintenance/dashboard',
+        element: <MaintenanceDashboardPage />,
       },
 
       /* Fallback Legacy Aliases */

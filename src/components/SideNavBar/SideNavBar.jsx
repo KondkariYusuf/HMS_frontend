@@ -48,6 +48,13 @@ export default function SideNavBar() {
         { path: '/customers/directory', label: 'Customer CRM' },
         { path: '/billing/invoices', label: 'Invoices & Billing' },
         { path: '/billing/reports', label: 'Revenue Reports' },
+        { path: '/settings/billing', label: 'Billing Settings' },
+      ],
+    },
+    {
+      title: 'MAINTENANCE',
+      items: [
+        { path: '/maintenance/dashboard', label: 'Maintenance Dashboard' },
       ],
     },
     {
@@ -64,8 +71,7 @@ export default function SideNavBar() {
   return (
     <aside className={styles.sidebar} data-testid="sidebar-nav">
       <div className={styles.brandBlock}>
-        <h1 className={styles.brandTitle}>Grand Horizon</h1>
-        <span className={styles.brandSubtitle}>SyncStays Platform</span>
+        <h1 className={styles.brandTitle}>Grand Hotel</h1>
       </div>
       <nav className={styles.navContainer}>
         {navGroups.map((group) => (

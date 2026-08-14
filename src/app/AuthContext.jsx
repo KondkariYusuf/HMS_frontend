@@ -9,19 +9,19 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState({
-    name: 'Sarah Connor',
-    email: 'sarah@grandhorizon.com',
-    role: 'Front Desk Supervisor',
+    name: 'Anita Sharma',
+    email: 'anita@grandhotel.com',
+    role: 'Owner',
   });
   const [token, setToken] = useState(
     localStorage.getItem('syncstays_token') || 'demo_token'
   );
   const [branches] = useState([
-    { id: 'branch-1', name: 'Grand Horizon Resort (Main)' },
-    { id: 'branch-2', name: 'Grand Horizon Beach Suites' },
+    { id: 'br-c3d4', name: 'Grand Hotel - MG Road' },
+    { id: 'br-9x8y', name: 'Grand Hotel - Whitefield' },
   ]);
   const [activeBranchId, setActiveBranchId] = useState(
-    localStorage.getItem('syncstays_branch_id') || 'branch-1'
+    localStorage.getItem('syncstays_branch_id') || 'br-c3d4'
   );
 
   const changeBranch = (branchId) => {

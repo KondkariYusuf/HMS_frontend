@@ -57,7 +57,7 @@ function RoomMappingCard({ room, onChange }) {
 }
 
 export default function AdminSettingsPage() {
-  const [hotelName, setHotelName] = useState('Grand Horizon Resort');
+  const [hotelName, setHotelName] = useState('Grand Hotel Group');
   const [taxRate, setTaxRate] = useState('12.5');
   const [currency, setCurrency] = useState('USD');
   const [rooms, setRooms] = useState(INITIAL_ROOMS);

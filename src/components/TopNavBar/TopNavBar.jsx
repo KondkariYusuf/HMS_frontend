@@ -23,7 +23,7 @@ export default function TopNavBar({
         <h2 className={styles.pageTitle}>{title}</h2>
 
         {/* Branch Selector (Tenancy Header x-branch-id) */}
-        {branches && branches.length > 0 && (
+        {branches && branches.length > 1 && (
           <div className={styles.branchSelector}>
             <span className={styles.branchLabel}>Branch:</span>
             <select
