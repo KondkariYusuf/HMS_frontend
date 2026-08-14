@@ -23,8 +23,25 @@
   gap: var(--space-lg);
 }
 
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.hospitalityText {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+}
+
+.titleDivider {
+  color: var(--color-border);
+  font-weight: 400;
+}
+
 .pageTitle {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-text-primary);
 }

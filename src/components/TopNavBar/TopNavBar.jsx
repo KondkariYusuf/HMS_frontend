@@ -20,7 +20,11 @@ export default function TopNavBar({
   return (
     <header className={styles.header} data-testid="top-nav-bar">
       <div className={styles.leftSection}>
-        <h2 className={styles.pageTitle}>{title}</h2>
+        <div className={styles.titleWrapper}>
+          <span className={styles.hospitalityText}>HospitalityOS</span>
+          <span className={styles.titleDivider}>|</span>
+          <h2 className={styles.pageTitle}>{title}</h2>
+        </div>
 
         {/* Branch Selector (Tenancy Header x-branch-id) */}
         {branches && branches.length > 1 && (
@@ -58,13 +62,9 @@ export default function TopNavBar({
       </div>
 
       <div className={styles.rightSection}>
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="Search reservations, orders, guests..."
-            className={styles.searchInput}
-          />
-        </div>
+        <button className={styles.iconButton} aria-label="Theme">
+          <span className={styles.iconPlaceholder}>☼</span>
+        </button>
 
         <button className={styles.iconButton} aria-label="Notifications">
           <span className={styles.iconPlaceholder}>🔔</span>
@@ -73,14 +73,6 @@ export default function TopNavBar({
 
         <div className={styles.profileBlock}>
           <Avatar name={user?.name || 'Sarah Connor'} size="sm" />
-          <div className={styles.userInfo}>
-            <span className={styles.userName}>
-              {user?.name || 'Sarah Connor'}
-            </span>
-            <span className={styles.userRole}>
-              {user?.role || 'Front Desk Supervisor'}
-            </span>
-          </div>
         </div>
       </div>
     </header>

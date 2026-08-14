@@ -71,7 +71,11 @@ export default function SideNavBar() {
   return (
     <aside className={styles.sidebar} data-testid="sidebar-nav">
       <div className={styles.brandBlock}>
-        <h1 className={styles.brandTitle}>Grand Hotel</h1>
+        <div className={styles.brandLogoBox}>GH</div>
+        <div className={styles.brandText}>
+          <h1 className={styles.brandTitle}>Grand Horizon</h1>
+          <span className={styles.brandSubtitle}>LUXURY RESORT</span>
+        </div>
       </div>
       <nav className={styles.navContainer}>
         {navGroups.map((group) => (
