@@ -3,7 +3,6 @@
  * @description Real-time stock levels, adjustments, and re-order triggers.
  */
 import React, { useState } from 'react';
-import Button from '@components/Button/Button';
 import Toast from '@components/Toast/Toast';
 import InventoryTabs from '../components/InventoryTabs';
 import StockTable from './components/StockTable';
@@ -11,25 +10,24 @@ import StockAdjustmentModal from './components/StockAdjustmentModal';
 import WastageModal from './components/WastageModal';
 
 // Mock Data
-import { mockStock, mockCategories } from '../mockData';
+import { mockStock } from '../mockData';
 import styles from './Index.module.css';
 
 export default function InventoryStockPage() {
   const [stockData, setStockData] = useState(mockStock);
   const [search, setSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
   const [stockStatusFilter, setStockStatusFilter] = useState('');
-  
+
   const [isAdjustOpen, setIsAdjustOpen] = useState(false);
   const [isWastageOpen, setIsWastageOpen] = useState(false);
-  
+
   const [selectedStock, setSelectedStock] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
 
   // Filtering
   const filteredStock = stockData.filter(item => {
     const matchesSearch = item.productName.toLowerCase().includes(search.toLowerCase()) || item.sku.toLowerCase().includes(search.toLowerCase());
-    
+
     let matchesStatus = true;
     if (stockStatusFilter === 'HEALTHY') matchesStatus = item.onHand > item.reorderLevel;
     if (stockStatusFilter === 'LOW') matchesStatus = item.onHand <= item.reorderLevel && item.onHand > 0;
@@ -86,19 +84,19 @@ export default function InventoryStockPage() {
           <p className={styles.subtitle}>Monitor stock levels, set re-order triggers, and perform adjustments.</p>
         </div>
       </header>
-      
+
       <InventoryTabs />
 
       <div className={styles.filtersBar}>
-        <input 
-          type="text" 
-          placeholder="Search stock by name or SKU..." 
-          value={search} 
-          onChange={(e) => setSearch(e.target.value)} 
+        <input
+          type="text"
+          placeholder="Search stock by name or SKU..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className={styles.searchInput}
         />
-        <select 
-          value={stockStatusFilter} 
+        <select
+          value={stockStatusFilter}
           onChange={(e) => setStockStatusFilter(e.target.value)}
           className={styles.filterSelect}
         >
@@ -110,21 +108,21 @@ export default function InventoryStockPage() {
       </div>
 
       <div className={styles.content}>
-        <StockTable 
-          stockData={filteredStock} 
+        <StockTable
+          stockData={filteredStock}
           onAdjust={handleAdjustClick}
           onWastage={handleWastageClick}
         />
       </div>
 
-      <StockAdjustmentModal 
+      <StockAdjustmentModal
         isOpen={isAdjustOpen}
         onClose={() => setIsAdjustOpen(false)}
         onSave={handleSaveAdjustment}
         stockItem={selectedStock}
       />
 
-      <WastageModal 
+      <WastageModal
         isOpen={isWastageOpen}
         onClose={() => setIsWastageOpen(false)}
         onSave={handleSaveWastage}
@@ -132,10 +130,10 @@ export default function InventoryStockPage() {
       />
 
       {toastMessage && (
-        <Toast 
-          message={toastMessage} 
-          type="success" 
-          onClose={() => setToastMessage('')} 
+        <Toast
+          message={toastMessage}
+          type="success"
+          onClose={() => setToastMessage('')}
         />
       )}
     </div>

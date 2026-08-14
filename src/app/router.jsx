@@ -51,6 +51,7 @@ import CustomersLoyaltyPage from '@pages/Customers/Loyalty/Index';
 import BillingInvoicesPage from '@pages/Billing/Invoices/Index';
 import BillingPaymentsPage from '@pages/Billing/Payments/Index';
 import BillingReportsPage from '@pages/Billing/Reports/Index';
+import SettingsBillingInvoicesPage from '../pages/Settings/BillingInvoices';
 
 /* Settings */
 import BillingInvoicesSettingsPage from '@pages/Settings/BillingInvoices/Index';

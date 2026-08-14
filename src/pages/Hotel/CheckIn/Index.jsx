@@ -291,7 +291,7 @@ export default function HotelCheckInPage() {
                 <Button
                   variant="primary"
                   onClick={() =>
-                    alert(
+                    window.alert(
                       'Check-in completed successfully.'
                     )
                   }

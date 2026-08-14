@@ -41,7 +41,7 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === 'supplierId') {
       const sup = mockSuppliers.find(s => s.id === value);
       setFormData(prev => ({
@@ -78,7 +78,7 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
     setFormData(prev => {
       const newItems = [...prev.items];
       const item = { ...newItems[index] };
-      
+
       if (field === 'productId') {
         const prod = mockProducts.find(p => p.id === value);
         item.productId = value;
@@ -89,10 +89,10 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
       } else if (field === 'unitCost') {
         item.unitCost = parseFloat(value) * 100 || 0; // Assuming minor units input simplified for demo, or keep as is. Let's assume input is in major units and we convert to minor.
       }
-      
+
       item.lineTotal = item.orderedQty * item.unitCost;
       newItems[index] = item;
-      
+
       return { ...prev, items: newItems };
     });
   };
@@ -109,10 +109,10 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.items.length === 0) {
-      alert('Please add at least one item to the purchase order.');
+      window.alert('Please add at least one item to the purchase order.');
       return;
     }
-    
+
     // Convert dates back to ISO if needed, or leave as YYYY-MM-DD for dummy
     const saveData = {
       ...formData,
@@ -123,15 +123,15 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
       orderedAt: formData.orderedAt ? new Date(formData.orderedAt).toISOString() : null,
       expectedAt: formData.expectedAt ? new Date(formData.expectedAt).toISOString() : null,
     };
-    
+
     onSave(saveData);
   };
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={onClose} 
-      title={purchaseOrder ? 'Edit Purchase Order' : 'Create Purchase Order'} 
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={purchaseOrder ? 'Edit Purchase Order' : 'Create Purchase Order'}
       size="large"
       footer={
         <div className={styles.formActions}>
@@ -143,17 +143,17 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
       }
     >
       <form id="po-form" onSubmit={handleSubmit} className={styles.form}>
-        
+
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Basic Info</h3>
           <div className={styles.grid2}>
             <div className={styles.formGroup}>
               <label>Supplier <span className={styles.required}>*</span></label>
-              <select 
-                name="supplierId" 
-                value={formData.supplierId} 
-                onChange={handleChange} 
-                required 
+              <select
+                name="supplierId"
+                value={formData.supplierId}
+                onChange={handleChange}
+                required
                 className={styles.input}
               >
                 <option value="">Select a supplier</option>
@@ -195,7 +195,7 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
             <h3 className={styles.sectionTitle}>Items</h3>
             <Button type="button" variant="secondary" size="sm" onClick={handleAddItem}>+ Add Item</Button>
           </div>
-          
+
           <table className={styles.itemsTable}>
             <thead>
               <tr>
@@ -210,10 +210,10 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
               {formData.items.map((item, idx) => (
                 <tr key={item.id}>
                   <td>
-                    <select 
-                      value={item.productId} 
-                      onChange={(e) => handleItemChange(idx, 'productId', e.target.value)} 
-                      required 
+                    <select
+                      value={item.productId}
+                      onChange={(e) => handleItemChange(idx, 'productId', e.target.value)}
+                      required
                       className={styles.input}
                     >
                       <option value="">Select product</option>
@@ -223,23 +223,23 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
                     </select>
                   </td>
                   <td>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      value={item.orderedQty} 
-                      onChange={(e) => handleItemChange(idx, 'orderedQty', e.target.value)} 
-                      required 
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.orderedQty}
+                      onChange={(e) => handleItemChange(idx, 'orderedQty', e.target.value)}
+                      required
                       className={styles.input}
                     />
                   </td>
                   <td>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       min="0"
                       step="0.01"
                       value={item.unitCost / 100} // Display as major units
-                      onChange={(e) => handleItemChange(idx, 'unitCost', e.target.value)} 
-                      required 
+                      onChange={(e) => handleItemChange(idx, 'unitCost', e.target.value)}
+                      required
                       className={styles.input}
                     />
                   </td>
@@ -256,7 +256,7 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
               {formData.items.length === 0 && (
                 <tr>
                   <td colSpan="5" style={{ textAlign: 'center', padding: '1rem', color: 'var(--color-text-muted)' }}>
-                    No items added yet. Click "+ Add Item".
+                    No items added yet. Click &quot;+ Add Item&quot;.
                   </td>
                 </tr>
               )}
@@ -285,10 +285,10 @@ export default function PurchaseOrderFormModal({ isOpen, onClose, onSave, purcha
           <h3 className={styles.sectionTitle}>Additional Information</h3>
           <div className={styles.formGroup}>
             <label>Notes / Delivery Instructions</label>
-            <textarea 
-              name="notes" 
-              value={formData.notes} 
-              onChange={handleChange} 
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleChange}
               className={styles.textarea}
               placeholder="Any specific instructions for the supplier..."
             />

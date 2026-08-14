@@ -3,12 +3,12 @@ import Badge from '@components/Badge/Badge';
 import Button from '@components/Button/Button';
 import styles from './ProductTable.module.css';
 
-export default function ProductTable({ products, categories, brands, productTypes, units, onEdit, onDelete, onViewDetails }) {
-  
+export default function ProductTable({ products, categories, brands, productTypes, onEdit, onDelete, onViewDetails }) {
+
   const getCategoryName = (id) => categories.find(c => c.id === id)?.name || 'Unknown';
   const getBrandName = (id) => brands.find(b => b.id === id)?.name || '-';
   const getTypeName = (id) => productTypes.find(t => t.id === id)?.name || 'Unknown';
-  
+
   const columns = [
     {
       header: 'Product Name',

@@ -73,8 +73,7 @@ export default function HotelGuestsPage() {
 
   const handleRegisterGuest = () => {
     setIsRegisterOpen(false);
-
-    alert(
+    window.alert(
       'Guest registration will be connected to the backend API later.'
     );
   };
