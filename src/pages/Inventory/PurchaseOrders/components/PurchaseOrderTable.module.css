@@ -1,0 +1,124 @@
+.tableContainer {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table th {
+  background-color: var(--color-bg);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: var(--color-bg-hover, #f9fafb);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.primaryText {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.secondaryText {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.amount {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badgeDraft {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+.badgeOrdered {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badgePartiallyReceived {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badgeReceived {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badgeClosed {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.badgeCancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  background-color: var(--color-border);
+  color: var(--color-primary);
+}
+
+.emptyState {
+  padding: 3rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
