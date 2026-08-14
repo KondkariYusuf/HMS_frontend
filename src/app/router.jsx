@@ -217,6 +217,10 @@ export const router = createBrowserRouter([
         path: 'billing/reports',
         element: <BillingReportsPage />,
       },
+      {
+        path: 'billing/settings',
+        element: <SettingsBillingInvoicesPage />,
+      },
 
       /* =========================
          SETTINGS
