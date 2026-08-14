@@ -17,6 +17,7 @@ const Icon = ({ name }) => {
         <rect x="9" y="9" width="5" height="5" rx="1" />
       </>
     ),
+
     analytics: (
       <>
         <path d="M2 14V2" />
@@ -24,6 +25,7 @@ const Icon = ({ name }) => {
         <path d="M4 10L7 6L9 8L13 3" />
       </>
     ),
+
     hotel: (
       <>
         <path d="M2 13V5C2 3.9 2.9 3 4 3H12C13.1 3 14 3.9 14 5V13" />
@@ -31,6 +33,7 @@ const Icon = ({ name }) => {
         <path d="M5 7H7" />
       </>
     ),
+
     restaurant: (
       <>
         <path d="M4 2V7" />
@@ -40,6 +43,7 @@ const Icon = ({ name }) => {
         <path d="M11 2C13 3 14 4.5 14 6.5C14 7.8 12.9 8.5 11 8.5" />
       </>
     ),
+
     inventory: (
       <>
         <path d="M3 5L8 2L13 5V11L8 14L3 11V5Z" />
@@ -47,6 +51,7 @@ const Icon = ({ name }) => {
         <path d="M8 8V14" />
       </>
     ),
+
     customers: (
       <>
         <circle cx="6" cy="5" r="2.5" />
@@ -55,13 +60,7 @@ const Icon = ({ name }) => {
         <path d="M11.5 9.5C13.2 10 14.2 11.1 14.5 13" />
       </>
     ),
-    billing: (
-      <>
-        <rect x="2" y="3" width="12" height="10" rx="1.5" />
-        <path d="M2 6H14" />
-        <path d="M5 10H8" />
-      </>
-    ),
+
     finance: (
       <>
         <path d="M2 12V8" />
@@ -70,6 +69,7 @@ const Icon = ({ name }) => {
         <path d="M14 12V2" />
       </>
     ),
+
     staff: (
       <>
         <circle cx="6" cy="5" r="2.5" />
@@ -78,6 +78,7 @@ const Icon = ({ name }) => {
         <path d="M11.5 10.5C13 11 14 12.2 14 14" />
       </>
     ),
+
     admin: (
       <>
         <circle cx="8" cy="8" r="2.5" />
@@ -91,42 +92,31 @@ const Icon = ({ name }) => {
         <path d="M4.9 11.1L3.8 12.2" />
       </>
     ),
+
     maintenance: (
       <>
         <path d="M9.5 4.5C9.5 5.9 8.4 7 7 7C6.7 7 6.4 6.9 6.1 6.8L2.4 10.5C2.2 10.7 2.2 11.1 2.4 11.3L4.3 13.1C4.4 13.3 4.8 13.3 5 13.1L8.7 9.4" />
         <path d="M10 6L13.5 2.5L11.5 0.5L8 4L10 6Z" />
       </>
     ),
+
     notifications: (
       <>
         <path d="M4 6C4 3.8 5.6 2 8 2C10.4 2 12 3.8 12 6V9L14 11H2L4 9V6Z" />
         <path d="M6.5 13C6.8 13.7 7.3 14 8 14C8.7 14 9.2 13.7 9.5 13" />
       </>
     ),
-    audit: (
-      <>
-        <path d="M3 2H10L13 5V14H3V2Z" />
-        <path d="M10 2V5H13" />
-        <path d="M5.5 8H10.5" />
-        <path d="M5.5 11H9" />
-      </>
-    ),
-    chevron: (
-      <path d="M6 4L10 8L6 12" />
-    ),
-    help: (
-      <>
-        <circle cx="8" cy="8" r="6" />
-        <path d="M6.5 6.5C6.7 5.5 7.3 5 8 5C9 5 9.7 5.7 9.7 6.6C9.7 7.8 8 8 8 9" />
-        <path d="M8 11.5V11.4" />
-      </>
-    ),
+
     logout: (
       <>
         <path d="M6 2H3.5C2.7 2 2 2.7 2 3.5V12.5C2 13.3 2.7 14 3.5 14H6" />
         <path d="M10 5L13 8L10 11" />
         <path d="M13 8H6" />
       </>
+    ),
+
+    chevron: (
+      <path d="M6 4L10 8L6 12" />
     ),
   };
 
@@ -157,68 +147,158 @@ const navigationGroups = [
     title: 'Hotel',
     icon: 'hotel',
     items: [
-      { path: '/hotel/reservations', label: 'Reservations' },
-      { path: '/hotel/check-in', label: 'Express Check-In' },
-      { path: '/hotel/rooms', label: 'Rooms & Floors' },
-      { path: '/hotel/guests', label: 'Guest Directory' },
+      {
+        path: '/hotel/reservations',
+        label: 'Reservations',
+      },
+      {
+        path: '/hotel/check-in',
+        label: 'Express Check-In',
+      },
+      {
+        path: '/hotel/rooms',
+        label: 'Rooms & Floors',
+      },
+      {
+        path: '/hotel/guests',
+        label: 'Guest Directory',
+      },
     ],
   },
+
   {
     id: 'restaurant',
     title: 'Restaurant',
     icon: 'restaurant',
     items: [
-      { path: '/restaurant/pos', label: 'POS Terminal' },
-      { path: '/restaurant/menu', label: 'Menu Catalog' },
-      { path: '/restaurant/kds', label: 'Kitchen (KDS)' },
-      { path: '/restaurant/tables', label: 'Tables & Areas' },
+      {
+        path: '/restaurant/pos',
+        label: 'POS Terminal',
+      },
+      {
+        path: '/restaurant/menu',
+        label: 'Menu Catalog',
+      },
+      {
+        path: '/restaurant/kds',
+        label: 'Kitchen (KDS)',
+      },
+      {
+        path: '/restaurant/tables',
+        label: 'Tables & Areas',
+      },
     ],
   },
+
   {
     id: 'inventory',
     title: 'Inventory & Supply',
     icon: 'inventory',
     items: [
-      { path: '/inventory/products', label: 'Products & Stock' },
-      { path: '/inventory/suppliers', label: 'Suppliers' },
-      { path: '/inventory/purchase-orders', label: 'Purchase Orders' },
+      {
+        path: '/inventory/products',
+        label: 'Products & Stock',
+      },
+      {
+        path: '/inventory/suppliers',
+        label: 'Suppliers',
+      },
+      {
+        path: '/inventory/purchase-orders',
+        label: 'Purchase Orders',
+      },
     ],
   },
+
   {
     id: 'customers-billing',
     title: 'Customers & Billing',
     icon: 'customers',
     items: [
-      { path: '/customers/directory', label: 'Customer CRM' },
-      { path: '/billing/invoices', label: 'Invoices & Billing' },
-      { path: '/billing/reports', label: 'Revenue Reports' },
-      { path: '/settings/billing-invoices', label: 'Billing Settings' },
+      {
+        path: '/customers/directory',
+        label: 'Customer CRM',
+      },
+      {
+        path: '/billing/invoices',
+        label: 'Invoices & Billing',
+      },
+      {
+        path: '/billing/reports',
+        label: 'Revenue Reports',
+      },
+      {
+        path: '/settings/billing-invoices',
+        label: 'Billing Settings',
+      },
     ],
   },
+
   {
     id: 'finance-maintenance',
     title: 'Finance & Maintenance',
     icon: 'finance',
     items: [
-      { path: '/finance/monthly-salary', label: 'Yearly Salary Summary' },
-      { path: '/finance/cash-register', label: 'Cash Register' },
+      {
+        path: '/finance/monthly-salary',
+        label: 'Yearly Salary Summary',
+      },
+      {
+        path: '/finance/cash-register',
+        label: 'Cash Register',
+      },
     ],
   },
+
   {
     id: 'staff',
     title: 'Staff',
     icon: 'staff',
     items: [
-      { path: '/staff/salary', label: 'Staff & Salary' },
-      { path: '/staff/Attendance', label: 'Attendance' },
+      {
+        path: '/staff/salary',
+        label: 'Staff & Salary',
+      },
+      {
+        path: '/staff/Attendance',
+        label: 'Attendance',
+      },
     ],
   },
+
+  {
+    id: 'administration',
+    title: 'Administration',
+    icon: 'admin',
+    items: [
+      {
+        path: '/admin/users',
+        label: 'User Directory',
+      },
+      {
+        path: '/admin/rbac',
+        label: 'RBAC Roles',
+      },
+      {
+        path: '/admin/branches',
+        label: 'Branches',
+      },
+      {
+        path: '/admin/settings',
+        label: 'Settings',
+      },
+    ],
+  },
+
   {
     id: 'maintenance',
     title: 'Maintenance',
     icon: 'maintenance',
     items: [
-      { path: '/maintenance', label: 'Maintenance Dashboard' },
+      {
+        path: '/maintenance',
+        label: 'Maintenance Dashboard',
+      },
     ],
   },
 ];
@@ -234,6 +314,7 @@ const findGroupForPath = (pathname) =>
 
 export default function SideNavBar() {
   const location = useLocation();
+
   const activeGroup = useMemo(
     () => findGroupForPath(location.pathname),
     [location.pathname]
@@ -247,7 +328,7 @@ export default function SideNavBar() {
     if (activeGroup && !openGroups.includes(activeGroup)) {
       setOpenGroups([activeGroup]);
     }
-  }, [activeGroup]);
+  }, [activeGroup, openGroups]);
 
   const toggleGroup = (groupId) => {
     setOpenGroups((current) =>
@@ -262,12 +343,20 @@ export default function SideNavBar() {
     location.pathname.startsWith(`${path}/`);
 
   return (
-    <aside className={styles.sidebar} data-testid="sidebar-nav">
+    <aside
+      className={styles.sidebar}
+      data-testid="sidebar-nav"
+    >
       <div className={styles.brandBlock}>
-        <div className={styles.brandMark}>GH</div>
+        <div className={styles.brandMark}>
+          GH
+        </div>
 
         <div>
-          <h1 className={styles.brandTitle}>Grand Horizon</h1>
+          <h1 className={styles.brandTitle}>
+            Grand Horizon
+          </h1>
+
           <span className={styles.brandSubtitle}>
             SyncStays Platform
           </span>
@@ -275,7 +364,9 @@ export default function SideNavBar() {
       </div>
 
       <nav className={styles.navContainer}>
-        <div className={styles.sectionLabel}>Overview</div>
+        <div className={styles.sectionLabel}>
+          Overview
+        </div>
 
         <NavLink
           to="/"
@@ -288,6 +379,7 @@ export default function SideNavBar() {
           <span className={styles.navIcon}>
             <Icon name="dashboard" />
           </span>
+
           Dashboard
         </NavLink>
 
@@ -301,37 +393,50 @@ export default function SideNavBar() {
           <span className={styles.navIcon}>
             <Icon name="analytics" />
           </span>
+
           Analytics
         </NavLink>
 
-        <div className={styles.sectionLabel}>Operations</div>
+        <div className={styles.sectionLabel}>
+          Operations
+        </div>
 
         <div className={styles.groups}>
           {navigationGroups.map((group) => {
             const open = openGroups.includes(group.id);
-            const groupActive = group.id === activeGroup;
+            const groupActive =
+              group.id === activeGroup;
 
             return (
               <div
                 key={group.id}
-                className={`${styles.navGroup} ${groupActive ? styles.groupActive : ''
+                className={`${styles.navGroup} ${groupActive
+                  ? styles.groupActive
+                  : ''
                   }`}
               >
                 <button
                   type="button"
                   className={styles.groupButton}
-                  onClick={() => toggleGroup(group.id)}
+                  onClick={() =>
+                    toggleGroup(group.id)
+                  }
                   aria-expanded={open}
                 >
                   <span className={styles.groupLeft}>
                     <span className={styles.navIcon}>
                       <Icon name={group.icon} />
                     </span>
-                    <span>{group.title}</span>
+
+                    <span>
+                      {group.title}
+                    </span>
                   </span>
 
                   <span
-                    className={`${styles.chevron} ${open ? styles.chevronOpen : ''
+                    className={`${styles.chevron} ${open
+                      ? styles.chevronOpen
+                      : ''
                       }`}
                   >
                     <Icon name="chevron" />
@@ -349,7 +454,12 @@ export default function SideNavBar() {
                           : ''
                           }`}
                       >
-                        <span className={styles.submenuDot} />
+                        <span
+                          className={
+                            styles.submenuDot
+                          }
+                        />
+
                         {item.label}
                       </NavLink>
                     ))}
@@ -365,7 +475,8 @@ export default function SideNavBar() {
         <NavLink
           to="/notifications"
           className={({ isActive }) =>
-            `${styles.footerLink} ${isActive ? styles.active : ''}`
+            `${styles.footerLink} ${isActive ? styles.active : ''
+            }`
           }
         >
           <Icon name="notifications" />

@@ -4,5 +4,190 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.searchBox {
+  position: relative;
+  width: 380px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 10px 10px 36px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+}
+
+.tableCard {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 16px;
+  background: #f8fafc;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s;
+}
+
+.tableRow:hover {
+  background: #f8fafc;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.table td {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.paymentId {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.invoiceRef {
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.guestName {
+  font-weight: 500;
+}
+
+.methodCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.methodText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.utrText {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.PENDING { background: #fef9c3; color: #854d0e; }
+.COMPLETED { background: #dcfce7; color: #166534; }
+.FAILED { background: #fee2e2; color: #991b1b; }
+.REFUNDED { background: #f3e8ff; color: #6b21a8; }
+
+.rightAlign {
+  text-align: right;
+}
+
+.amountText {
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-size: 15px;
+}
+
+.refundBtn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #fee2e2;
+  color: #dc2626;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refundBtn:hover {
+  background: #fef2f2;
+}
+
+.noActionText {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px !important;
+  color: var(--color-text-secondary);
 }
