@@ -357,10 +357,6 @@ const navigationGroups = [
         label: 'Branches',
       },
       {
-        path: '/admin/subscription',
-        label: 'Subscription',
-      },
-      {
         path: '/admin/settings',
         label: 'Settings',
       },
@@ -505,8 +501,8 @@ export default function SideNavBar() {
               <div
                 key={group.id}
                 className={`${styles.navGroup} ${groupActive
-                    ? styles.groupActive
-                    : ''
+                  ? styles.groupActive
+                  : ''
                   }`}
               >
                 <button
