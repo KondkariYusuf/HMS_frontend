@@ -13,7 +13,7 @@ export default function MainLayout() {
   return (
     <div className={styles.layoutShell} data-testid="main-layout">
       <SideNavBar />
-      <TopNavBar title="Grand Horizon HMS" />
+      <TopNavBar title="Grand Hotel HMS" />
       <main className={styles.mainContent}>
         <div className={styles.pageContainer}>
           <Outlet />

@@ -20,15 +20,16 @@ export default function RegisterPage() {
     <div className={styles.container} data-testid="register-page">
       <div className={styles.card}>
         <div className={styles.brandBlock}>
-          <h1 className={styles.title}>Grand Horizon</h1>
-          <p className={styles.subtitle}>Register your Property / Hotel</p>
+          <h1 className={styles.title}>Grand Hotel</h1>
+          <p className={styles.subtitle}>Register your organization</p>
         </div>
         <form onSubmit={handleRegister} className={styles.form}>
           <div className={styles.field}>
-            <label className={styles.label}>Property / Hotel Name</label>
+            <label className={styles.label} htmlFor="hotelName">Hotel Name</label>
             <input
+              id="hotelName"
               type="text"
-              placeholder="e.g. Horizon Beach Resort"
+              placeholder="e.g. Grand Hotel Group"
               className={styles.input}
               required
             />

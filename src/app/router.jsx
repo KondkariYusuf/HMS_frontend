@@ -4,7 +4,10 @@
  */
 
 import React from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+} from 'react-router-dom';
 
 /* Layout Shell */
 import MainLayout from '@layouts/MainLayout/MainLayout';
@@ -18,7 +21,7 @@ import ForgotPasswordPage from '@pages/Auth/ForgotPassword/Index';
 import DashboardPage from '@pages/Dashboard/Index';
 import AnalyticsPage from '@pages/Analytics/Index';
 
-/* 1. Hotel Domain */
+/* Hotel Domain */
 import HotelRoomsPage from '@pages/Hotel/Rooms/Index';
 import RoomOccupancyTimelinePage from '@pages/Hotel/Rooms/OccupancyTimeline';
 import HotelGuestsPage from '@pages/Hotel/Guests/Index';
@@ -26,7 +29,7 @@ import GuestDetailsPage from '@pages/Hotel/Guests/Details/Index';
 import HotelReservationsPage from '@pages/Hotel/Reservations/Index';
 import HotelCheckInPage from '@pages/Hotel/CheckIn/Index';
 
-/* 2. Restaurant Domain */
+/* Restaurant Domain */
 import RestaurantPOSPage from '@pages/Restaurant/POS/Index';
 import RestaurantOrdersPage from '@pages/Restaurant/Orders/Index';
 import RestaurantMenuPage from '@pages/Restaurant/Menu/Index';
@@ -34,44 +37,46 @@ import RestaurantKDSPage from '@pages/Restaurant/KDS/Index';
 import RestaurantTablesPage from '@pages/Restaurant/Tables/Index';
 import RestaurantAnalyticsPage from '@pages/Restaurant/Analytics/Index';
 
-/* 3. Inventory & Purchasing Domain */
+/* Inventory & Purchasing Domain */
 import InventoryProductsPage from '@pages/Inventory/Products/Index';
 import InventoryStockPage from '@pages/Inventory/Stock/Index';
 import InventorySuppliersPage from '@pages/Inventory/Suppliers/Index';
 import InventoryPurchaseOrdersPage from '@pages/Inventory/PurchaseOrders/Index';
 
-/* 4. Customers Domain */
+/* Customers Domain */
 import CustomersDirectoryPage from '@pages/Customers/Directory/Index';
 import CustomersLoyaltyPage from '@pages/Customers/Loyalty/Index';
 
-/* 5. Billing Domain */
+/* Billing Domain */
 import BillingInvoicesPage from '@pages/Billing/Invoices/Index';
 import BillingPaymentsPage from '@pages/Billing/Payments/Index';
 import BillingReportsPage from '@pages/Billing/Reports/Index';
-import SettingsBillingInvoicesPage from '@pages/Settings/BillingInvoices/Index';
 
-/* 6. Notifications & Audit Domain */
+/* Settings */
+import BillingInvoicesSettingsPage from '@pages/Settings/BillingInvoices/Index';
+
+/* Notifications & Audit */
 import NotificationsPage from '@pages/Notifications/Index';
 import AuditLogsPage from '@pages/AuditLogs/Index';
 
-/* 7. Administration Domain */
+/* Administration */
 import AdminUsersPage from '@pages/Admin/Users/Index';
 import AdminRBACPage from '@pages/Admin/RBAC/Index';
 import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
-/* 8. Staff & Housekeeping Domain */
+/* Staff & Housekeeping */
 import StaffAttendancePage from '@pages/Staff/Attendance/Index';
 import StaffAdvancesPage from '@pages/Staff/Advances/Index';
 import HousekeepingPage from '@pages/Staff/Housekeeping/Index';
 import StaffSalaryPage from '@pages/Staff/Salary/Index';
 
-/* 9. Finance Domain */
+/* Finance */
 import MonthlySalaryPage from '@pages/Finance/MonthlySalary/Index';
 import CashRegisterPage from '@pages/Finance/CashRegister/Index';
 
-/* 10. Maintenance Domain */
+/* Maintenance */
 import MaintenanceDashboardPage from '@pages/Maintenance/Index';
 
 export const router = createBrowserRouter([
@@ -94,29 +99,20 @@ export const router = createBrowserRouter([
     path: '/',
     element: <MainLayout />,
     children: [
-      /* Dashboard */
+      /* Overview */
       {
         index: true,
         element: <DashboardPage />,
       },
-
-      /* Analytics */
       {
         path: 'analytics',
         element: <AnalyticsPage />,
       },
 
-      /* Finance Domain Routes */
-      {
-        path: 'finance/monthly-salary',
-        element: <MonthlySalaryPage />,
-      },
-      {
-        path: 'finance/cash-register',
-        element: <CashRegisterPage />,
-      },
+      /* =========================
+         HOTEL
+         ========================= */
 
-      /* Hotel Domain Routes */
       {
         path: 'hotel/rooms',
         element: <HotelRoomsPage />,
@@ -130,9 +126,9 @@ export const router = createBrowserRouter([
         element: <HotelGuestsPage />,
       },
       {
-  path: 'hotel/guests/:guestId',
-  element: <GuestDetailsPage />,
-},
+        path: 'hotel/guests/:guestId',
+        element: <GuestDetailsPage />,
+      },
       {
         path: 'hotel/reservations',
         element: <HotelReservationsPage />,
@@ -142,7 +138,10 @@ export const router = createBrowserRouter([
         element: <HotelCheckInPage />,
       },
 
-      /* Restaurant Domain Routes */
+      /* =========================
+         RESTAURANT
+         ========================= */
+
       {
         path: 'restaurant/pos',
         element: <RestaurantPOSPage />,
@@ -168,7 +167,10 @@ export const router = createBrowserRouter([
         element: <RestaurantAnalyticsPage />,
       },
 
-      /* Inventory & Purchasing Routes */
+      /* =========================
+         INVENTORY & SUPPLY
+         ========================= */
+
       {
         path: 'inventory/products',
         element: <InventoryProductsPage />,
@@ -186,7 +188,10 @@ export const router = createBrowserRouter([
         element: <InventoryPurchaseOrdersPage />,
       },
 
-      /* Customers & Loyalty Routes */
+      /* =========================
+         CUSTOMERS
+         ========================= */
+
       {
         path: 'customers/directory',
         element: <CustomersDirectoryPage />,
@@ -196,7 +201,10 @@ export const router = createBrowserRouter([
         element: <CustomersLoyaltyPage />,
       },
 
-      /* Billing Routes */
+      /* =========================
+         BILLING
+         ========================= */
+
       {
         path: 'billing/invoices',
         element: <BillingInvoicesPage />,
@@ -210,13 +218,29 @@ export const router = createBrowserRouter([
         element: <BillingReportsPage />,
       },
 
-      /* Settings Routes */
+      /* =========================
+         SETTINGS
+         ========================= */
+
       {
         path: 'settings/billing-invoices',
-        element: <SettingsBillingInvoicesPage />,
+        element: <BillingInvoicesSettingsPage />,
       },
 
-      /* Notifications & Audit Routes */
+      {
+        path: 'settings/billing',
+        element: (
+          <Navigate
+            to="/settings/billing-invoices"
+            replace
+          />
+        ),
+      },
+
+      /* =========================
+         NOTIFICATIONS & AUDIT
+         ========================= */
+
       {
         path: 'notifications',
         element: <NotificationsPage />,
@@ -226,7 +250,10 @@ export const router = createBrowserRouter([
         element: <AuditLogsPage />,
       },
 
-      /* Administration Routes */
+      /* =========================
+         ADMINISTRATION
+         ========================= */
+
       {
         path: 'admin/users',
         element: <AdminUsersPage />,
@@ -248,9 +275,29 @@ export const router = createBrowserRouter([
         element: <AdminSettingsPage />,
       },
 
-      /* Staff & Housekeeping Routes */
+      /* =========================
+         FINANCE
+         ========================= */
+
       {
-        path: 'staff/Attendance',
+        path: 'finance/monthly-salary',
+        element: <MonthlySalaryPage />,
+      },
+      {
+        path: 'finance/cash-register',
+        element: <CashRegisterPage />,
+      },
+
+      /* =========================
+         STAFF
+         ========================= */
+
+      {
+        path: 'staff/salary',
+        element: <StaffSalaryPage />,
+      },
+      {
+        path: 'staff/attendance',
         element: <StaffAttendancePage />,
       },
       {
@@ -261,22 +308,41 @@ export const router = createBrowserRouter([
         path: 'staff/housekeeping',
         element: <HousekeepingPage />,
       },
-      {
-        path: 'staff/salary',
-        element: <StaffSalaryPage />,
-      },
 
-      /* Maintenance Routes */
+      /* =========================
+         MAINTENANCE
+         ========================= */
+
       {
         path: 'maintenance',
         element: <MaintenanceDashboardPage />,
       },
 
-      /* Legacy Route Redirects */
+      /* Shubham's route kept as a compatibility route */
+      {
+        path: 'maintenance/dashboard',
+        element: (
+          <Navigate
+            to="/maintenance"
+            replace
+          />
+        ),
+      },
+
+      /* =========================
+         LEGACY REDIRECTS
+         ========================= */
+
       {
         path: 'rooms',
-        element: <Navigate to="/hotel/rooms" replace />,
+        element: (
+          <Navigate
+            to="/hotel/rooms"
+            replace
+          />
+        ),
       },
+
       {
         path: 'rooms/occupancy-timeline',
         element: (
@@ -286,6 +352,7 @@ export const router = createBrowserRouter([
           />
         ),
       },
+
       {
         path: 'reservations',
         element: (
@@ -295,6 +362,7 @@ export const router = createBrowserRouter([
           />
         ),
       },
+
       {
         path: 'staff',
         element: (
@@ -304,6 +372,27 @@ export const router = createBrowserRouter([
           />
         ),
       },
+
+      {
+        path: 'staff/Attendence',
+        element: (
+          <Navigate
+            to="/staff/attendance"
+            replace
+          />
+        ),
+      },
+
+      {
+        path: 'staff/Attendance',
+        element: (
+          <Navigate
+            to="/staff/attendance"
+            replace
+          />
+        ),
+      },
+
       {
         path: 'settings',
         element: (

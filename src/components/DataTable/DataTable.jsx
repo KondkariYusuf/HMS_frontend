@@ -54,31 +54,48 @@ export default function DataTable({
         <tbody>
           {data.map((row) => (
             <tr key={row.id} className={styles.tr}>
-              <td className={styles.td}>
-                <div className={styles.guestCell}>
-                  <Avatar name={row.guest?.name} size="sm" />
-                  <div className={styles.guestInfo}>
-                    <span className={styles.guestName}>{row.guest?.name}</span>
-                    {row.guest?.tag && (
-                      <span className={styles.guestTag}>{row.guest?.tag}</span>
-                    )}
-                  </div>
-                </div>
-              </td>
-              <td className={styles.td}>{row.room}</td>
-              <td className={styles.td}>{row.dates}</td>
-              <td className={styles.td}>
-                <Badge variant={row.status}>{row.status}</Badge>
-              </td>
-              <td className={styles.td}>
-                <button
-                  className={styles.actionBtn}
-                  onClick={() => onActionClick && onActionClick(row)}
-                  aria-label="Actions"
-                >
-                  •••
-                </button>
-              </td>
+              {columns.map((col) => {
+                if (col.key === 'guest') {
+                  return (
+                    <td key={col.key} className={styles.td}>
+                      <div className={styles.guestCell}>
+                        <Avatar name={row.guest?.name} size="sm" />
+                        <div className={styles.guestInfo}>
+                          <span className={styles.guestName}>{row.guest?.name}</span>
+                          {row.guest?.tag && (
+                            <span className={styles.guestTag}>{row.guest?.tag}</span>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                  );
+                }
+                if (col.key === 'status') {
+                  return (
+                    <td key={col.key} className={styles.td}>
+                      <Badge variant={row.status}>{row.status}</Badge>
+                    </td>
+                  );
+                }
+                if (col.key === 'actions') {
+                  return (
+                    <td key={col.key} className={styles.td}>
+                      <button
+                        className={styles.actionBtn}
+                        onClick={() => onActionClick && onActionClick(row)}
+                        aria-label="Actions"
+                      >
+                        •••
+                      </button>
+                    </td>
+                  );
+                }
+                return (
+                  <td key={col.key} className={styles.td}>
+                    {row[col.key]}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>

@@ -18,6 +18,37 @@ const TOKEN_STORAGE_KEY = 'syncstays_token';
 const BRANCHES_STORAGE_KEY = 'syncstays_branches';
 const ACTIVE_BRANCH_STORAGE_KEY = 'syncstays_branch_id';
 
+const DEFAULT_USER = {
+  name: 'Anita Sharma',
+  email: 'anita@grandhotel.com',
+  role: 'Owner',
+};
+
+const DEFAULT_BRANCHES = [
+  {
+    id: 'br-c3d4',
+    name: 'Grand Hotel - MG Road',
+    code: 'MG-ROAD',
+    location: 'MG Road',
+    manager: 'Anita Sharma',
+    rooms: 120,
+    staff: 45,
+    occupancy: 72,
+    status: 'Active',
+  },
+  {
+    id: 'br-9x8y',
+    name: 'Grand Hotel - Whitefield',
+    code: 'WHITEFIELD',
+    location: 'Whitefield',
+    manager: 'Rahul Mehta',
+    rooms: 95,
+    staff: 38,
+    occupancy: 68,
+    status: 'Active',
+  },
+];
+
 const readStorage = (key, fallback = null) => {
   try {
     const value = localStorage.getItem(key);
@@ -32,11 +63,11 @@ const readStorage = (key, fallback = null) => {
   }
 };
 
-const readStringStorage = (key) => {
+const readStringStorage = (key, fallback = null) => {
   try {
-    return localStorage.getItem(key);
+    return localStorage.getItem(key) || fallback;
   } catch {
-    return null;
+    return fallback;
   }
 };
 
@@ -62,19 +93,22 @@ const persistString = (key, value) => {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() =>
-    readStorage(USER_STORAGE_KEY)
+    readStorage(USER_STORAGE_KEY, DEFAULT_USER)
   );
 
   const [token, setToken] = useState(() =>
-    readStringStorage(TOKEN_STORAGE_KEY)
+    readStringStorage(TOKEN_STORAGE_KEY, 'demo_token')
   );
 
   const [branches, setBranches] = useState(() =>
-    readStorage(BRANCHES_STORAGE_KEY, [])
+    readStorage(BRANCHES_STORAGE_KEY, DEFAULT_BRANCHES)
   );
 
   const [activeBranchId, setActiveBranchId] = useState(() =>
-    readStringStorage(ACTIVE_BRANCH_STORAGE_KEY)
+    readStringStorage(
+      ACTIVE_BRANCH_STORAGE_KEY,
+      DEFAULT_BRANCHES[0]?.id || null
+    )
   );
 
   const persistBranches = (nextBranches) => {
@@ -84,7 +118,9 @@ export function AuthProvider({ children }) {
 
   const changeBranch = (branchId) => {
     const branchExists = branches.some(
-      (branch) => branch.id === branchId
+      (branch) =>
+        branch.id === branchId &&
+        branch.status === 'Active'
     );
 
     if (!branchExists) {
@@ -92,6 +128,7 @@ export function AuthProvider({ children }) {
     }
 
     setActiveBranchId(branchId);
+
     persistString(
       ACTIVE_BRANCH_STORAGE_KEY,
       branchId
@@ -101,10 +138,14 @@ export function AuthProvider({ children }) {
   const addBranch = (branchData) => {
     const newBranch = {
       id: `branch-${Date.now()}`,
-      name: branchData.name.trim(),
-      code: branchData.code.trim().toUpperCase(),
-      location: branchData.location.trim(),
-      manager: branchData.manager?.trim() || 'Unassigned',
+      name: branchData.name?.trim() || 'Unnamed Branch',
+      code:
+        branchData.code?.trim().toUpperCase() ||
+        `BR-${Date.now()}`,
+      location:
+        branchData.location?.trim() || 'Not specified',
+      manager:
+        branchData.manager?.trim() || 'Unassigned',
       rooms: Number(branchData.rooms) || 0,
       staff: Number(branchData.staff) || 0,
       occupancy: Number(branchData.occupancy) || 0,
@@ -118,8 +159,9 @@ export function AuthProvider({ children }) {
 
     persistBranches(nextBranches);
 
-    if (!activeBranchId) {
+    if (!activeBranchId && newBranch.status === 'Active') {
       setActiveBranchId(newBranch.id);
+
       persistString(
         ACTIVE_BRANCH_STORAGE_KEY,
         newBranch.id
@@ -137,11 +179,17 @@ export function AuthProvider({ children }) {
 
       return {
         ...branch,
-        name: branchData.name.trim(),
-        code: branchData.code.trim().toUpperCase(),
-        location: branchData.location.trim(),
+        name:
+          branchData.name?.trim() || branch.name,
+        code:
+          branchData.code?.trim().toUpperCase() ||
+          branch.code,
+        location:
+          branchData.location?.trim() ||
+          branch.location,
         manager:
-          branchData.manager?.trim() || 'Unassigned',
+          branchData.manager?.trim() ||
+          'Unassigned',
         rooms:
           Number(branchData.rooms) || 0,
       };
@@ -180,9 +228,15 @@ export function AuthProvider({ children }) {
       );
 
       if (fallback) {
-        changeBranch(fallback.id);
+        setActiveBranchId(fallback.id);
+
+        persistString(
+          ACTIVE_BRANCH_STORAGE_KEY,
+          fallback.id
+        );
       } else {
         setActiveBranchId(null);
+
         persistString(
           ACTIVE_BRANCH_STORAGE_KEY,
           null
@@ -210,8 +264,15 @@ export function AuthProvider({ children }) {
     setUser(null);
     setToken(null);
 
-    persistString(USER_STORAGE_KEY, null);
-    persistString(TOKEN_STORAGE_KEY, null);
+    persistString(
+      USER_STORAGE_KEY,
+      null
+    );
+
+    persistString(
+      TOKEN_STORAGE_KEY,
+      null
+    );
   };
 
   return (

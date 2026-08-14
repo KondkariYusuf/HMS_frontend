@@ -26,30 +26,10 @@ const SunIcon = () => (
       stroke="currentColor"
       strokeWidth="2"
     />
-    <path
-      d="M12 2V4"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M12 20V22"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M4 12H2"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M22 12H20"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
+    <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M12 20V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M4 12H2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M22 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     <path
       d="M19.0708 4.92896L17.6566 6.34317"
       stroke="currentColor"
@@ -119,30 +99,10 @@ const WeatherIcon = () => (
       stroke="currentColor"
       strokeWidth="2"
     />
-    <path
-      d="M12 2V4"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M12 20V22"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M4 12H2"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <path
-      d="M22 12H20"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
+    <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M12 20V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M4 12H2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M22 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     <path
       d="M19.0708 4.92896L17.6566 6.34317"
       stroke="currentColor"
@@ -309,9 +269,7 @@ export default function TopNavBar({
                     ? styles.flatTabActive
                     : ''
                   }`}
-                onClick={() =>
-                  setMaintenanceTab(tab)
-                }
+                onClick={() => setMaintenanceTab(tab)}
               >
                 {tab}
               </button>
@@ -370,7 +328,10 @@ export default function TopNavBar({
                   key={branch.id}
                   value={branch.id}
                 >
-                  {branch.name} — {branch.location}
+                  {branch.name}
+                  {branch.location
+                    ? ` — ${branch.location}`
+                    : ''}
                 </option>
               ))}
             </select>

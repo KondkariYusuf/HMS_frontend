@@ -3,18 +3,51 @@
  * @description Global application navigation for SyncStays HMS.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+
+import {
+  NavLink,
+  useLocation,
+} from 'react-router-dom';
+
 import styles from './SideNavBar.module.css';
 
 const Icon = ({ name }) => {
   const paths = {
     dashboard: (
       <>
-        <rect x="2" y="2" width="5" height="5" rx="1" />
-        <rect x="9" y="2" width="5" height="5" rx="1" />
-        <rect x="2" y="9" width="5" height="5" rx="1" />
-        <rect x="9" y="9" width="5" height="5" rx="1" />
+        <rect
+          x="2"
+          y="2"
+          width="5"
+          height="5"
+          rx="1"
+        />
+        <rect
+          x="9"
+          y="2"
+          width="5"
+          height="5"
+          rx="1"
+        />
+        <rect
+          x="2"
+          y="9"
+          width="5"
+          height="5"
+          rx="1"
+        />
+        <rect
+          x="9"
+          y="9"
+          width="5"
+          height="5"
+          rx="1"
+        />
       </>
     ),
 
@@ -54,7 +87,11 @@ const Icon = ({ name }) => {
 
     customers: (
       <>
-        <circle cx="6" cy="5" r="2.5" />
+        <circle
+          cx="6"
+          cy="5"
+          r="2.5"
+        />
         <path d="M1.5 13C1.5 10.8 3.5 9 6 9C8.5 9 10.5 10.8 10.5 13" />
         <path d="M11 3.5C13 3.7 14.5 5.2 14.5 7.2" />
         <path d="M11.5 9.5C13.2 10 14.2 11.1 14.5 13" />
@@ -72,7 +109,11 @@ const Icon = ({ name }) => {
 
     staff: (
       <>
-        <circle cx="6" cy="5" r="2.5" />
+        <circle
+          cx="6"
+          cy="5"
+          r="2.5"
+        />
         <path d="M1.5 14C1.5 11.5 3.5 9.5 6 9.5C8.5 9.5 10.5 11.5 10.5 14" />
         <path d="M11 5.5C11.9 4.8 13.2 5 13.8 5.9" />
         <path d="M11.5 10.5C13 11 14 12.2 14 14" />
@@ -81,7 +122,11 @@ const Icon = ({ name }) => {
 
     admin: (
       <>
-        <circle cx="8" cy="8" r="2.5" />
+        <circle
+          cx="8"
+          cy="8"
+          r="2.5"
+        />
         <path d="M8 2V3.5" />
         <path d="M8 12.5V14" />
         <path d="M2 8H3.5" />
@@ -107,16 +152,16 @@ const Icon = ({ name }) => {
       </>
     ),
 
+    chevron: (
+      <path d="M6 4L10 8L6 12" />
+    ),
+
     logout: (
       <>
         <path d="M6 2H3.5C2.7 2 2 2.7 2 3.5V12.5C2 13.3 2.7 14 3.5 14H6" />
         <path d="M10 5L13 8L10 11" />
         <path d="M13 8H6" />
       </>
-    ),
-
-    chevron: (
-      <path d="M6 4L10 8L6 12" />
     ),
   };
 
@@ -176,6 +221,10 @@ const navigationGroups = [
         label: 'POS Terminal',
       },
       {
+        path: '/restaurant/orders',
+        label: 'Orders',
+      },
+      {
         path: '/restaurant/menu',
         label: 'Menu Catalog',
       },
@@ -186,6 +235,10 @@ const navigationGroups = [
       {
         path: '/restaurant/tables',
         label: 'Tables & Areas',
+      },
+      {
+        path: '/restaurant/analytics',
+        label: 'Restaurant Analytics',
       },
     ],
   },
@@ -198,6 +251,10 @@ const navigationGroups = [
       {
         path: '/inventory/products',
         label: 'Products & Stock',
+      },
+      {
+        path: '/inventory/stock',
+        label: 'Stock',
       },
       {
         path: '/inventory/suppliers',
@@ -220,8 +277,16 @@ const navigationGroups = [
         label: 'Customer CRM',
       },
       {
+        path: '/customers/loyalty',
+        label: 'Customer Loyalty',
+      },
+      {
         path: '/billing/invoices',
         label: 'Invoices & Billing',
+      },
+      {
+        path: '/billing/payments',
+        label: 'Payment Processing',
       },
       {
         path: '/billing/reports',
@@ -235,8 +300,8 @@ const navigationGroups = [
   },
 
   {
-    id: 'finance-maintenance',
-    title: 'Finance & Maintenance',
+    id: 'finance',
+    title: 'Finance',
     icon: 'finance',
     items: [
       {
@@ -260,8 +325,16 @@ const navigationGroups = [
         label: 'Staff & Salary',
       },
       {
-        path: '/staff/Attendance',
+        path: '/staff/attendance',
         label: 'Attendance',
+      },
+      {
+        path: '/staff/advances',
+        label: 'Advances',
+      },
+      {
+        path: '/staff/housekeeping',
+        label: 'Housekeeping',
       },
     ],
   },
@@ -282,6 +355,10 @@ const navigationGroups = [
       {
         path: '/admin/branches',
         label: 'Branches',
+      },
+      {
+        path: '/admin/subscription',
+        label: 'Subscription',
       },
       {
         path: '/admin/settings',
@@ -316,24 +393,31 @@ export default function SideNavBar() {
   const location = useLocation();
 
   const activeGroup = useMemo(
-    () => findGroupForPath(location.pathname),
+    () =>
+      findGroupForPath(location.pathname),
     [location.pathname]
   );
 
-  const [openGroups, setOpenGroups] = useState(
-    activeGroup ? [activeGroup] : []
-  );
+  const [openGroups, setOpenGroups] =
+    useState(
+      activeGroup ? [activeGroup] : []
+    );
 
   useEffect(() => {
-    if (activeGroup && !openGroups.includes(activeGroup)) {
+    if (
+      activeGroup &&
+      !openGroups.includes(activeGroup)
+    ) {
       setOpenGroups([activeGroup]);
     }
-  }, [activeGroup, openGroups]);
+  }, [activeGroup]);
 
   const toggleGroup = (groupId) => {
     setOpenGroups((current) =>
       current.includes(groupId)
-        ? current.filter((id) => id !== groupId)
+        ? current.filter(
+          (id) => id !== groupId
+        )
         : [...current, groupId]
     );
   };
@@ -347,6 +431,7 @@ export default function SideNavBar() {
       className={styles.sidebar}
       data-testid="sidebar-nav"
     >
+      {/* Brand */}
       <div className={styles.brandBlock}>
         <div className={styles.brandMark}>
           GH
@@ -363,6 +448,7 @@ export default function SideNavBar() {
         </div>
       </div>
 
+      {/* Navigation */}
       <nav className={styles.navContainer}>
         <div className={styles.sectionLabel}>
           Overview
@@ -372,7 +458,9 @@ export default function SideNavBar() {
           to="/"
           end
           className={({ isActive }) =>
-            `${styles.topLevelLink} ${isActive ? styles.active : ''
+            `${styles.topLevelLink} ${isActive
+              ? styles.active
+              : ''
             }`
           }
         >
@@ -386,7 +474,9 @@ export default function SideNavBar() {
         <NavLink
           to="/analytics"
           className={({ isActive }) =>
-            `${styles.topLevelLink} ${isActive ? styles.active : ''
+            `${styles.topLevelLink} ${isActive
+              ? styles.active
+              : ''
             }`
           }
         >
@@ -403,7 +493,11 @@ export default function SideNavBar() {
 
         <div className={styles.groups}>
           {navigationGroups.map((group) => {
-            const open = openGroups.includes(group.id);
+            const open =
+              openGroups.includes(
+                group.id
+              );
+
             const groupActive =
               group.id === activeGroup;
 
@@ -411,21 +505,37 @@ export default function SideNavBar() {
               <div
                 key={group.id}
                 className={`${styles.navGroup} ${groupActive
-                  ? styles.groupActive
-                  : ''
+                    ? styles.groupActive
+                    : ''
                   }`}
               >
                 <button
                   type="button"
-                  className={styles.groupButton}
+                  className={
+                    styles.groupButton
+                  }
                   onClick={() =>
-                    toggleGroup(group.id)
+                    toggleGroup(
+                      group.id
+                    )
                   }
                   aria-expanded={open}
                 >
-                  <span className={styles.groupLeft}>
-                    <span className={styles.navIcon}>
-                      <Icon name={group.icon} />
+                  <span
+                    className={
+                      styles.groupLeft
+                    }
+                  >
+                    <span
+                      className={
+                        styles.navIcon
+                      }
+                    >
+                      <Icon
+                        name={
+                          group.icon
+                        }
+                      />
                     </span>
 
                     <span>
@@ -434,9 +544,10 @@ export default function SideNavBar() {
                   </span>
 
                   <span
-                    className={`${styles.chevron} ${open
-                      ? styles.chevronOpen
-                      : ''
+                    className={`${styles.chevron
+                      } ${open
+                        ? styles.chevronOpen
+                        : ''
                       }`}
                   >
                     <Icon name="chevron" />
@@ -444,25 +555,38 @@ export default function SideNavBar() {
                 </button>
 
                 {open && (
-                  <div className={styles.submenu}>
-                    {group.items.map((item) => (
-                      <NavLink
-                        key={item.path}
-                        to={item.path}
-                        className={`${styles.submenuLink} ${isActive(item.path)
-                          ? styles.submenuActive
-                          : ''
-                          }`}
-                      >
-                        <span
-                          className={
-                            styles.submenuDot
+                  <div
+                    className={
+                      styles.submenu
+                    }
+                  >
+                    {group.items.map(
+                      (item) => (
+                        <NavLink
+                          key={
+                            item.path
                           }
-                        />
+                          to={
+                            item.path
+                          }
+                          className={`${styles.submenuLink
+                            } ${isActive(
+                              item.path
+                            )
+                              ? styles.submenuActive
+                              : ''
+                            }`}
+                        >
+                          <span
+                            className={
+                              styles.submenuDot
+                            }
+                          />
 
-                        {item.label}
-                      </NavLink>
-                    ))}
+                          {item.label}
+                        </NavLink>
+                      )
+                    )}
                   </div>
                 )}
               </div>
@@ -471,11 +595,21 @@ export default function SideNavBar() {
         </div>
       </nav>
 
-      <div className={styles.footerBlock}>
+      {/* Footer */}
+      <div
+        className={
+          styles.footerBlock
+        }
+      >
         <NavLink
           to="/notifications"
-          className={({ isActive }) =>
-            `${styles.footerLink} ${isActive ? styles.active : ''
+          className={({
+            isActive,
+          }) =>
+            `${styles.footerLink
+            } ${isActive
+              ? styles.active
+              : ''
             }`
           }
         >
@@ -485,7 +619,9 @@ export default function SideNavBar() {
 
         <NavLink
           to="/login"
-          className={styles.footerLink}
+          className={
+            styles.footerLink
+          }
         >
           <Icon name="logout" />
           Logout
