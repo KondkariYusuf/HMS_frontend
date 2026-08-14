@@ -1,246 +1,724 @@
 /**
  * @file useBookings.js
- * @description Custom React hook for managing Front Desk & Bookings domain data, state transitions, and persistence.
- * Conforms to API contracts in backendMD/11-bookings-folio.md (/api/v1/hotel/bookings).
+ * @description Custom React hook for managing Front Desk & Bookings domain
+ * data, state transitions, API persistence, and frontend demo fallback.
  */
-import { useState, useEffect, useCallback, useMemo } from 'react';
+
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import api from '@utils/apiClient';
 
-const LOCAL_STORAGE_KEY = 'syncstays_bookings_v2';
+/**
+ * Demo/fallback bookings.
+ *
+ * These are used only when the backend API is unavailable.
+ * Once the API is available, real API data replaces this data.
+ */
+const DEMO_BOOKINGS = [
+  {
+    id: 'demo-001',
+    bookingRef: '#BK-1001',
 
-const INITIAL_SEED_BOOKINGS = [
-  // Active/Upcoming Bookings
-  { id: 'bk-1001', bookingRef: '#GHR-882910', status: 'CONFIRMED', checkIn: '2026-10-24', checkOut: '2026-10-28', nights: 4, primaryGuest: { id: 'g-1', name: 'Eleanor Shellstrop', phone: '+1 555-0101', email: 'eleanor.s@example.com', tag: 'SILVER MEMBER' }, roomCount: 1, assignedRoom: 'Deluxe Ocean', totalAmount: 145000, paidAmount: 145000, balanceAmount: 0, currencyCode: 'USD', source: 'OTA', channelName: 'Booking.com', channelIcon: '🌐', createdAt: '2026-10-01T09:00:00.000Z' },
-  { id: 'bk-1002', bookingRef: '#GHR-120593', status: 'CONFIRMED', checkIn: '2026-10-25', checkOut: '2026-10-30', nights: 5, primaryGuest: { id: 'g-2', name: 'Marcus Aurelius', phone: '+1 555-0102', email: 'm.aurelius@rome.it', tag: 'FIRST-TIME GUEST' }, roomCount: 1, assignedRoom: 'King Suite', totalAmount: 280000, paidAmount: 140000, balanceAmount: 140000, currencyCode: 'USD', source: 'DIRECT', channelName: 'Direct Website', channelIcon: '↗️', createdAt: '2026-10-03T11:20:00.000Z' },
+    primaryGuest: {
+      name: 'Eleanor Shellstrop',
+      email: 'eleanor@example.com',
+      phone: '+1 555-0101',
+      tag: 'VIP',
+    },
 
-  // Archived Past Bookings
-  { id: 'bk-2001', bookingRef: '#GHR-772109', status: 'CHECKED_OUT', checkIn: '2023-07-24', checkOut: '2023-07-29', nights: 5, primaryGuest: { id: 'g-201', name: 'Prabal Singh', phone: '+91 9812345678', email: 'prabal.singh@example.com', tag: 'VIP MEMBER' }, roomCount: 1, assignedRoom: '502', roomTypeBadge: '5B PREMIUM', totalAmount: 145000, paidAmount: 145000, balanceAmount: 0, currencyCode: 'USD', source: 'DIRECT', channelName: 'Direct Website', channelIcon: '↗️', createdAt: '2023-07-01T09:00:00.000Z' },
-  { id: 'bk-2002', bookingRef: '#GHR-661029', status: 'CHECKED_OUT', checkIn: '2023-07-20', checkOut: '2023-07-23', nights: 3, primaryGuest: { id: 'g-202', name: 'Riya Jaiswal', phone: '+91 9876543210', email: 'riya.j@domain.net', tag: 'REGULAR' }, roomCount: 1, assignedRoom: '301', roomTypeBadge: '3B DELUXE', totalAmount: 120000, paidAmount: 120000, balanceAmount: 0, currencyCode: 'USD', source: 'OTA', channelName: 'Booking.com', channelIcon: '🌐', createdAt: '2023-07-05T11:00:00.000Z' },
-  { id: 'bk-2003', bookingRef: '#GHR-994012', status: 'CHECKED_OUT', checkIn: '2023-07-15', checkOut: '2023-07-18', nights: 3, primaryGuest: { id: 'g-203', name: 'Owais Mohammed', phone: '+91 9876543210', email: 'owais.m@domain.com', tag: 'STANDARD' }, roomCount: 1, assignedRoom: '102', roomTypeBadge: '2B STANDARD', totalAmount: 85000, paidAmount: 85000, balanceAmount: 0, currencyCode: 'USD', source: 'DIRECT', channelName: 'Direct Call', channelIcon: '📞', createdAt: '2023-07-02T14:30:00.000Z' },
-  { id: 'bk-2004', bookingRef: '#GHR-330192', status: 'CHECKED_OUT', checkIn: '2023-07-10', checkOut: '2023-07-14', nights: 4, primaryGuest: { id: 'g-204', name: 'Elena Rodriguez', phone: '+1 555-0192', email: 'elena.r@example.com', tag: 'SILVER MEMBER' }, roomCount: 1, assignedRoom: '404', roomTypeBadge: '4B SUITE', totalAmount: 195000, paidAmount: 195000, balanceAmount: 0, currencyCode: 'USD', source: 'OTA', channelName: 'Expedia', channelIcon: '🔴', createdAt: '2023-06-28T16:00:00.000Z' },
+    checkIn: '2026-08-18',
+    checkOut: '2026-08-21',
+
+    assignedRoom: '301',
+    roomCount: 1,
+    nights: 3,
+
+    status: 'CONFIRMED',
+
+    source: 'DIRECT',
+    channelName: 'Direct',
+    channelIcon: '',
+
+    totalAmount: 450,
+    paidAmount: 450,
+    currencyCode: 'USD',
+  },
+
+  {
+    id: 'demo-002',
+    bookingRef: '#BK-1002',
+
+    primaryGuest: {
+      name: 'Marcus Aurelius',
+      email: 'marcus@example.com',
+      phone: '+1 555-0102',
+      tag: 'STANDARD',
+    },
+
+    checkIn: '2026-08-20',
+    checkOut: '2026-08-24',
+
+    assignedRoom: '205',
+    roomCount: 1,
+    nights: 4,
+
+    status: 'PENDING_ALLOTMENT',
+
+    source: 'OTA',
+    channelName: 'Booking.com',
+    channelIcon: '',
+
+    totalAmount: 620,
+    paidAmount: 300,
+    currencyCode: 'USD',
+  },
+
+  {
+    id: 'demo-003',
+    bookingRef: '#BK-1003',
+
+    primaryGuest: {
+      name: 'Chidi Anagonye',
+      email: 'chidi@example.com',
+      phone: '+1 555-0103',
+      tag: 'STANDARD',
+    },
+
+    checkIn: '2026-08-15',
+    checkOut: '2026-08-17',
+
+    assignedRoom: '402',
+    roomCount: 1,
+    nights: 2,
+
+    status: 'CHECKED_IN',
+
+    source: 'DIRECT',
+    channelName: 'Direct',
+    channelIcon: '',
+
+    totalAmount: 300,
+    paidAmount: 300,
+    currencyCode: 'USD',
+  },
+
+  {
+    id: 'demo-004',
+    bookingRef: '#BK-1004',
+
+    primaryGuest: {
+      name: 'Tahani Al-Jamil',
+      email: 'tahani@example.com',
+      phone: '+1 555-0104',
+      tag: 'VIP',
+    },
+
+    checkIn: '2026-07-10',
+    checkOut: '2026-07-14',
+
+    assignedRoom: '105',
+    roomCount: 1,
+    nights: 4,
+
+    status: 'CHECKED_OUT',
+
+    source: 'OTA',
+    channelName: 'Expedia',
+    channelIcon: '',
+
+    totalAmount: 800,
+    paidAmount: 800,
+    currencyCode: 'USD',
+  },
+
+  {
+    id: 'demo-005',
+    bookingRef: '#BK-1005',
+
+    primaryGuest: {
+      name: 'Jason Mendoza',
+      email: 'jason@example.com',
+      phone: '+1 555-0105',
+      tag: 'STANDARD',
+    },
+
+    checkIn: '2026-08-22',
+    checkOut: '2026-08-25',
+
+    assignedRoom: '210',
+    roomCount: 1,
+    nights: 3,
+
+    status: 'CONFIRMED',
+
+    source: 'OTA',
+    channelName: 'Agoda',
+    channelIcon: '',
+
+    totalAmount: 510,
+    paidAmount: 510,
+    currencyCode: 'USD',
+  },
 ];
 
 export function useBookings() {
-  const [bookings, setBookings] = useState(() => {
-    try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-    } catch {
-      // fallback
-    }
-    return INITIAL_SEED_BOOKINGS;
-  });
-
-  const [loading, setLoading] = useState(false);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(bookings));
-    } catch {
-      // storage quota
-    }
-  }, [bookings]);
-
+  /**
+   * Fetch bookings from the backend.
+   *
+   * If the backend is unavailable, demo bookings are used instead.
+   */
   const fetchBookings = useCallback(async () => {
     setLoading(true);
     setError(null);
+
     try {
       const response = await api.get('/hotel/bookings');
-      if (response && response.data && Array.isArray(response.data)) {
-        setBookings(response.data);
-      }
-    } catch {
-      // Keeps persistent storage state
+
+      const data = Array.isArray(response?.data)
+        ? response.data
+        : [];
+
+      setBookings(data);
+    } catch (requestError) {
+      console.warn(
+        'Bookings API unavailable. Using demo bookings instead.',
+        requestError
+      );
+
+      // Backend unavailable → continue using frontend demo data.
+      setBookings(DEMO_BOOKINGS);
+
+      // Do not expose the API failure as a fatal page error.
+      setError(null);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Dynamic Dashboard KPI stats
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
+  /**
+   * Overall booking statistics.
+   */
   const dynamicStats = useMemo(() => {
     const totalCount = bookings.length;
-    const inHouseCount = bookings.filter((b) => b.status === 'CHECKED_IN').length;
-    const arrivalsCount = bookings.filter((b) => b.status === 'CONFIRMED').length;
-    const departuresCount = bookings.filter((b) => b.status === 'CHECKED_OUT').length;
 
-    const totalRooms = 200;
-    const occupiedRooms = Math.min(156, inHouseCount * 12 + 130);
-    const occupancyRate = Math.round((occupiedRooms / totalRooms) * 100);
+    const inHouseCount = bookings.filter(
+      (booking) =>
+        booking.status === 'CHECKED_IN'
+    ).length;
 
-    const totalPaid = bookings.reduce((sum, b) => sum + (b.paidAmount || 0), 0);
-    const formattedRevenue = `$${(totalPaid > 0 ? Math.round(totalPaid / 100) : 42850).toLocaleString('en-US')}`;
+    const arrivalsCount = bookings.filter(
+      (booking) =>
+        booking.status === 'CONFIRMED' ||
+        booking.status === 'PENDING_ALLOTMENT'
+    ).length;
+
+    const departuresCount = bookings.filter(
+      (booking) =>
+        booking.status === 'CHECKED_OUT'
+    ).length;
+
+    const totalRooms = bookings.reduce(
+      (total, booking) =>
+        total + Number(booking.roomCount || 0),
+      0
+    );
+
+    const totalPaid = bookings.reduce(
+      (sum, booking) =>
+        sum + Number(booking.paidAmount || 0),
+      0
+    );
+
+    const occupancyRate =
+      totalRooms > 0
+        ? Math.round(
+          (inHouseCount / totalRooms) * 100
+        )
+        : 0;
 
     return {
       totalCount,
-      inHouseCount: inHouseCount || 24,
-      arrivalsCount: arrivalsCount || 12,
-      departuresCount: departuresCount || 18,
-      occupiedRooms,
+      inHouseCount,
+      arrivalsCount,
+      departuresCount,
+      occupiedRooms: inHouseCount,
       totalRooms,
       occupancyRate: `${occupancyRate}%`,
-      totalRevenue: formattedRevenue,
-      dailyAvg: '$1,428',
+
+      totalRevenue: totalPaid.toLocaleString(
+        'en-US',
+        {
+          style: 'currency',
+          currency: 'USD',
+        }
+      ),
+
+      dailyAvg:
+        totalCount > 0
+          ? (
+            totalPaid / totalCount
+          ).toLocaleString(
+            'en-US',
+            {
+              style: 'currency',
+              currency: 'USD',
+              maximumFractionDigits: 0,
+            }
+          )
+          : '$0',
     };
   }, [bookings]);
 
-  // Dynamic Frame 2 Summary Cards
+  /**
+   * Upcoming bookings summary.
+   */
   const upcomingSummary = useMemo(() => {
-    const totalUpcoming = bookings.filter((b) => b.status === 'CONFIRMED' || b.status === 'PENDING_ALLOTMENT').length;
-    const otaCount = bookings.filter((b) => b.source === 'OTA').length;
-    const pendingCount = bookings.filter((b) => b.status === 'PENDING_ALLOTMENT').length;
-
-    return {
-      upcomingCount: totalUpcoming > 0 ? totalUpcoming.toLocaleString('en-US') : '1,284',
-      upcomingDelta: '+12.5% this month',
-      roomsReserved: '452',
-      occupancyPercent: '82% Occupancy',
-      otaCount: otaCount > 0 ? otaCount.toLocaleString('en-US') : '892',
-      otaChannels: 'Booking, Expedia, etc.',
-      pendingCount: pendingCount.toString(),
-      pendingAlert: pendingCount > 0 ? 'Requires attention' : 'All clear',
-    };
-  }, [bookings]);
-
-  // Dynamic Frame 3 Past Archive Summary Cards
-  const pastArchiveSummary = useMemo(() => {
-    const completedList = bookings.filter((b) => b.status === 'CHECKED_OUT');
-    const uniqueGuestCount = new Set(completedList.map((b) => b.primaryGuest?.email)).size;
-
-    return {
-      uniqueGuests: uniqueGuestCount > 0 ? (uniqueGuestCount * 600 + 481).toLocaleString('en-US') : '2,481',
-      avgStay: '4.2 Days',
-      returnRate: '38.5%',
-    };
-  }, [bookings]);
-
-  // Create New Booking Handler with Persistence
-  const createBooking = useCallback((newBookingData) => {
-    const newId = `bk-${Date.now()}`;
-    const newRef = `#GHR-${Math.floor(100000 + Math.random() * 900000)}`;
-
-    const createdRecord = {
-      id: newId,
-      bookingRef: newRef,
-      status: newBookingData.status || 'CONFIRMED',
-      checkIn: newBookingData.checkIn || new Date().toISOString().split('T')[0],
-      checkOut: newBookingData.checkOut || new Date().toISOString().split('T')[0],
-      nights: newBookingData.nights || 1,
-      primaryGuest: {
-        id: `g-${Date.now()}`,
-        name: newBookingData.guestName || 'Guest User',
-        phone: newBookingData.guestPhone || '+1 555-0000',
-        email: newBookingData.guestEmail || 'guest@example.com',
-        tag: 'NEW GUEST',
-      },
-      roomCount: 1,
-      assignedRoom: newBookingData.roomName || 'Deluxe Room',
-      totalAmount: newBookingData.totalAmount || 145000,
-      paidAmount: newBookingData.paidAmount || 0,
-      balanceAmount: (newBookingData.totalAmount || 145000) - (newBookingData.paidAmount || 0),
-      currencyCode: 'USD',
-      source: newBookingData.source || 'DIRECT',
-      channelName: newBookingData.source === 'OTA' ? 'Booking.com' : 'Direct Website',
-      channelIcon: newBookingData.source === 'OTA' ? '🌐' : '↗️',
-      createdAt: new Date().toISOString(),
-    };
-
-    setBookings((prev) => [createdRecord, ...prev]);
-    return createdRecord;
-  }, []);
-
-  // Update Booking Status Handler
-  const updateBookingStatus = useCallback((id, newStatus) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
+    const upcoming = bookings.filter(
+      (booking) =>
+        booking.status === 'CONFIRMED' ||
+        booking.status === 'PENDING_ALLOTMENT' ||
+        booking.status === 'CHECKED_IN'
     );
-  }, []);
 
-  // Dynamic Recent Guest List for Dashboard
-  const recentGuests = useMemo(() => {
-    return bookings.slice(0, 5).map((b) => ({
-      id: b.id,
-      guest: {
-        name: b.primaryGuest?.name || 'Guest User',
-        tag: b.primaryGuest?.tag || 'STANDARD',
-      },
-      room: b.assignedRoom || '101',
-      dates: `${b.checkIn} - ${b.checkOut}`,
-      status:
-        b.status === 'CHECKED_IN'
-          ? 'in-house'
-          : b.status === 'CONFIRMED'
-          ? 'arriving'
-          : 'checked-out',
-    }));
+    const otaCount = upcoming.filter(
+      (booking) =>
+        booking.source === 'OTA'
+    ).length;
+
+    const pendingCount = upcoming.filter(
+      (booking) =>
+        booking.status === 'PENDING_ALLOTMENT'
+    ).length;
+
+    const roomsReserved = upcoming.reduce(
+      (total, booking) =>
+        total + Number(booking.roomCount || 0),
+      0
+    );
+
+    return {
+      upcomingCount:
+        upcoming.length.toLocaleString('en-US'),
+
+      upcomingDelta: null,
+
+      roomsReserved:
+        roomsReserved.toLocaleString('en-US'),
+
+      occupancyPercent: null,
+
+      otaCount:
+        otaCount.toLocaleString('en-US'),
+
+      otaChannels: null,
+
+      pendingCount:
+        pendingCount.toLocaleString('en-US'),
+
+      pendingAlert:
+        pendingCount > 0
+          ? 'Requires attention'
+          : 'All clear',
+    };
   }, [bookings]);
 
-  // Dynamic Frame 2 Upcoming Bookings List
-  const upcomingBookings = useMemo(() => {
+  /**
+   * Past booking archive summary.
+   */
+  const pastArchiveSummary = useMemo(() => {
+    const completedList = bookings.filter(
+      (booking) =>
+        booking.status === 'CHECKED_OUT'
+    );
+
+    const uniqueGuestCount = new Set(
+      completedList
+        .map(
+          (booking) =>
+            booking.primaryGuest?.email ||
+            booking.primaryGuest?.id
+        )
+        .filter(Boolean)
+    ).size;
+
+    const totalNights = completedList.reduce(
+      (total, booking) =>
+        total + Number(booking.nights || 0),
+      0
+    );
+
+    const averageStay =
+      completedList.length > 0
+        ? totalNights / completedList.length
+        : 0;
+
+    return {
+      uniqueGuests:
+        uniqueGuestCount.toLocaleString('en-US'),
+
+      avgStay:
+        averageStay > 0
+          ? `${averageStay.toFixed(1)} Days`
+          : '0 Days',
+
+      returnRate: null,
+    };
+  }, [bookings]);
+
+  /**
+   * Create a booking.
+   *
+   * API available:
+   *   → save to backend
+   *
+   * API unavailable:
+   *   → create locally so the UI remains functional
+   */
+  const createBooking = useCallback(
+    async (newBookingData) => {
+      const payload = {
+        ...newBookingData,
+        status:
+          newBookingData.status ||
+          'CONFIRMED',
+      };
+
+      try {
+        const response = await api.post(
+          '/hotel/bookings',
+          payload
+        );
+
+        const createdRecord =
+          response?.data;
+
+        if (createdRecord) {
+          setBookings((previous) => [
+            createdRecord,
+            ...previous,
+          ]);
+
+          setError(null);
+
+          return createdRecord;
+        }
+      } catch (requestError) {
+        console.warn(
+          'Booking API unavailable. Creating booking locally.',
+          requestError
+        );
+
+        const timestamp = Date.now();
+
+        const localBooking = {
+          ...payload,
+
+          id: `local-${timestamp}`,
+
+          bookingRef:
+            payload.bookingRef ||
+            `#LOCAL-${timestamp}`,
+
+          primaryGuest:
+            payload.primaryGuest || {
+              name:
+                payload.guestName ||
+                'New Guest',
+
+              email:
+                payload.email ||
+                '',
+
+              phone:
+                payload.phone ||
+                '',
+
+              tag: 'STANDARD',
+            },
+        };
+
+        setBookings((previous) => [
+          localBooking,
+          ...previous,
+        ]);
+
+        setError(null);
+
+        return localBooking;
+      }
+
+      return null;
+    },
+    []
+  );
+
+  /**
+   * Update booking status.
+   *
+   * API available:
+   *   → persist status to backend
+   *
+   * API unavailable:
+   *   → update local state
+   */
+  const updateBookingStatus = useCallback(
+    async (id, newStatus) => {
+      try {
+        const response = await api.patch(
+          `/hotel/bookings/${id}`,
+          {
+            status: newStatus,
+          }
+        );
+
+        const updatedBooking =
+          response?.data;
+
+        setBookings((previous) =>
+          previous.map((booking) =>
+            booking.id === id
+              ? {
+                ...booking,
+                ...(updatedBooking || {}),
+                status: newStatus,
+              }
+              : booking
+          )
+        );
+
+        setError(null);
+      } catch (requestError) {
+        console.warn(
+          'Booking status API unavailable. Updating status locally.',
+          requestError
+        );
+
+        setBookings((previous) =>
+          previous.map((booking) =>
+            booking.id === id
+              ? {
+                ...booking,
+                status: newStatus,
+              }
+              : booking
+          )
+        );
+
+        setError(null);
+      }
+    },
+    []
+  );
+
+  /**
+   * Recent guests.
+   */
+  const recentGuests = useMemo(() => {
     return bookings
-      .filter((b) => b.status === 'CONFIRMED' || b.status === 'PENDING_ALLOTMENT' || b.status === 'CHECKED_IN')
-      .map((b) => ({
-        id: b.id,
-        bookingRef: b.bookingRef || `#GHR-${b.id}`,
+      .slice(0, 5)
+      .map((booking) => ({
+        id: booking.id,
+
         guest: {
-          name: b.primaryGuest?.name || 'Guest',
-          email: b.primaryGuest?.email || 'guest@example.com',
-          phone: b.primaryGuest?.phone || '',
+          name:
+            booking.primaryGuest?.name ||
+            'Guest',
+
+          tag:
+            booking.primaryGuest?.tag ||
+            'STANDARD',
         },
-        checkIn: b.checkIn,
-        checkOut: b.checkOut,
-        roomType: b.assignedRoom || 'Deluxe',
-        channel: b.channelName || (b.source === 'OTA' ? 'Booking.com' : 'Direct Website'),
-        channelIcon: b.channelIcon || (b.source === 'OTA' ? '🌐' : '↗️'),
-        sourceType: b.source || 'DIRECT',
-        amount: `$${((b.totalAmount || 145000) / 100).toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-        })}`,
-        status: b.status,
-        rawRecord: b,
+
+        room:
+          booking.assignedRoom ||
+          'Unassigned',
+
+        dates: `${booking.checkIn || ''} - ${booking.checkOut || ''}`,
+
+        status:
+          booking.status === 'CHECKED_IN'
+            ? 'in-house'
+            : booking.status === 'CONFIRMED'
+              ? 'arriving'
+              : 'checked-out',
       }));
   }, [bookings]);
 
-  // Dynamic Frame 3 Past Archive Bookings List
+  /**
+   * Upcoming booking records formatted for the UI.
+   */
+  const upcomingBookings = useMemo(() => {
+    return bookings
+      .filter(
+        (booking) =>
+          booking.status === 'CONFIRMED' ||
+          booking.status === 'PENDING_ALLOTMENT' ||
+          booking.status === 'CHECKED_IN'
+      )
+      .map((booking) => ({
+        id: booking.id,
+
+        bookingRef:
+          booking.bookingRef ||
+          `#${booking.id}`,
+
+        guest: {
+          name:
+            booking.primaryGuest?.name ||
+            'Guest',
+
+          email:
+            booking.primaryGuest?.email ||
+            '',
+
+          phone:
+            booking.primaryGuest?.phone ||
+            '',
+        },
+
+        checkIn: booking.checkIn,
+
+        checkOut: booking.checkOut,
+
+        roomType:
+          booking.assignedRoom ||
+          'Unassigned',
+
+        channel:
+          booking.channelName ||
+          booking.source ||
+          'Direct',
+
+        channelIcon:
+          booking.channelIcon || '',
+
+        sourceType:
+          booking.source || '',
+
+        amount:
+          booking.totalAmount != null
+            ? Number(
+              booking.totalAmount
+            ).toLocaleString('en-US', {
+              style: 'currency',
+              currency:
+                booking.currencyCode ||
+                'USD',
+              minimumFractionDigits: 2,
+            })
+            : '',
+
+        status: booking.status,
+
+        rawRecord: booking,
+      }));
+  }, [bookings]);
+
+  /**
+   * Past/archive booking records formatted for the UI.
+   */
   const pastArchiveBookings = useMemo(() => {
     return bookings
-      .filter((b) => b.status === 'CHECKED_OUT' || b.status === 'CANCELLED' || b.status === 'NO_SHOW')
-      .map((b) => ({
-        id: b.id,
-        bookingRef: b.bookingRef || `#GHR-${b.id}`,
-        roomNumber: b.assignedRoom || '502',
+      .filter(
+        (booking) =>
+          booking.status === 'CHECKED_OUT' ||
+          booking.status === 'CANCELLED' ||
+          booking.status === 'NO_SHOW'
+      )
+      .map((booking) => ({
+        id: booking.id,
+
+        bookingRef:
+          booking.bookingRef ||
+          `#${booking.id}`,
+
+        roomNumber:
+          booking.assignedRoom ||
+          'Unassigned',
+
         guest: {
-          name: b.primaryGuest?.name || 'Guest',
-          email: b.primaryGuest?.email || 'guest@example.com',
-          phone: b.primaryGuest?.phone || '',
+          name:
+            booking.primaryGuest?.name ||
+            'Guest',
+
+          email:
+            booking.primaryGuest?.email ||
+            '',
+
+          phone:
+            booking.primaryGuest?.phone ||
+            '',
         },
-        stayDates: `${b.checkIn} ➔ ${b.checkOut}`,
-        nightsText: `${b.nights || 3} Nights`,
-        roomType: b.assignedRoom || 'Executive Suite',
-        roomTypeBadge: b.roomTypeBadge || 'DELUXE',
-        totalPaid: `$${((b.totalAmount || 145000) / 100).toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-        })}`,
-        status: b.status,
-        rawRecord: b,
+
+        stayDates:
+          `${booking.checkIn || ''} ➔ ${booking.checkOut || ''}`,
+
+        nightsText:
+          booking.nights != null
+            ? `${booking.nights} Nights`
+            : '',
+
+        roomType:
+          booking.assignedRoom ||
+          'Unassigned',
+
+        roomTypeBadge:
+          booking.roomTypeBadge || '',
+
+        totalPaid:
+          booking.totalAmount != null
+            ? Number(
+              booking.totalAmount
+            ).toLocaleString('en-US', {
+              style: 'currency',
+              currency:
+                booking.currencyCode ||
+                'USD',
+              minimumFractionDigits: 2,
+            })
+            : '',
+
+        status: booking.status,
+
+        rawRecord: booking,
       }));
   }, [bookings]);
 
   return {
     bookings,
+
     stats: dynamicStats,
+
     upcomingSummary,
+
     pastArchiveSummary,
+
     upcomingBookings,
+
     pastArchiveBookings,
+
     recentGuests,
+
     loading,
+
     error,
+
     refetch: fetchBookings,
+
     createBooking,
+
     updateBookingStatus,
   };
 }

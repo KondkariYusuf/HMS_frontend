@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 /* Layout Shell */
 import MainLayout from '@layouts/MainLayout/MainLayout';
@@ -61,7 +61,7 @@ import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
 
 /* 8. Staff & Housekeeping Domain */
-import StaffAttendencePage from '@pages/Staff/Attendence/Index';
+import StaffAttendancePage from '@pages/Staff/Attendance/Index';
 import StaffAdvancesPage from '@pages/Staff/Advances/Index';
 import HousekeepingPage from '@pages/Staff/Housekeeping/Index';
 import StaffSalaryPage from '@pages/Staff/Salary/Index';
@@ -245,8 +245,8 @@ export const router = createBrowserRouter([
 
       /* Staff & Housekeeping Routes */
       {
-        path: 'staff/Attendence',
-        element: <StaffAttendencePage />,
+        path: 'staff/Attendance',
+        element: <StaffAttendancePage />,
       },
       {
         path: 'staff/advances',
@@ -267,26 +267,46 @@ export const router = createBrowserRouter([
         element: <MaintenanceDashboardPage />,
       },
 
-      /* Fallback Legacy Aliases */
+      /* Legacy Route Redirects */
       {
         path: 'rooms',
-        element: <HotelRoomsPage />,
+        element: <Navigate to="/hotel/rooms" replace />,
       },
       {
         path: 'rooms/occupancy-timeline',
-        element: <RoomOccupancyTimelinePage />,
+        element: (
+          <Navigate
+            to="/hotel/rooms/occupancy-timeline"
+            replace
+          />
+        ),
       },
       {
         path: 'reservations',
-        element: <HotelReservationsPage />,
+        element: (
+          <Navigate
+            to="/hotel/reservations"
+            replace
+          />
+        ),
       },
       {
         path: 'staff',
-        element: <AdminUsersPage />,
+        element: (
+          <Navigate
+            to="/staff/attendance"
+            replace
+          />
+        ),
       },
       {
         path: 'settings',
-        element: <AdminSettingsPage />,
+        element: (
+          <Navigate
+            to="/admin/settings"
+            replace
+          />
+        ),
       },
     ],
   },

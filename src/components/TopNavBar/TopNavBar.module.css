@@ -1,111 +1,231 @@
 /**
  * TopNavBar.module.css
- * Expected classes: .header, .leftSection, .pageTitle, .branchSelector, .branchLabel, .branchSelect, .tabSwitcher, .tabItem, .activeTab, .rightSection, .searchContainer, .searchInput, .iconButton, .iconPlaceholder, .notificationDot, .profileBlock, .userInfo, .userName, .userRole
  */
+
 .header {
   height: var(--topnav-height);
+  box-sizing: border-box;
+
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 var(--space-xl);
+
   position: fixed;
   top: 0;
   right: 0;
   left: var(--sidebar-width);
+
   z-index: 90;
+
+  min-width: 0;
 }
 
 .leftSection {
+  min-width: 0;
+
   display: flex;
   align-items: center;
   gap: var(--space-lg);
 }
 
 .pageTitle {
+  margin: 0;
+
+  flex-shrink: 0;
+
   font-size: var(--font-size-xl);
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
+/* =========================
+   Branch Selector
+   ========================= */
+
 .branchSelector {
+  min-width: 210px;
+  max-width: 300px;
+
+  box-sizing: border-box;
+
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 8px;
+
+  padding: 7px 11px;
+
   background-color: var(--color-bg);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.branchSelector:focus-within {
+  border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,
+      var(--color-primary) 10%,
+      transparent);
 }
 
 .branchLabel {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  font-weight: 600;
+  flex-shrink: 0;
+
+  color: var(--color-text-muted);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
 }
 
 .branchSelect {
-  border: none;
+  min-width: 0;
+  width: 100%;
+
+  padding: 0;
+
+  border: 0;
+  outline: 0;
+
   background: transparent;
+
+  color: var(--color-text-primary);
+
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-primary);
-  outline: none;
+
   cursor: pointer;
 }
 
+.branchSelect option {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+/* =========================
+   Tabs
+   ========================= */
+
 .tabSwitcher {
   display: flex;
+
   background-color: var(--color-bg);
+
   padding: 2px;
+
   border-radius: var(--radius-md);
+
   gap: var(--space-xs);
 }
 
 .tabItem {
   padding: var(--space-xs) var(--space-md);
+
+  border: 0;
+  background: transparent;
+
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+
   border-radius: var(--radius-sm);
+
   font-weight: 500;
+
+  cursor: pointer;
 }
 
 .activeTab {
   background-color: var(--color-surface);
+
   color: var(--color-primary);
+
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
+/* =========================
+   Right Section
+   ========================= */
+
 .rightSection {
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
+
   gap: var(--space-lg);
 }
+
+/* =========================
+   Search
+   ========================= */
 
 .searchContainer {
   position: relative;
 }
 
 .searchInput {
-  padding: var(--space-xs) var(--space-md);
+  box-sizing: border-box;
+
+  height: 36px;
+
+  padding:
+    var(--space-xs) var(--space-md);
+
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+
   font-size: var(--font-size-base);
+
   width: 240px;
+
   background-color: var(--color-bg);
+
+  outline: none;
 }
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+}
+
+/* =========================
+   Icons
+   ========================= */
 
 .iconButton {
   position: relative;
+
   width: 36px;
   height: 36px;
+
+  border: 0;
   border-radius: var(--radius-full);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   background-color: var(--color-bg);
+
+  color: var(--color-text-secondary);
+
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  color: var(--color-text-primary);
 }
 
 .iconPlaceholder {
@@ -114,40 +234,85 @@
 
 .notificationDot {
   position: absolute;
+
   top: 6px;
   right: 6px;
+
   width: 8px;
   height: 8px;
+
   background-color: var(--color-error);
+
   border-radius: var(--radius-full);
 }
+
+/* =========================
+   Profile
+   ========================= */
 
 .profileBlock {
   display: flex;
   align-items: center;
+
   gap: var(--space-sm);
 }
 
 .userInfo {
   display: flex;
   flex-direction: column;
+
+  min-width: 0;
 }
 
 .userName {
   font-size: var(--font-size-base);
   font-weight: 600;
+
   color: var(--color-text-primary);
+
+  white-space: nowrap;
 }
 
 .userRole {
   font-size: var(--font-size-xs);
+
   color: var(--color-text-muted);
+
+  white-space: nowrap;
 }
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--color-text-secondary);
+
+  cursor: pointer;
+}
+
+.avatarEmpty {
+  width: 32px;
+  height: 32px;
+
+  border-radius: var(--radius-full);
+
+  background-color: var(--color-border);
+}
+
+/* =========================
+   Billing Header
+   ========================= */
 
 .billingTitle {
   display: flex;
   align-items: center;
+
   gap: var(--space-sm);
+
   font-weight: 600;
   font-size: var(--font-size-md);
 }
@@ -165,53 +330,126 @@
   color: var(--color-text-primary);
 }
 
-.profileButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-secondary);
-}
-
-.avatarEmpty {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
-  background-color: var(--color-border);
-}
+/* =========================
+   Maintenance Header
+   ========================= */
 
 .brandPrimaryHeading {
+  margin: 0 var(--space-xl) 0 0;
+
   color: var(--color-primary);
+
   font-weight: 700;
   font-size: var(--font-size-lg);
-  margin-right: var(--space-xl);
 }
 
 .flatTabs {
   display: flex;
+
   gap: var(--space-lg);
 }
 
 .flatTab {
+  border: 0;
+  background: transparent;
+
   font-size: var(--font-size-sm);
   font-weight: 600;
+
   color: var(--color-text-secondary);
+
   padding: var(--space-md) 0;
+
   border-bottom: 2px solid transparent;
+
+  cursor: pointer;
 }
 
 .flatTabActive {
   color: var(--color-primary);
+
   border-bottom: 2px solid var(--color-primary);
 }
 
 .weatherBadge {
   display: flex;
   align-items: center;
+
   gap: var(--space-xs);
+
   background-color: var(--color-bg);
-  padding: var(--space-xs) var(--space-sm);
+
+  padding:
+    var(--space-xs) var(--space-sm);
+
   border-radius: var(--radius-full);
+
   font-size: var(--font-size-xs);
   font-weight: 700;
+
   color: var(--color-primary);
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 1200px) {
+  .header {
+    padding: 0 var(--space-lg);
+  }
+
+  .searchInput {
+    width: 190px;
+  }
+
+  .branchSelector {
+    min-width: 180px;
+    max-width: 240px;
+  }
+
+  .userInfo {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .header {
+    left: 0;
+  }
+
+  .branchSelector {
+    max-width: 220px;
+  }
+
+  .searchContainer {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    padding: 0 var(--space-md);
+  }
+
+  .leftSection {
+    gap: var(--space-sm);
+  }
+
+  .branchSelector {
+    min-width: 150px;
+    max-width: 180px;
+  }
+
+  .branchLabel {
+    display: none;
+  }
+
+  .flatTabs {
+    gap: var(--space-md);
+  }
+
+  .rightSection {
+    gap: var(--space-sm);
+  }
 }

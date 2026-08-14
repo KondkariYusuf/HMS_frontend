@@ -1,0 +1,25 @@
+/**
+ * @file SidebarNavItem.module.css
+ * @description Styles for individual sidebar navigation links.
+ */
+
+.link {
+    display: block;
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    color: var(--color-sidebar-text);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.link:hover {
+    background-color: var(--color-sidebar-hover);
+    color: var(--color-white);
+}
+
+.active {
+    background-color: var(--color-sidebar-active);
+    color: var(--color-white);
+    font-weight: 600;
+}

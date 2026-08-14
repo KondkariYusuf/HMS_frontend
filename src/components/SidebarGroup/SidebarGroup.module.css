@@ -1,0 +1,47 @@
+/**
+ * @file SidebarGroup.module.css
+ * @description Styles for collapsible sidebar navigation groups.
+ */
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.groupButton {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-xs) var(--space-sm);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: left;
+    cursor: pointer;
+}
+
+.groupButton:hover {
+    background-color: var(--color-sidebar-hover);
+}
+
+.chevron {
+    transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+    transform: rotate(90deg);
+}
+
+.itemList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding-left: var(--space-sm);
+}
