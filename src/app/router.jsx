@@ -22,6 +22,7 @@ import AnalyticsPage from '@pages/Analytics/Index';
 import HotelRoomsPage from '@pages/Hotel/Rooms/Index';
 import RoomOccupancyTimelinePage from '@pages/Hotel/Rooms/OccupancyTimeline';
 import HotelGuestsPage from '@pages/Hotel/Guests/Index';
+import GuestDetailsPage from '@pages/Hotel/Guests/Details/Index';
 import HotelReservationsPage from '@pages/Hotel/Reservations/Index';
 import HotelCheckInPage from '@pages/Hotel/CheckIn/Index';
 
@@ -128,6 +129,10 @@ export const router = createBrowserRouter([
         path: 'hotel/guests',
         element: <HotelGuestsPage />,
       },
+      {
+  path: 'hotel/guests/:guestId',
+  element: <GuestDetailsPage />,
+},
       {
         path: 'hotel/reservations',
         element: <HotelReservationsPage />,

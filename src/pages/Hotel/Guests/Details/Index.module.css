@@ -1,0 +1,261 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 32px;
+}
+
+.backButton {
+    width: fit-content;
+    padding: 0;
+    border: none;
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary);
+
+    cursor: pointer;
+}
+
+.backButton:hover {
+    text-decoration: underline;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    padding: 24px;
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+}
+
+.profileHeader {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.title {
+    margin: 0;
+
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.guestId {
+    margin: 5px 0 10px;
+
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.statCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    min-height: 100px;
+    padding: 20px;
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
+}
+
+.statLabel {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+}
+
+.statValue {
+    font-size: 28px;
+    color: var(--color-text-primary);
+}
+
+.statText {
+    font-size: 18px;
+    color: var(--color-text-primary);
+    text-transform: capitalize;
+}
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.card {
+    overflow: hidden;
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+}
+
+.cardHeader {
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.cardHeader h2 {
+    margin: 0;
+
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.cardHeader p {
+    margin: 6px 0 0;
+
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.detailsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+
+    padding: 22px;
+}
+
+.detailItem {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.detailItem span {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+}
+
+.detailItem strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.historyEmpty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 180px;
+    padding: 28px;
+
+    text-align: center;
+}
+
+.historyIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+
+    color: var(--color-primary);
+    background: var(--color-primary-tint);
+    border-radius: 50%;
+}
+
+.historyEmpty strong {
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+.historyEmpty p {
+    margin: 6px 0 0;
+
+    font-size: 13px;
+    color: var(--color-text-secondary);
+}
+
+.notFound {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 32px;
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+}
+
+.notFound h1 {
+    margin: 0;
+    color: var(--color-text-primary);
+}
+
+.notFound p {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 900px) {
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .statsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .contentGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 24px;
+    }
+
+    .profileHeader {
+        align-items: flex-start;
+    }
+
+    .actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .detailsGrid {
+        grid-template-columns: 1fr;
+    }
+}
