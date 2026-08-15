@@ -33,6 +33,27 @@
   gap: var(--space-lg);
 }
 
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+
+  min-width: 0;
+}
+
+.hospitalityText {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+
+  white-space: nowrap;
+}
+
+.titleDivider {
+  color: var(--color-border);
+  font-weight: 400;
+}
+
 .pageTitle {
   margin: 0;
 
@@ -40,12 +61,15 @@
 
   font-size: var(--font-size-xl);
   font-weight: 700;
+
   color: var(--color-text-primary);
+
+  white-space: nowrap;
 }
 
 /* =========================
    Branch Selector
-   ========================= */
+========================= */
 
 .branchSelector {
   min-width: 210px;
@@ -114,7 +138,7 @@
 
 /* =========================
    Tabs
-   ========================= */
+========================= */
 
 .tabSwitcher {
   display: flex;
@@ -142,6 +166,14 @@
   font-weight: 500;
 
   cursor: pointer;
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.tabItem:hover {
+  color: var(--color-text-primary);
 }
 
 .activeTab {
@@ -157,7 +189,7 @@
 
 /* =========================
    Right Section
-   ========================= */
+========================= */
 
 .rightSection {
   flex-shrink: 0;
@@ -170,7 +202,7 @@
 
 /* =========================
    Search
-   ========================= */
+========================= */
 
 .searchContainer {
   position: relative;
@@ -193,16 +225,31 @@
 
   background-color: var(--color-bg);
 
+  color: var(--color-text-primary);
+
   outline: none;
+
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
 }
 
 .searchInput:focus {
   border-color: var(--color-primary);
+
+  box-shadow:
+    0 0 0 2px color-mix(in srgb,
+      var(--color-primary) 10%,
+      transparent);
 }
 
 /* =========================
    Icons
-   ========================= */
+========================= */
 
 .iconButton {
   position: relative;
@@ -222,14 +269,20 @@
   color: var(--color-text-secondary);
 
   cursor: pointer;
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .iconButton:hover {
   color: var(--color-text-primary);
+  background-color: var(--color-border);
 }
 
 .iconPlaceholder {
   font-size: 16px;
+  line-height: 1;
 }
 
 .notificationDot {
@@ -244,17 +297,21 @@
   background-color: var(--color-error);
 
   border-radius: var(--radius-full);
+
+  border: 2px solid var(--color-surface);
 }
 
 /* =========================
    Profile
-   ========================= */
+========================= */
 
 .profileBlock {
   display: flex;
   align-items: center;
 
   gap: var(--space-sm);
+
+  min-width: 0;
 }
 
 .userInfo {
@@ -298,6 +355,8 @@
   width: 32px;
   height: 32px;
 
+  flex-shrink: 0;
+
   border-radius: var(--radius-full);
 
   background-color: var(--color-border);
@@ -305,7 +364,7 @@
 
 /* =========================
    Billing Header
-   ========================= */
+========================= */
 
 .billingTitle {
   display: flex;
@@ -332,7 +391,7 @@
 
 /* =========================
    Maintenance Header
-   ========================= */
+========================= */
 
 .brandPrimaryHeading {
   margin: 0 var(--space-xl) 0 0;
@@ -363,6 +422,14 @@
   border-bottom: 2px solid transparent;
 
   cursor: pointer;
+
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.flatTab:hover {
+  color: var(--color-text-primary);
 }
 
 .flatTabActive {
@@ -392,7 +459,7 @@
 
 /* =========================
    Responsive
-   ========================= */
+========================= */
 
 @media (max-width: 1200px) {
   .header {
@@ -434,6 +501,18 @@
 
   .leftSection {
     gap: var(--space-sm);
+  }
+
+  .hospitalityText {
+    display: none;
+  }
+
+  .titleDivider {
+    display: none;
+  }
+
+  .pageTitle {
+    font-size: var(--font-size-lg);
   }
 
   .branchSelector {

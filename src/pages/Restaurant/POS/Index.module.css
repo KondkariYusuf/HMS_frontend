@@ -1,157 +1,173 @@
 /**
- * POS Terminal Module Stylesheet
- * Integrated into SyncStays HMS layout & token design system.
+ * @file Restaurant/POS/Index.module.css
+ * @description Styling for Restaurant POS Terminal
  */
+
+/* =========================
+   PAGE
+========================= */
 
 .page {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  min-height: calc(100vh - var(--topnav-height) - 40px);
-  font-family: var(--font-family);
-  color: var(--color-text-primary);
+  padding-bottom: var(--space-xl);
+  width: 100%;
 }
 
-/* Header & Top Bar */
+/* =========================
+   HEADER
+========================= */
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
   background: var(--color-surface);
-  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  border: 1px solid var(--color-border);
 }
 
 .headerInfo h1 {
-  font-size: var(--font-size-xl);
+  margin: 0;
+  font-size: var(--font-size-2xl);
   font-weight: 700;
-  color: var(--color-primary-dark);
-  margin: 0 0 2px 0;
+  color: var(--color-text-primary);
 }
 
 .headerInfo p {
+  margin: 6px 0 0;
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
-  margin: 0;
 }
 
 .headerActions {
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  flex-shrink: 0;
 }
 
 .kdsNavLink {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: 8px 16px;
-  background-color: var(--color-primary-tint);
-  color: var(--color-primary-dark);
+  justify-content: center;
+  padding: 9px 14px;
   border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: var(--font-size-base);
+  background: var(--color-primary);
+  color: var(--color-white);
   text-decoration: none;
-  transition: all 0.2s ease;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .kdsNavLink:hover {
-  background-color: #c5e7e5;
+  background: var(--color-primary-dark);
   transform: translateY(-1px);
 }
 
-/* Split Main POS Container */
+/* =========================
+   MAIN POS BODY
+========================= */
+
 .posBody {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: var(--space-lg);
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 32px;
   align-items: start;
 }
 
-@media (max-width: 1200px) {
-  .posBody {
-    grid-template-columns: 1fr 340px;
-  }
-}
+/* =========================
+   CATALOG PANEL
+========================= */
 
-@media (max-width: 900px) {
-  .posBody {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Catalog Container (Left Column) */
 .catalogPanel {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
-/* Controls Bar: Order Type & Table Picker */
+/* =========================
+   CONTROLS
+========================= */
+
 .controlsCard {
   background: var(--color-surface);
-  padding: var(--space-md);
-  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
   box-shadow: var(--shadow-card);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
 }
 
 .orderTypeTabs {
   display: flex;
-  background: var(--color-bg);
-  padding: 4px;
-  border-radius: var(--radius-md);
-  gap: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .typeBtn {
-  border: none;
-  background: transparent;
-  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  padding: 9px 16px;
+  border-radius: var(--radius-md);
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.typeBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .typeBtnActive {
-  background: var(--color-surface);
-  color: var(--color-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.typeBtnActive:hover {
+  background: var(--color-primary-dark);
+  color: var(--color-white);
 }
 
 .tableSelectorGroup {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
 }
 
 .controlLabel {
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 .tableSelect {
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
+  min-width: 220px;
+  padding: 8px 10px;
   border: 1px solid var(--color-border);
-  font-size: var(--font-size-base);
-  font-family: inherit;
-  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
   color: var(--color-text-primary);
-  font-weight: 600;
+  font-size: var(--font-size-base);
   outline: none;
-  cursor: pointer;
 }
 
 .tableSelect:focus {
@@ -159,24 +175,21 @@
 }
 
 .guestCounter {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: var(--color-bg);
-  padding: 4px 8px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  gap: 8px;
+  margin-left: auto;
 }
 
 .countBtn {
-  border: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   background: var(--color-surface);
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
   color: var(--color-primary-dark);
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .countBtn:hover {
@@ -184,60 +197,56 @@
 }
 
 .countValue {
-  font-size: var(--font-size-base);
-  font-weight: 700;
-  min-width: 16px;
+  min-width: 80px;
   text-align: center;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
-/* Search Bar & Category Filters */
+/* =========================
+   SEARCH & CATEGORIES
+========================= */
+
 .filterRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  background: var(--color-surface);
-  padding: var(--space-md);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
+  gap: var(--space-md);
 }
 
 .searchBox {
   position: relative;
-  width: 100%;
-}
-
-.searchInput {
-  width: 100%;
-  padding: 10px 14px 10px 36px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  font-size: var(--font-size-base);
-  font-family: inherit;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.searchInput:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.15);
+  display: flex;
+  align-items: center;
 }
 
 .searchIcon {
   position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-muted);
-  font-size: 14px;
+  left: 14px;
+  font-size: 15px;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 42px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
 }
 
 .clearSearchBtn {
   position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
+  right: 10px;
   border: none;
+  background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
   font-size: 14px;
@@ -246,74 +255,77 @@
 .categoryScroll {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding-bottom: 3px;
+  scrollbar-width: thin;
 }
 
 .categoryPill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  padding: 8px 13px;
+  border-radius: 999px;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .categoryPill:hover {
-  background: #eef5f5;
-  color: var(--color-primary-dark);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .categoryPillActive {
   background: var(--color-primary);
-  color: var(--color-white);
   border-color: var(--color-primary);
-}
-
-.categoryPillActive:hover {
-  background: var(--color-primary-dark);
   color: var(--color-white);
 }
 
-/* Menu Grid */
+/* =========================
+   MENU GRID
+========================= */
+
 .menuGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-md);
 }
 
 .itemCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  padding: var(--space-md);
+  min-width: 0;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .itemCard:hover {
-  box-shadow: var(--shadow-card);
-  border-color: #bce3e2;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover, var(--shadow-card));
 }
 
 .itemCardHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: var(--space-sm);
 }
 
 .itemName {
@@ -413,7 +425,6 @@
   display: inline-block;
 }
 
-/* Empty Grid Placeholder */
 .emptyGrid {
   background: var(--color-surface);
   border: 1px dashed var(--color-border);
@@ -423,17 +434,45 @@
   color: var(--color-text-muted);
 }
 
-/* Cart Panel (Right Column) */
+/* =========================
+   CURRENT ORDER / CART
+========================= */
+
+/*
+ * The Current Order panel was previously sticky at the top.
+ * This caused it to appear too high compared with the menu.
+ *
+ * It now sits naturally in the grid with additional top spacing.
+ */
+
 .cartPanel {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-card);
+
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--topnav-height) - 100px);
-  position: sticky;
-  top: 80px;
+
+  /*
+   * Gives the Current Order section visual separation
+   * from the top controls/menu area.
+   */
+  margin-top: 28px;
+
+  /*
+   * Prevents the panel from being pushed to the top
+   * of the viewport while scrolling.
+   */
+  position: static;
+
+  /*
+   * Keeps the order panel usable without making it
+   * excessively tall.
+   */
+  max-height: calc(100vh - 140px);
+  min-height: 560px;
+  overflow: hidden;
 }
 
 .cartHeader {
@@ -442,6 +481,7 @@
   background: #fdfefe;
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
+  flex-shrink: 0;
 }
 
 .cartTitleRow {
@@ -463,10 +503,12 @@
   color: var(--color-text-secondary);
   display: flex;
   gap: var(--space-md);
+  flex-wrap: wrap;
 }
 
 .cartItemList {
   flex: 1;
+  min-height: 180px;
   overflow-y: auto;
   padding: var(--space-md);
   display: flex;
@@ -576,7 +618,10 @@
   margin-bottom: var(--space-sm);
 }
 
-/* Cart Calculations & Summary */
+/* =========================
+   CART CALCULATIONS
+========================= */
+
 .cartFooter {
   border-top: 1px solid var(--color-border);
   padding: var(--space-md);
@@ -586,6 +631,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+  flex-shrink: 0;
 }
 
 .summaryRow {
@@ -621,7 +667,10 @@
   outline: none;
 }
 
-/* Action Buttons Grid */
+/* =========================
+   ACTION BUTTONS
+========================= */
+
 .cartActionGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -690,7 +739,10 @@
   background: #fca5a5;
 }
 
-/* Customizer Modal Content */
+/* =========================
+   CUSTOMIZER MODAL
+========================= */
+
 .modGroup {
   margin-bottom: var(--space-md);
 }
@@ -699,33 +751,123 @@
   font-size: var(--font-size-base);
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: var(--space-xs);
+  margin-bottom: 8px;
 }
 
-.modOptionsList {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .posBody {
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 24px;
+  }
+
+  .menuGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.modOptionItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-size: var(--font-size-base);
+@media (max-width: 900px) {
+  .posBody {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  /*
+   * On smaller screens, remove the desktop offset.
+   * Current Order naturally follows the menu.
+   */
+  .cartPanel {
+    margin-top: 8px;
+    position: static;
+    max-height: none;
+    min-height: 500px;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
-.modOptionItem:hover {
-  background: var(--color-bg);
+@media (max-width: 768px) {
+  .page {
+    gap: var(--space-md);
+  }
+
+  .header {
+    padding: var(--space-md);
+  }
+
+  .headerInfo h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  .headerActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .kdsNavLink {
+    width: 100%;
+  }
+
+  .controlsCard {
+    padding: var(--space-sm);
+  }
+
+  .tableSelectorGroup {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tableSelect {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .guestCounter {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .menuGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cartPanel {
+    min-height: 480px;
+  }
 }
 
-.modOptionSelected {
-  background: var(--color-primary-tint);
-  border-color: var(--color-primary);
-  color: var(--color-primary-dark);
-  font-weight: 600;
+@media (max-width: 480px) {
+  .orderTypeTabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .typeBtn {
+    width: 100%;
+  }
+
+  .cartActionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fireKotBtn {
+    grid-column: span 1;
+  }
+
+  .cartSubDetails {
+    flex-direction: column;
+    gap: 4px;
+  }
 }

@@ -32,7 +32,8 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.brandMark {
+.brandMark,
+.brandLogoBox {
   width: 36px;
   height: 36px;
   flex-shrink: 0;
@@ -48,6 +49,12 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .brandTitle {
@@ -93,7 +100,9 @@
   border-radius: 10px;
 }
 
-/* Overview labels */
+/* =========================
+   SECTION LABELS
+========================= */
 
 .sectionLabel {
   margin: 7px 9px;
@@ -105,7 +114,9 @@
   text-transform: uppercase;
 }
 
-/* Dashboard / Analytics */
+/* =========================
+   TOP LEVEL LINKS
+========================= */
 
 .topLevelLink {
   box-sizing: border-box;
@@ -212,8 +223,7 @@
 }
 
 /* =========================
-   GROUP HEADER ALTERNATIVE
-   Supports POS/Kitchen branch
+   COMPATIBILITY GROUP HEADER
 ========================= */
 
 .groupHeaderBtn {
@@ -254,7 +264,6 @@
 .chevronIcon {
   color: rgba(255, 255, 255, 0.6);
   font-size: 9px;
-
   transition: transform 0.2s ease;
 }
 
@@ -382,8 +391,7 @@
 }
 
 /* =========================
-   ALTERNATIVE NAV LIST
-   Supports POS/Kitchen branch
+   COMPATIBILITY NAV LIST
 ========================= */
 
 .navList {

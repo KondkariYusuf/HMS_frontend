@@ -3,7 +3,9 @@
  * @description Refined Food Menu Management Dashboard.
  * @reference Frame: Redefined food Menu Management Dashboard.jpeg
  */
+
 import React from 'react';
+import { Link } from 'react-router-dom';
 import useRestaurantMenu from '@hooks/useRestaurantMenu';
 import styles from './Index.module.css';
 
@@ -31,6 +33,7 @@ export default function RestaurantMenuPage() {
             Create and manage your room service menu and guest dining experience.
           </p>
         </div>
+
         <div className={styles.metaBadge}>
           <svg
             width="14"
@@ -46,7 +49,10 @@ export default function RestaurantMenuPage() {
             <path d="M3 18h18" />
             <path d="M12 18v3" />
           </svg>
-          <span>{items.length * 8} menu items · {categoryOptions.length} categories</span>
+
+          <span>
+            {items.length * 8} menu items · {categoryOptions.length} categories
+          </span>
         </div>
       </header>
 
@@ -67,11 +73,14 @@ export default function RestaurantMenuPage() {
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
           </svg>
         </div>
+
         <div className={styles.urlContent}>
           <span className={styles.urlLabel}>Food Ordering URL</span>
+
           <p className={styles.urlSubtext}>
             Guests can access this menu directly from their room via this unique identifier.
           </p>
+
           <div className={styles.urlInputGroup}>
             <input
               type="text"
@@ -80,6 +89,7 @@ export default function RestaurantMenuPage() {
               className={styles.urlInput}
               aria-label="Food Ordering URL"
             />
+
             <button
               type="button"
               className={styles.copyButton}
@@ -99,6 +109,7 @@ export default function RestaurantMenuPage() {
                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
               </svg>
+
               <span>{copied ? 'Copied!' : 'Copy URL'}</span>
             </button>
           </div>
@@ -114,23 +125,32 @@ export default function RestaurantMenuPage() {
                 <th scope="col" style={{ width: '30%' }}>
                   Name
                 </th>
+
                 <th scope="col" style={{ width: '15%' }}>
                   Price (₹)
                 </th>
+
                 <th scope="col" style={{ width: '20%' }}>
                   Category
                 </th>
+
                 <th scope="col" style={{ width: '28%' }}>
                   Description
                 </th>
-                <th scope="col" style={{ width: '7%', textAlign: 'center' }}>
+
+                <th
+                  scope="col"
+                  style={{ width: '7%', textAlign: 'center' }}
+                >
                   Actions
                 </th>
               </tr>
             </thead>
+
             <tbody>
               {items.map((item) => (
                 <tr key={item.id} className={styles.tableRow}>
+                  {/* Name */}
                   <td className={styles.tableCell}>
                     <input
                       type="text"
@@ -142,9 +162,12 @@ export default function RestaurantMenuPage() {
                       aria-label={`Item Name for ${item.name}`}
                     />
                   </td>
+
+                  {/* Price */}
                   <td className={styles.tableCell}>
                     <div className={styles.priceWrapper}>
                       <span className={styles.currencySymbol}>₹</span>
+
                       <input
                         type="number"
                         className={styles.priceInput}
@@ -160,6 +183,8 @@ export default function RestaurantMenuPage() {
                       />
                     </div>
                   </td>
+
+                  {/* Category */}
                   <td className={styles.tableCell}>
                     <select
                       className={styles.cellSelect}
@@ -176,18 +201,29 @@ export default function RestaurantMenuPage() {
                       ))}
                     </select>
                   </td>
+
+                  {/* Description */}
                   <td className={styles.tableCell}>
                     <input
                       type="text"
                       className={styles.cellInput}
                       value={item.description}
                       onChange={(e) =>
-                        updateItem(item.id, 'description', e.target.value)
+                        updateItem(
+                          item.id,
+                          'description',
+                          e.target.value
+                        )
                       }
                       aria-label={`Description for ${item.name}`}
                     />
                   </td>
-                  <td className={styles.tableCell} style={{ textAlign: 'center' }}>
+
+                  {/* Delete */}
+                  <td
+                    className={styles.tableCell}
+                    style={{ textAlign: 'center' }}
+                  >
                     <button
                       type="button"
                       className={styles.deleteButton}
@@ -237,15 +273,23 @@ export default function RestaurantMenuPage() {
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
+
             <span>Add New Item</span>
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 'var(--space-md)',
+            }}
+          >
             {saveSuccess && (
               <span className={styles.toastSuccess}>
                 ✓ Menu changes saved successfully!
               </span>
             )}
+
             <button
               type="button"
               className={styles.saveButton}
@@ -266,6 +310,7 @@ export default function RestaurantMenuPage() {
                 <polyline points="17 21 17 13 7 13 7 21" />
                 <polyline points="7 3 7 8 15 8" />
               </svg>
+
               <span>Save Menu Changes</span>
             </button>
           </div>
@@ -278,6 +323,7 @@ export default function RestaurantMenuPage() {
         <section className={styles.infoCard}>
           <div className={styles.infoCardHeader}>
             <h3 className={styles.infoCardTitle}>Service Hours</h3>
+
             <svg
               className={styles.infoIcon}
               width="20"
@@ -293,22 +339,33 @@ export default function RestaurantMenuPage() {
               <polyline points="12 6 12 12 16 14" />
             </svg>
           </div>
+
           <div className={styles.hoursList}>
             <div className={styles.hoursRow}>
               <span className={styles.hoursLabel}>Breakfast</span>
-              <span className={styles.hoursTime}>07:00 AM - 11:00 AM</span>
+              <span className={styles.hoursTime}>
+                07:00 AM - 11:00 AM
+              </span>
             </div>
+
             <div className={styles.hoursRow}>
               <span className={styles.hoursLabel}>All Day Dining</span>
-              <span className={styles.hoursTime}>12:00 PM - 11:00 PM</span>
+              <span className={styles.hoursTime}>
+                12:00 PM - 11:00 PM
+              </span>
             </div>
           </div>
         </section>
 
         {/* Dining Security Card */}
-        <section className={`${styles.infoCard} ${styles.securityCard}`}>
+        <section
+          className={`${styles.infoCard} ${styles.securityCard}`}
+        >
           <div className={styles.infoCardHeader}>
-            <h3 className={styles.infoCardTitle}>Dining Security</h3>
+            <h3 className={styles.infoCardTitle}>
+              Dining Security
+            </h3>
+
             <svg
               className={styles.infoIcon}
               width="20"
@@ -323,15 +380,20 @@ export default function RestaurantMenuPage() {
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>
+
           <p className={styles.infoCardText}>
-            Account security and menu access protocols are managed centrally to ensure guest privacy.
+            Account security and menu access protocols are managed
+            centrally to ensure guest privacy.
           </p>
-          <a
-            href="#security"
+
+          {/* Correct Restaurant Security Navigation */}
+          <Link
+            to="/restaurant/security"
             className={styles.infoLink}
-            onClick={(e) => e.preventDefault()}
+            data-testid="dining-security-settings-link"
           >
             <span>View Security Settings</span>
+
             <svg
               width="14"
               height="14"
@@ -345,7 +407,7 @@ export default function RestaurantMenuPage() {
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
-          </a>
+          </Link>
         </section>
       </div>
     </div>

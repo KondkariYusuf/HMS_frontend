@@ -33,6 +33,7 @@ import HotelCheckInPage from '@pages/Hotel/CheckIn/Index';
 import RestaurantPOSPage from '@pages/Restaurant/POS/Index';
 import RestaurantOrdersPage from '@pages/Restaurant/Orders/Index';
 import RestaurantMenuPage from '@pages/Restaurant/Menu/Index';
+import RestaurantSecurityPage from '@pages/Restaurant/Security/Index';
 import RestaurantKDSPage from '@pages/Restaurant/KDS/Index';
 import RestaurantTablesPage from '@pages/Restaurant/Tables/Index';
 import RestaurantAnalyticsPage from '@pages/Restaurant/Analytics/Index';
@@ -51,7 +52,6 @@ import CustomersLoyaltyPage from '@pages/Customers/Loyalty/Index';
 import BillingInvoicesPage from '@pages/Billing/Invoices/Index';
 import BillingPaymentsPage from '@pages/Billing/Payments/Index';
 import BillingReportsPage from '@pages/Billing/Reports/Index';
-import SettingsBillingInvoicesPage from '../pages/Settings/BillingInvoices';
 
 /* Settings */
 import BillingInvoicesSettingsPage from '@pages/Settings/BillingInvoices/Index';
@@ -81,30 +81,43 @@ import CashRegisterPage from '@pages/Finance/CashRegister/Index';
 import MaintenanceDashboardPage from '@pages/Maintenance/Index';
 
 export const router = createBrowserRouter([
-  /* Public Auth Routes */
+  /* =========================
+     PUBLIC AUTH ROUTES
+     ========================= */
+
   {
     path: '/login',
     element: <LoginPage />,
   },
+
   {
     path: '/register',
     element: <RegisterPage />,
   },
+
   {
     path: '/forgot-password',
     element: <ForgotPasswordPage />,
   },
 
-  /* Authenticated Application */
+  /* =========================
+     AUTHENTICATED APPLICATION
+     ========================= */
+
   {
     path: '/',
     element: <MainLayout />,
+
     children: [
-      /* Overview */
+      /* =========================
+         OVERVIEW
+         ========================= */
+
       {
         index: true,
         element: <DashboardPage />,
       },
+
       {
         path: 'analytics',
         element: <AnalyticsPage />,
@@ -118,22 +131,27 @@ export const router = createBrowserRouter([
         path: 'hotel/rooms',
         element: <HotelRoomsPage />,
       },
+
       {
         path: 'hotel/rooms/occupancy-timeline',
         element: <RoomOccupancyTimelinePage />,
       },
+
       {
         path: 'hotel/guests',
         element: <HotelGuestsPage />,
       },
+
       {
         path: 'hotel/guests/:guestId',
         element: <GuestDetailsPage />,
       },
+
       {
         path: 'hotel/reservations',
         element: <HotelReservationsPage />,
       },
+
       {
         path: 'hotel/check-in',
         element: <HotelCheckInPage />,
@@ -147,22 +165,32 @@ export const router = createBrowserRouter([
         path: 'restaurant/pos',
         element: <RestaurantPOSPage />,
       },
+
       {
         path: 'restaurant/orders',
         element: <RestaurantOrdersPage />,
       },
+
       {
         path: 'restaurant/menu',
         element: <RestaurantMenuPage />,
       },
+
+      {
+        path: 'restaurant/security',
+        element: <RestaurantSecurityPage />,
+      },
+
       {
         path: 'restaurant/kds',
         element: <RestaurantKDSPage />,
       },
+
       {
         path: 'restaurant/tables',
         element: <RestaurantTablesPage />,
       },
+
       {
         path: 'restaurant/analytics',
         element: <RestaurantAnalyticsPage />,
@@ -176,14 +204,17 @@ export const router = createBrowserRouter([
         path: 'inventory/products',
         element: <InventoryProductsPage />,
       },
+
       {
         path: 'inventory/stock',
         element: <InventoryStockPage />,
       },
+
       {
         path: 'inventory/suppliers',
         element: <InventorySuppliersPage />,
       },
+
       {
         path: 'inventory/purchase-orders',
         element: <InventoryPurchaseOrdersPage />,
@@ -197,6 +228,7 @@ export const router = createBrowserRouter([
         path: 'customers/directory',
         element: <CustomersDirectoryPage />,
       },
+
       {
         path: 'customers/loyalty',
         element: <CustomersLoyaltyPage />,
@@ -210,17 +242,15 @@ export const router = createBrowserRouter([
         path: 'billing/invoices',
         element: <BillingInvoicesPage />,
       },
+
       {
         path: 'billing/payments',
         element: <BillingPaymentsPage />,
       },
+
       {
         path: 'billing/reports',
         element: <BillingReportsPage />,
-      },
-      {
-        path: 'billing/settings',
-        element: <SettingsBillingInvoicesPage />,
       },
 
       /* =========================
@@ -250,6 +280,7 @@ export const router = createBrowserRouter([
         path: 'notifications',
         element: <NotificationsPage />,
       },
+
       {
         path: 'audit-logs',
         element: <AuditLogsPage />,
@@ -263,18 +294,22 @@ export const router = createBrowserRouter([
         path: 'admin/users',
         element: <AdminUsersPage />,
       },
+
       {
         path: 'admin/rbac',
         element: <AdminRBACPage />,
       },
+
       {
         path: 'admin/branches',
         element: <AdminBranchesPage />,
       },
+
       {
         path: 'admin/subscription',
         element: <AdminSubscriptionPage />,
       },
+
       {
         path: 'admin/settings',
         element: <AdminSettingsPage />,
@@ -288,6 +323,7 @@ export const router = createBrowserRouter([
         path: 'finance/monthly-salary',
         element: <MonthlySalaryPage />,
       },
+
       {
         path: 'finance/cash-register',
         element: <CashRegisterPage />,
@@ -301,14 +337,17 @@ export const router = createBrowserRouter([
         path: 'staff/salary',
         element: <StaffSalaryPage />,
       },
+
       {
         path: 'staff/attendance',
         element: <StaffAttendancePage />,
       },
+
       {
         path: 'staff/advances',
         element: <StaffAdvancesPage />,
       },
+
       {
         path: 'staff/housekeeping',
         element: <HousekeepingPage />,
@@ -323,7 +362,6 @@ export const router = createBrowserRouter([
         element: <MaintenanceDashboardPage />,
       },
 
-      /* Shubham's route kept as a compatibility route */
       {
         path: 'maintenance/dashboard',
         element: (
@@ -408,6 +446,15 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+
+  /* =========================
+     FALLBACK
+     ========================= */
+
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ]);
 

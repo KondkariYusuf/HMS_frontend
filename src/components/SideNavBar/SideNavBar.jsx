@@ -368,7 +368,7 @@ export default function SideNavBar() {
     ) {
       setOpenGroups([activeGroup]);
     }
-  }, [activeGroup]);
+  }, [activeGroup, openGroups]);
 
   const toggleGroup = (groupId) => {
     setOpenGroups((current) =>
@@ -490,7 +490,6 @@ export default function SideNavBar() {
                           }`}
                       >
                         <span className={styles.submenuDot} />
-
                         {item.label}
                       </NavLink>
                     ))}

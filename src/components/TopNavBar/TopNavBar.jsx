@@ -18,6 +18,7 @@ const SunIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
   >
     <circle
       cx="12"
@@ -26,10 +27,30 @@ const SunIcon = () => (
       stroke="currentColor"
       strokeWidth="2"
     />
-    <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M12 20V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M4 12H2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M22 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path
+      d="M12 2V4"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M12 20V22"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4 12H2"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M22 12H20"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
     <path
       d="M19.0708 4.92896L17.6566 6.34317"
       stroke="currentColor"
@@ -64,6 +85,7 @@ const BellIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
   >
     <path
       d="M18 16V10C18 6.68629 15.3137 4 12 4C8.68629 4 6 6.68629 6 10V16H18Z"
@@ -93,16 +115,37 @@ const WeatherIcon = () => (
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
   >
     <path
       d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"
       stroke="currentColor"
       strokeWidth="2"
     />
-    <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M12 20V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M4 12H2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <path d="M22 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path
+      d="M12 2V4"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M12 20V22"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M4 12H2"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <path
+      d="M22 12H20"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
     <path
       d="M19.0708 4.92896L17.6566 6.34317"
       stroke="currentColor"
@@ -149,10 +192,6 @@ export default function TopNavBar({
   const [maintenanceTab, setMaintenanceTab] =
     useState('Property View');
 
-  const isBilling = location.pathname.startsWith(
-    '/settings/billing-invoices'
-  );
-
   const isMaintenance =
     location.pathname.startsWith('/maintenance');
 
@@ -181,69 +220,8 @@ export default function TopNavBar({
     }
   };
 
-  if (isBilling) {
-    return (
-      <header
-        className={styles.header}
-        data-testid="top-nav-bar"
-      >
-        <div className={styles.leftSection}>
-          <div className={styles.billingTitle}>
-            <span className={styles.brandPrimary}>
-              HospitalityOS
-            </span>
 
-            <span className={styles.separator}>|</span>
 
-            <span className={styles.pageTitleDark}>
-              Billing & Invoices
-            </span>
-          </div>
-        </div>
-
-        <div className={styles.rightSection}>
-          <button
-            type="button"
-            className={styles.iconButton}
-            aria-label="Toggle Theme"
-          >
-            <SunIcon />
-          </button>
-
-          <button
-            type="button"
-            className={styles.iconButton}
-            aria-label="Notifications"
-          >
-            <BellIcon />
-            <span className={styles.notificationDot} />
-          </button>
-
-          <div className={styles.avatarEmpty} />
-
-          <button
-            type="button"
-            className={styles.profileButton}
-            aria-label="Profile"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </button>
-        </div>
-      </header>
-    );
-  }
 
   if (isMaintenance) {
     return (
@@ -266,8 +244,8 @@ export default function TopNavBar({
                 type="button"
                 key={tab}
                 className={`${styles.flatTab} ${maintenanceTab === tab
-                    ? styles.flatTabActive
-                    : ''
+                  ? styles.flatTabActive
+                  : ''
                   }`}
                 onClick={() => setMaintenanceTab(tab)}
               >
@@ -303,11 +281,18 @@ export default function TopNavBar({
       data-testid="top-nav-bar"
     >
       <div className={styles.leftSection}>
-        <h2 className={styles.pageTitle}>
-          {title}
-        </h2>
+        <div className={styles.titleWrapper}>
+          <span className={styles.hospitalityText}>
+            HospitalityOS
+          </span>
 
-        {/* Active Branch / Property Selector */}
+          <span className={styles.titleDivider}>|</span>
+
+          <h2 className={styles.pageTitle}>
+            {title}
+          </h2>
+        </div>
+
         {activeBranches.length > 0 && (
           <div
             className={styles.branchSelector}
@@ -345,12 +330,11 @@ export default function TopNavBar({
                 type="button"
                 key={tab}
                 className={`${styles.tabItem} ${tab === activeTab
-                    ? styles.activeTab
-                    : ''
+                  ? styles.activeTab
+                  : ''
                   }`}
                 onClick={() =>
-                  onTabChange &&
-                  onTabChange(tab)
+                  onTabChange && onTabChange(tab)
                 }
               >
                 {tab}
@@ -373,11 +357,17 @@ export default function TopNavBar({
         <button
           type="button"
           className={styles.iconButton}
+          aria-label="Theme"
+        >
+          <SunIcon />
+        </button>
+
+        <button
+          type="button"
+          className={styles.iconButton}
           aria-label="Notifications"
         >
-          <span className={styles.iconPlaceholder}>
-            🔔
-          </span>
+          <BellIcon />
 
           {hasNotification && (
             <span className={styles.notificationDot} />
@@ -396,8 +386,7 @@ export default function TopNavBar({
             </span>
 
             <span className={styles.userRole}>
-              {user?.role ||
-                'Front Desk Supervisor'}
+              {user?.role || 'Front Desk Supervisor'}
             </span>
           </div>
         </div>
