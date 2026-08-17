@@ -2,6 +2,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
+    overflow-x: hidden;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
 }
 
 .header {
@@ -81,6 +85,8 @@
     font-size: var(--font-size-sm);
     font-family: var(--font-family);
     cursor: pointer;
+    min-width: 120px;
+    max-width: 100%;
 }
 
 .calendarIcon {
@@ -135,6 +141,8 @@
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 0;
 }
 
 .filterButton:hover {
@@ -162,6 +170,9 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: var(--space-md);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .summaryCard {
@@ -665,6 +676,10 @@
         gap: var(--space-lg);
     }
 
+    .title {
+        font-size: var(--font-size-xl);
+    }
+
     .headerActions {
         flex-direction: column;
         align-items: stretch;
@@ -679,10 +694,16 @@
         overflow-x: auto;
         padding-bottom: var(--space-xs);
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-border) transparent;
     }
 
     .summaryGrid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summaryCard {
+        min-width: 0;
     }
 
     .staffGrid {
@@ -698,5 +719,187 @@
         right: 20px;
         width: 44px;
         height: 44px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        padding: var(--space-sm);
+        gap: var(--space-md);
+    }
+
+    .title {
+        font-size: var(--font-size-lg);
+        word-break: break-word;
+    }
+
+    .subtitle {
+        font-size: var(--font-size-xs);
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .summaryCard {
+        padding: var(--space-sm) var(--space-md);
+        min-width: 0;
+    }
+
+    .summaryIcon {
+        width: 32px;
+        height: 32px;
+        font-size: var(--font-size-sm);
+    }
+
+    .summaryValue {
+        font-size: var(--font-size-lg);
+    }
+
+    .filterBar {
+        gap: var(--space-xs);
+    }
+
+    .filterButton {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--font-size-xs);
+    }
+
+    .dateControl {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dateControl input[type='date'] {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .exportButton {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-sm);
+    }
+
+    .sectionHeader {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+
+    .sectionTitle {
+        font-size: var(--font-size-base);
+    }
+
+    .staffCard {
+        padding: var(--space-sm);
+    }
+
+    .cardTop {
+        gap: var(--space-xs);
+    }
+
+    .avatar {
+        width: 34px;
+        height: 34px;
+        font-size: var(--font-size-xs);
+    }
+
+    .staffName {
+        font-size: var(--font-size-sm);
+    }
+
+    .statusButton {
+        font-size: 10px;
+        padding: 2px var(--space-xs);
+    }
+}
+
+@media (max-width: 375px) {
+    .page {
+        padding: var(--space-xs);
+        gap: var(--space-sm);
+    }
+
+    .title {
+        font-size: var(--font-size-base);
+    }
+
+    .header {
+        gap: var(--space-sm);
+    }
+
+    .summaryCard {
+        padding: var(--space-xs) var(--space-sm);
+        gap: var(--space-sm);
+    }
+
+    .summaryIcon {
+        width: 28px;
+        height: 28px;
+        font-size: var(--font-size-xs);
+    }
+
+    .summaryLabel {
+        font-size: 9px;
+    }
+
+    .summaryValue {
+        font-size: var(--font-size-base);
+    }
+
+    .sectionHeader {
+        gap: var(--space-xs);
+    }
+
+    .selectAllButton {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-sm);
+    }
+
+    .staffCard {
+        padding: var(--space-xs);
+        gap: var(--space-sm);
+    }
+
+    .avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 10px;
+    }
+
+    .staffName {
+        font-size: var(--font-size-xs);
+    }
+
+    .staffRole {
+        font-size: 9px;
+    }
+
+    .staffSalary {
+        font-size: 9px;
+    }
+
+    .statusButton {
+        font-size: 9px;
+        padding: 2px 4px;
+    }
+
+    .helpButton {
+        width: 20px;
+        height: 20px;
+        font-size: 9px;
+    }
+
+    .checkButton {
+        width: 20px;
+        height: 20px;
+        font-size: 9px;
+    }
+
+    .floatingButton {
+        bottom: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-base);
     }
 }
