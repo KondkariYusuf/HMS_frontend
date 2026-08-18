@@ -11,7 +11,10 @@
   color: var(--color-text-primary);
 }
 
-/* Header Bar */
+/* =========================
+   HEADER BAR
+========================= */
+
 .header {
   display: flex;
   align-items: center;
@@ -53,7 +56,10 @@
   font-weight: 600;
   font-size: var(--font-size-base);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .posNavLink:hover {
@@ -61,7 +67,10 @@
   transform: translateY(-1px);
 }
 
-/* Controls & Filter Bar */
+/* =========================
+   CONTROLS & FILTER BAR
+========================= */
+
 .controlsCard {
   background: var(--color-surface);
   padding: var(--space-md);
@@ -92,7 +101,10 @@
   color: var(--color-text-secondary);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .stationBtnActive {
@@ -116,15 +128,22 @@
   font-size: var(--font-size-base);
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .statusPillActive {
   background: var(--color-primary-dark);
-  color: white;
+  color: #ffffff;
   border-color: var(--color-primary-dark);
 }
 
-/* KOT Ticket Grid */
+/* =========================
+   KOT TICKET GRID
+========================= */
+
 .ticketGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -140,34 +159,40 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .ticketCardQueued {
-  border-color: #3b82f6; /* Blue indicator for QUEUED */
+  border-color: #3b82f6;
 }
 
 .ticketCardPreparing {
-  border-color: #f59e0b; /* Amber indicator for PREPARING */
+  border-color: #f59e0b;
 }
 
 .ticketCardReady {
-  border-color: #10b981; /* Green indicator for READY */
+  border-color: #10b981;
 }
 
 .ticketCardServed {
-  border-color: #94a3b8; /* Muted for SERVED */
+  border-color: #94a3b8;
   opacity: 0.8;
 }
 
-/* Ticket Header */
+/* =========================
+   TICKET HEADER
+========================= */
+
 .ticketHeader {
   padding: var(--space-md);
   border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  background: #fdfefe;
+  background: var(--color-surface);
 }
 
 .kotTitle {
@@ -210,13 +235,20 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .rushBadge {
   background: #dc2626;
-  color: white;
+  color: #ffffff;
   font-size: 10px;
   font-weight: 800;
   padding: 2px 6px;
@@ -225,7 +257,10 @@
   letter-spacing: 0.5px;
 }
 
-/* Ticket Item Checklist */
+/* =========================
+   TICKET ITEM CHECKLIST
+========================= */
+
 .itemList {
   padding: var(--space-md);
   display: flex;
@@ -248,6 +283,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-sm);
 }
 
 .itemQtyName {
@@ -259,7 +295,7 @@
 .itemQty {
   display: inline-block;
   background: var(--color-primary);
-  color: white;
+  color: #ffffff;
   padding: 2px 6px;
   border-radius: 4px;
   margin-right: 6px;
@@ -271,6 +307,9 @@
   padding: 2px 6px;
   border-radius: 4px;
   text-transform: uppercase;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .statusQueued {
@@ -289,7 +328,7 @@
 }
 
 .statusServed {
-  background: #f1f5f9;
+  background: var(--color-hover);
   color: #64748b;
 }
 
@@ -304,26 +343,36 @@
   color: var(--color-text-secondary);
 }
 
-/* Ticket Footer Actions */
+/* =========================
+   TICKET FOOTER ACTIONS
+========================= */
+
 .ticketFooter {
   padding: var(--space-md);
   border-top: 1px solid var(--color-border);
-  background: #fafcfc;
+  background: var(--color-surface);
   display: flex;
   gap: var(--space-sm);
 }
 
-.prepBtn {
+.prepBtn,
+.readyBtn,
+.serveBtn {
   flex: 1;
-  background: #f59e0b;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 10px;
   border-radius: var(--radius-md);
   font-weight: 700;
   font-size: var(--font-size-base);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.prepBtn {
+  background: #f59e0b;
 }
 
 .prepBtn:hover {
@@ -331,16 +380,7 @@
 }
 
 .readyBtn {
-  flex: 1;
   background: #10b981;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .readyBtn:hover {
@@ -348,32 +388,33 @@
 }
 
 .serveBtn {
-  flex: 1;
   background: var(--color-primary-dark);
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .serveBtn:hover {
   background: var(--color-primary);
 }
 
+.prepBtn:active,
+.readyBtn:active,
+.serveBtn:active {
+  transform: translateY(1px);
+}
+
 .completedTag {
   width: 100%;
   text-align: center;
   padding: 8px;
-  background: #f1f5f9;
+  background: var(--color-hover);
   color: #64748b;
   font-weight: 700;
   font-size: var(--font-size-base);
   border-radius: var(--radius-md);
 }
+
+/* =========================
+   EMPTY STATE
+========================= */
 
 .emptyState {
   grid-column: 1 / -1;
@@ -383,4 +424,206 @@
   padding: var(--space-2xl);
   text-align: center;
   color: var(--color-text-muted);
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+[data-theme='dark'] .headerTitleGroup h1 {
+  color: var(--color-text-primary);
+}
+
+[data-theme='dark'] .posNavLink {
+  background-color: var(--color-hover);
+  color: var(--color-primary);
+}
+
+[data-theme='dark'] .posNavLink:hover {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+[data-theme='dark'] .ticketCardQueued {
+  border-color: #60a5fa;
+}
+
+[data-theme='dark'] .ticketCardPreparing {
+  border-color: #fbbf24;
+}
+
+[data-theme='dark'] .ticketCardReady {
+  border-color: #34d399;
+}
+
+[data-theme='dark'] .ticketCardServed {
+  border-color: #64748b;
+}
+
+[data-theme='dark'] .timerGreen {
+  background: rgba(22, 163, 74, 0.2);
+  color: #86efac;
+}
+
+[data-theme='dark'] .timerAmber {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .timerRed {
+  background: rgba(185, 28, 28, 0.2);
+  color: #fca5a5;
+}
+
+[data-theme='dark'] .statusQueued {
+  background: rgba(37, 99, 235, 0.2);
+  color: #93c5fd;
+}
+
+[data-theme='dark'] .statusPreparing {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .statusReady {
+  background: rgba(22, 163, 74, 0.25);
+  color: #86efac;
+}
+
+[data-theme='dark'] .statusServed {
+  background: var(--color-hover);
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .itemNote {
+  color: #fca5a5;
+}
+
+[data-theme='dark'] .completedTag {
+  background: var(--color-hover);
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .stationHeader {
+  background-color: var(--color-hover);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1024px) {
+  .controlsCard {
+    align-items: stretch;
+  }
+
+  .stationTabs {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .stationBtn {
+    flex: 1 0 auto;
+  }
+
+  .statusFilterGroup {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    gap: var(--space-md);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .posNavLink {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .controlsCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stationTabs {
+    width: 100%;
+  }
+
+  .statusFilterGroup {
+    width: 100%;
+  }
+
+  .statusPill {
+    flex: 1 1 auto;
+  }
+
+  .ticketGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: var(--space-md);
+  }
+
+  .headerTitleGroup h1 {
+    font-size: var(--font-size-lg);
+  }
+
+  .headerTitleGroup p {
+    font-size: var(--font-size-sm);
+  }
+
+  .stationTabs {
+    overflow-x: auto;
+  }
+
+  .stationBtn {
+    white-space: nowrap;
+  }
+
+  .statusFilterGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .statusPill {
+    width: 100%;
+  }
+
+  .ticketGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .itemRowTop {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .itemStatusPill {
+    align-self: flex-start;
+  }
+
+  .ticketFooter {
+    flex-direction: column;
+  }
+
+  .prepBtn,
+  .readyBtn,
+  .serveBtn {
+    width: 100%;
+  }
 }

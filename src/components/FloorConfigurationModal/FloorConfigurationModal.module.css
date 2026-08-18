@@ -60,7 +60,7 @@
   border: 1px solid var(--color-border);
   border-radius: 8px;
 
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-text-primary);
 
   font-family: inherit;
@@ -113,7 +113,7 @@
   border: 1px solid var(--color-primary);
   border-radius: 8px;
 
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-primary);
 
   font-family: inherit;
@@ -148,7 +148,7 @@
   border: 1px solid var(--color-border);
   border-radius: 10px;
 
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .tableHeader,
@@ -165,7 +165,7 @@
   min-height: 42px;
   padding: 0 14px;
 
-  background: #f7f9fa;
+  background: var(--color-table-header);
   border-bottom: 1px solid var(--color-border);
 
   color: var(--color-text-muted);
@@ -185,7 +185,7 @@
   min-height: 58px;
   padding: 9px 14px;
 
-  border-bottom: 1px solid #eef1f2;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .roomRow:last-child {
@@ -202,7 +202,7 @@
   border: 1px solid var(--color-border);
   border-radius: 7px;
 
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-text-primary);
 
   font-family: inherit;
@@ -242,7 +242,7 @@
   border: 1px solid var(--color-border);
   border-radius: 7px;
 
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .capacityButton {
@@ -261,7 +261,7 @@
 }
 
 .capacityButton:hover {
-  background: #eef8f7;
+  background: var(--color-highlight-bg);
 }
 
 .capacityValue {
@@ -303,7 +303,7 @@
 }
 
 .deleteButton:hover:not(:disabled) {
-  background: #fff0f0;
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .deleteButton:disabled {
@@ -335,7 +335,7 @@
 
   padding: 14px 16px;
 
-  background: #f8fbfb;
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .summaryLabel {
@@ -413,3 +413,10 @@
     font-size: 15px;
   }
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .available { background: rgba(22,163,74,0.15) !important; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .floorBorder { border-color: var(--color-border) !important; }
+[data-theme="dark"] .availableCell { background: rgba(22,163,74,0.15) !important; }

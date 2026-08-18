@@ -1,3 +1,8 @@
+/**
+ * @file Admin/RBAC/Index.module.css
+ * @description Styles for the RBAC roles and permissions page.
+ */
+
 .page {
   display: flex;
   flex-direction: column;
@@ -13,7 +18,7 @@
 
 .eyebrow,
 .roleEyebrow {
-  color: #6f7b7d;
+  color: var(--color-text-secondary);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -25,7 +30,7 @@
 
 .title {
   margin: 0;
-  color: #172b2d;
+  color: var(--color-text-primary);
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -33,7 +38,7 @@
 
 .subtitle {
   margin: 7px 0 0;
-  color: #7a8587;
+  color: var(--color-text-secondary);
   font-size: 13px;
 }
 
@@ -46,8 +51,8 @@
 
 .rolesPanel,
 .permissionsPanel {
-  background: #ffffff;
-  border: 1px solid #e7ebeb;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
 }
@@ -58,19 +63,19 @@
 
 .panelHeader {
   padding: 17px;
-  border-bottom: 1px solid #edf0f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .panelHeader h2 {
   margin: 0;
-  color: #26383a;
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
 .panelHeader span {
   display: block;
   margin-top: 4px;
-  color: #929b9c;
+  color: var(--color-text-secondary);
   font-size: 10px;
 }
 
@@ -89,17 +94,18 @@
   border: 0;
   border-radius: 9px;
   background: transparent;
+  color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .roleCard:hover {
-  background: #f5f8f8;
+  background: var(--color-hover);
 }
 
 .selectedRole {
-  background: #eaf4f4;
+  background: var(--color-highlight-bg);
 }
 
 .roleIcon {
@@ -110,7 +116,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: #e2efef;
+  background: var(--color-highlight-bg);
   color: #0b686d;
   font-size: 9px;
   font-weight: 700;
@@ -128,7 +134,7 @@
 
 .roleInfo strong {
   overflow: hidden;
-  color: #354547;
+  color: var(--color-text-primary);
   font-size: 11px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -136,12 +142,12 @@
 
 .roleInfo span {
   margin-top: 3px;
-  color: #9aa3a4;
+  color: var(--color-text-secondary);
   font-size: 9px;
 }
 
 .roleArrow {
-  color: #a1aaab;
+  color: var(--color-text-secondary);
   font-size: 18px;
 }
 
@@ -155,18 +161,18 @@
   justify-content: space-between;
   gap: 20px;
   padding: 20px;
-  border-bottom: 1px solid #edf0f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .permissionHeader h2 {
   margin: 5px 0 0;
-  color: #1e3537;
+  color: var(--color-text-primary);
   font-size: 20px;
 }
 
 .permissionHeader p {
   margin: 5px 0 0;
-  color: #899394;
+  color: var(--color-text-secondary);
   font-size: 11px;
 }
 
@@ -174,7 +180,7 @@
   min-width: 80px;
   padding: 10px 14px;
   border-radius: 9px;
-  background: #f4f7f7;
+  background: var(--color-hover);
   text-align: center;
 }
 
@@ -190,16 +196,16 @@
 
 .permissionSummary span {
   margin-top: 2px;
-  color: #899394;
+  color: var(--color-text-secondary);
   font-size: 9px;
 }
 
 .fullAccessBanner {
   margin: 16px 20px 0;
   padding: 12px 14px;
-  border: 1px solid #d8eeee;
+  border: 1px solid var(--color-border);
   border-radius: 9px;
-  background: #f1fafa;
+  background: var(--color-highlight-bg);
 }
 
 .fullAccessBanner strong {
@@ -209,7 +215,7 @@
 
 .fullAccessBanner span {
   margin-left: 9px;
-  color: #6e7d7e;
+  color: var(--color-text-secondary);
   font-size: 10px;
 }
 
@@ -222,7 +228,7 @@
 
 .permissionGroup {
   overflow: hidden;
-  border: 1px solid #e9eded;
+  border: 1px solid var(--color-border);
   border-radius: 9px;
 }
 
@@ -230,8 +236,8 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 13px;
-  background: #fafbfb;
-  color: #647072;
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -239,7 +245,7 @@
 }
 
 .groupHeader span:last-child {
-  color: #9aa3a4;
+  color: var(--color-text-secondary);
 }
 
 .permissionRow {
@@ -250,15 +256,16 @@
   gap: 15px;
   padding: 12px 13px;
   border: 0;
-  border-top: 1px solid #edf0f0;
-  background: #ffffff;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .permissionRow:hover:not(:disabled) {
-  background: #fbfcfc;
+  background: var(--color-hover);
 }
 
 .permissionRow:disabled {
@@ -275,13 +282,13 @@
 }
 
 .permissionRow strong {
-  color: #455355;
+  color: var(--color-text-primary);
   font-size: 11px;
 }
 
 .permissionRow div span {
   margin-top: 3px;
-  color: #9aa3a4;
+  color: var(--color-text-secondary);
   font-size: 9px;
 }
 
@@ -294,7 +301,7 @@
   padding: 2px;
   box-sizing: border-box;
   border-radius: 999px;
-  background: #dce2e2;
+  background: var(--color-border);
   transition: background 0.16s ease;
 }
 
@@ -302,7 +309,7 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--color-surface);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.16s ease;
 }
@@ -321,9 +328,9 @@
   justify-content: space-between;
   gap: 15px;
   padding: 13px 20px;
-  border-top: 1px solid #edf0f0;
-  background: #fafbfb;
-  color: #8b9697;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
   font-size: 10px;
 }
 
@@ -345,7 +352,7 @@
 
 .emptyRoles {
   padding: 24px 16px;
-  color: #899394;
+  color: var(--color-text-secondary);
   font-size: 11px;
   text-align: center;
 }
@@ -366,19 +373,20 @@
   box-sizing: border-box;
   padding: 22px;
   border-radius: 13px;
-  background: #ffffff;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
 }
 
 .modal h2 {
   margin: 0;
-  color: #213638;
+  color: var(--color-text-primary);
   font-size: 18px;
 }
 
 .modal>p {
   margin: 5px 0 18px;
-  color: #899394;
+  color: var(--color-text-secondary);
   font-size: 11px;
 }
 
@@ -386,7 +394,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: #4e5d5f;
+  color: var(--color-text-primary);
   font-size: 11px;
   font-weight: 600;
 }
@@ -396,11 +404,17 @@
   height: 38px;
   box-sizing: border-box;
   padding: 0 11px;
-  border: 1px solid #e0e6e6;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   outline: none;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
   font: inherit;
   font-size: 12px;
+}
+
+.modal input::placeholder {
+  color: var(--color-text-secondary);
 }
 
 .modal input:focus {
@@ -413,16 +427,16 @@
   gap: 8px;
   margin-top: 20px;
   padding-top: 15px;
-  border-top: 1px solid #edf0f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .modalActions>button:first-child {
   height: 38px;
-  border: 1px solid #dfe5e5;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
   padding: 0 14px;
-  background: #ffffff;
-  color: #667173;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 11px;
 }
@@ -459,4 +473,53 @@
   .saveBar {
     align-items: stretch;
   }
+}
+
+/* Dark Mode Refinements */
+
+[data-theme='dark'] .rolesPanel,
+[data-theme='dark'] .permissionsPanel {
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .roleIcon {
+  background: rgba(20, 122, 126, 0.2);
+  color: #5eead4;
+}
+
+[data-theme='dark'] .selectedRole {
+  background: rgba(20, 122, 126, 0.16);
+}
+
+[data-theme='dark'] .permissionSummary {
+  background: rgba(20, 122, 126, 0.14);
+}
+
+[data-theme='dark'] .permissionSummary strong {
+  color: #5eead4;
+}
+
+[data-theme='dark'] .fullAccessBanner {
+  border-color: rgba(45, 180, 184, 0.25);
+  background: rgba(20, 122, 126, 0.12);
+}
+
+[data-theme='dark'] .fullAccessBanner strong {
+  color: #5eead4;
+}
+
+[data-theme='dark'] .groupHeader {
+  background: var(--color-hover);
+}
+
+[data-theme='dark'] .toggleOn {
+  background: #0b9da3;
+}
+
+[data-theme='dark'] .unsavedMessage {
+  color: #facc15;
+}
+
+[data-theme='dark'] .savedMessage {
+  color: #86efac;
 }

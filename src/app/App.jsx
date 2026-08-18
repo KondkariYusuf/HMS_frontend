@@ -6,6 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
+import { ThemeProvider } from './ThemeContext';
 import router from './router';
 
 const THEME_STORAGE_KEY = 'hms-theme';
@@ -19,10 +20,7 @@ function getInitialTheme() {
     THEME_STORAGE_KEY,
   );
 
-  if (
-    savedTheme === 'light' ||
-    savedTheme === 'dark'
-  ) {
+  if (savedTheme === 'light' || savedTheme === 'dark') {
     return savedTheme;
   }
 
@@ -30,9 +28,7 @@ function getInitialTheme() {
 }
 
 function ThemeManager({ children }) {
-  const [theme, setTheme] = useState(
-    getInitialTheme,
-  );
+  const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -102,9 +98,11 @@ function ThemeManager({ children }) {
 export default function App() {
   return (
     <ThemeManager>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </ThemeProvider>
     </ThemeManager>
   );
 }

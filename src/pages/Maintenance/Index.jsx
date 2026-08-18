@@ -333,7 +333,7 @@ export default function MaintenanceDashboardPage() {
                 ))
               ) : (
                 <div className={styles.agendaItem}>
-                  <div className={styles.agendaTitle} style={{ color: '#888', fontStyle: 'italic' }}>No maintenance scheduled</div>
+                  <div className={styles.agendaTitle} style={{ color: 'var(--color-text-muted)', fontStyle: 'italic' }}>No maintenance scheduled</div>
                 </div>
               )}
             </div>

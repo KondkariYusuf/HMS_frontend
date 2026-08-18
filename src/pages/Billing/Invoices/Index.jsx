@@ -1,8 +1,9 @@
 /**
- * @file Billing/Invoices/Index.jsx
- * @description Master invoice listing supporting Folios, Restaurant Orders, and Purchases.
- * @figmaFrame Figma frame: Billing & Invoices (19-billing.md)
+ * @file Billing/Reports/Index.jsx
+ * @description Billing reports interface.
  */
+
+
 import React, { useState } from 'react';
 import useInvoices from '@hooks/useInvoices';
 import InvoiceDrawer from '@components/InvoiceDrawer/InvoiceDrawer';

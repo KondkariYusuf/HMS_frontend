@@ -15,7 +15,10 @@
   color: var(--color-text-primary);
 }
 
-/* Header Section */
+/* =========================
+   HEADER SECTION
+========================= */
+
 .headerRow {
   display: flex;
   justify-content: space-between;
@@ -50,7 +53,10 @@
   white-space: nowrap;
 }
 
-/* Section Cards General */
+/* =========================
+   SECTION CARDS
+========================= */
+
 .card {
   background-color: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -59,7 +65,10 @@
   box-shadow: var(--shadow-card);
 }
 
-/* Food Ordering URL Banner Card */
+/* =========================
+   FOOD ORDERING URL CARD
+========================= */
+
 .urlCard {
   display: flex;
   align-items: flex-start;
@@ -138,7 +147,10 @@
   background-color: var(--color-primary-dark);
 }
 
-/* Table Section */
+/* =========================
+   TABLE SECTION
+========================= */
+
 .tableContainer {
   overflow-x: auto;
 }
@@ -185,6 +197,10 @@
   border-bottom-right-radius: var(--radius-md);
 }
 
+/* =========================
+   TABLE INPUTS
+========================= */
+
 .cellInput {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
@@ -226,6 +242,7 @@
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   color: var(--color-text-primary);
+  background-color: transparent;
 }
 
 .cellSelect {
@@ -241,6 +258,10 @@
   cursor: pointer;
 }
 
+/* =========================
+   DELETE BUTTON
+========================= */
+
 .deleteButton {
   background: none;
   border: none;
@@ -248,7 +269,9 @@
   cursor: pointer;
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .deleteButton:hover {
@@ -256,7 +279,10 @@
   background-color: #fee2e2;
 }
 
-/* Table Footer Actions */
+/* =========================
+   TABLE FOOTER ACTIONS
+========================= */
+
 .tableActions {
   display: flex;
   justify-content: space-between;
@@ -310,17 +336,14 @@
   font-weight: 600;
 }
 
-/* Bottom Grid Section */
+/* =========================
+   BOTTOM GRID
+========================= */
+
 .bottomGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-lg);
-}
-
-@media (max-width: 900px) {
-  .bottomGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .infoCard {
@@ -335,7 +358,7 @@
 }
 
 .securityCard {
-  border-left: 4px solid #b45309;
+  border-left: 4px solid #d97706;
 }
 
 .infoCardHeader {
@@ -357,6 +380,10 @@
 .infoIcon {
   color: var(--color-text-secondary);
 }
+
+/* =========================
+   HOURS
+========================= */
 
 .hoursList {
   display: flex;
@@ -403,4 +430,118 @@
 
 .infoLink:hover {
   text-decoration: underline;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+[data-theme='dark'] .headerTitle {
+  color: var(--color-text-primary);
+}
+
+[data-theme='dark'] .urlInput {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+}
+
+[data-theme='dark'] .deleteButton:hover {
+  background-color: rgba(185, 28, 28, 0.15);
+}
+
+[data-theme='dark'] .securityCard {
+  border-left-color: #fbbf24;
+}
+
+[data-theme='dark'] .infoLink {
+  color: #fbbf24;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .headerRow {
+    flex-direction: column;
+  }
+
+  .metaBadge {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: var(--space-lg);
+    gap: var(--space-lg);
+  }
+
+  .card {
+    padding: var(--space-lg);
+  }
+
+  .urlCard {
+    flex-direction: column;
+  }
+
+  .urlInputGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copyButton {
+    justify-content: center;
+  }
+
+  .tableActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .addButton,
+  .saveButton {
+    justify-content: center;
+  }
+
+  .tableContainer {
+    margin-inline: calc(var(--space-lg) * -1);
+    padding-inline: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    padding: var(--space-md);
+  }
+
+  .card,
+  .infoCard {
+    padding: var(--space-md);
+  }
+
+  .headerTitle {
+    font-size: var(--font-size-xl);
+  }
+
+  .headerSubtitle {
+    font-size: var(--font-size-base);
+  }
+
+  .metaBadge {
+    white-space: normal;
+  }
+
+  .urlLabel {
+    font-size: var(--font-size-sm);
+  }
+
+  .tableActions {
+    margin-top: var(--space-md);
+  }
 }

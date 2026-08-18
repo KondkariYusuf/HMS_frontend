@@ -105,7 +105,7 @@
   font-size: 14px;
   color: var(--color-text-primary);
 
-  background: var(--color-white);
+  background: var(--color-input-bg);
   border: 1px solid var(--color-border);
   border-radius: 9px;
 
@@ -218,11 +218,11 @@
 }
 
 .guestRow:hover {
-  background: var(--color-primary-tint);
+  background: var(--color-row-selected);
 }
 
 .guestRow.selected {
-  background: var(--color-primary-tint);
+  background: var(--color-row-selected);
   box-shadow: inset 3px 0 0 var(--color-primary);
 }
 

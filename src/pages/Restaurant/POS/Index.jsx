@@ -525,7 +525,7 @@ export default function RestaurantPOSPage() {
                 )}
 
                 {ci.note && (
-                  <div style={{ fontSize: '11px', color: '#64748b' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
                     Note: &quot;{ci.note}&quot;
                   </div>
                 )}
@@ -570,7 +570,7 @@ export default function RestaurantPOSPage() {
             </div>
 
             <div className={styles.discountInputRow}>
-              <span style={{ fontSize: '12px', color: '#6b7280' }}>Discount %:</span>
+              <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>Discount %:</span>
               <input
                 type="number"
                 min="0"
@@ -580,7 +580,7 @@ export default function RestaurantPOSPage() {
                 className={styles.discInput}
               />
               {discountTotal > 0 && (
-                <span style={{ fontSize: '12px', color: '#16a34a' }}>
+                <span style={{ fontSize: '12px', color: '#16a34a', filter: 'var(--status-green-filter, none)' }}>
                   (-₹{discountTotal})
                 </span>
               )}
@@ -692,7 +692,7 @@ export default function RestaurantPOSPage() {
                 width: '100%',
                 padding: '8px',
                 borderRadius: '6px',
-                border: '1px solid #e5e7eb',
+                border: '1px solid var(--color-border)',
                 boxSizing: 'border-box',
               }}
             />
@@ -718,7 +718,7 @@ export default function RestaurantPOSPage() {
           }
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
+            <div style={{ padding: '12px', background: 'var(--color-hover)', borderRadius: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                 <span>Subtotal:</span>
                 <span>₹{subtotal}</span>
@@ -733,7 +733,7 @@ export default function RestaurantPOSPage() {
                 <span>GST Tax (5%):</span>
                 <span>₹{taxTotal}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '16px', color: '#0f5c5e', paddingTop: '8px', borderTop: '1px dashed #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '16px', color: 'var(--color-primary)', paddingTop: '8px', borderTop: '1px dashed var(--color-border)' }}>
                 <span>Total Amount Due:</span>
                 <span>₹{grandTotal}</span>
               </div>
@@ -757,9 +757,9 @@ export default function RestaurantPOSPage() {
                     style={{
                       padding: '10px',
                       borderRadius: '6px',
-                      border: paymentMethod === pm.id ? '2px solid #147a7e' : '1px solid #e5e7eb',
-                      background: paymentMethod === pm.id ? '#ddf1f0' : '#ffffff',
-                      color: paymentMethod === pm.id ? '#0f5c5e' : '#334155',
+                      border: paymentMethod === pm.id ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                      background: paymentMethod === pm.id ? 'var(--color-row-selected)' : 'var(--color-surface)',
+                      color: paymentMethod === pm.id ? 'var(--color-primary)' : 'var(--color-text-primary)',
                       fontWeight: 600,
                       cursor: 'pointer',
                     }}
@@ -778,7 +778,7 @@ export default function RestaurantPOSPage() {
                 <select
                   value={roomNumber}
                   onChange={(e) => setRoomNumber(e.target.value)}
-                  style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #e5e7eb' }}
+                  style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-input-bg)', color: 'var(--color-text-primary)' }}
                 >
                   <option value="Room 402 - Julian Smith">Room 402 - Julian Smith</option>
                   <option value="Room 305 - Sarah Jenkins">Room 305 - Sarah Jenkins</option>
@@ -814,7 +814,7 @@ export default function RestaurantPOSPage() {
             <select
               value={transferTargetTableId}
               onChange={(e) => setTransferTargetTableId(e.target.value)}
-              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #e5e7eb', fontSize: '14px' }}
+              style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-input-bg)', color: 'var(--color-text-primary)', fontSize: '14px' }}
             >
               <option value="">-- Choose Available Table --</option>
               {TABLES_LIST.filter((t) => t.id !== selectedTableId && t.status === 'AVAILABLE').map((t) => (

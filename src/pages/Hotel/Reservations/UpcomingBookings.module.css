@@ -246,7 +246,7 @@
 }
 
 .th {
-  background-color: var(--color-primary-tint);
+  background-color: var(--color-table-header);
   padding: var(--space-md) var(--space-lg);
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
@@ -267,7 +267,7 @@
 }
 
 .tr:hover {
-  background-color: var(--color-bg);
+  background-color: var(--color-table-row-hover);
 }
 
 .td {

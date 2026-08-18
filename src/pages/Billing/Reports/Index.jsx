@@ -3,7 +3,8 @@
  * @description Revenue breakdown, tax reports, and multi-currency analytics.
  * @figmaFrame Figma frame: Billing - Financial Reports (19-billing.md, 08-currency.md)
  */
-import React, { useState, useMemo } from 'react';
+/* global Blob, URL */
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Button from '@components/Button/Button';
 import KpiCard from '@components/KpiCard/KpiCard';
 import ChartCard from '@components/ChartCard/ChartCard';
@@ -18,7 +19,49 @@ const INITIAL_TRANSACTIONS = [
   { id: 'tx-103', guest: { name: 'David Cho', tag: 'Standard' }, category: 'Spa', branch: 'Main Resort', date: '2026-08-12', amount: 200, paymentMethod: 'Credit Card', status: 'completed' },
   { id: 'tx-104', guest: { name: 'Emily Blunt', tag: 'VIP Member' }, category: 'F&B', branch: 'Downtown Annex', date: '2026-08-13', amount: 85, paymentMethod: 'Cash', status: 'completed' },
   { id: 'tx-105', guest: { name: 'Tech Solutions Inc.', tag: 'Corporate' }, category: 'Events', branch: 'Main Resort', date: '2026-08-13', amount: 2500, paymentMethod: 'Bank Transfer', status: 'completed' },
+  { id: 'tx-106', guest: { name: 'Amara Osei', tag: 'VIP Member' }, category: 'Room', branch: 'Main Resort', date: '2026-08-14', amount: 760, paymentMethod: 'Credit Card', status: 'completed' },
+  { id: 'tx-107', guest: { name: 'Liam Torres', tag: 'Standard' }, category: 'Spa', branch: 'Downtown Annex', date: '2026-08-14', amount: 320, paymentMethod: 'Cash', status: 'completed' },
+  { id: 'tx-108', guest: { name: 'Nina Petrova', tag: 'Corporate' }, category: 'F&B', branch: 'Main Resort', date: '2026-08-15', amount: 240, paymentMethod: 'Room Charge', status: 'pending' },
+  { id: 'tx-109', guest: { name: 'Grand Corp Ltd.', tag: 'Corporate' }, category: 'Events', branch: 'Downtown Annex', date: '2026-08-15', amount: 1800, paymentMethod: 'Bank Transfer', status: 'completed' },
 ];
+
+// Category color map
+const CATEGORY_COLORS = {
+  Room: '#147a7e',
+  'F&B': '#0e9f6e',
+  Spa: '#8b5cf6',
+  Events: '#f59e0b',
+};
+
+// --- CSV Export utility ---
+function exportToCSV(data, filename = 'revenue-report.csv') {
+  const headers = ['ID', 'Guest', 'Tag', 'Category', 'Branch', 'Date', 'Amount', 'Payment Method', 'Status'];
+  const rows = data.map(tx => [
+    tx.id,
+    tx.guest?.name ?? '',
+    tx.guest?.tag ?? '',
+    tx.category,
+    tx.branch,
+    tx.date,
+    tx.amount != null ? `$${Number(tx.amount).toFixed(2)}` : '',
+    tx.paymentMethod,
+    tx.status,
+  ]);
+
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 export default function BillingReportsPage() {
   const [transactions] = useState(INITIAL_TRANSACTIONS);
@@ -27,11 +70,20 @@ export default function BillingReportsPage() {
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('');
   const [chartTimeframe, setChartTimeframe] = useState('Daily');
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const exportMenuRef = useRef(null);
 
-  const handleExport = () => {
-    console.log('Exporting Revenue Report to PDF/CSV...');
-    window.alert('Report export initiated.');
-  };
+  // Close export dropdown on outside click
+  useEffect(() => {
+    if (!exportMenuOpen) return;
+    function handleClick(e) {
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target)) {
+        setExportMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [exportMenuOpen]);
 
   const filteredData = useMemo(() => {
     return transactions.filter(tx => {
@@ -48,11 +100,26 @@ export default function BillingReportsPage() {
   const pendingRevenue = useMemo(() => filteredData.filter(tx => tx.status === 'pending').reduce((sum, tx) => sum + tx.amount, 0), [filteredData]);
   const txCount = filteredData.length;
 
+  // Category breakdown (completed only)
+  const categoryTotals = useMemo(() => {
+    const map = {};
+    filteredData.filter(tx => tx.status === 'completed').forEach(tx => {
+      map[tx.category] = (map[tx.category] || 0) + tx.amount;
+    });
+    return Object.entries(map)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat, amt]) => ({ cat, amt }));
+  }, [filteredData]);
+
+  const categoryMax = useMemo(() => Math.max(...categoryTotals.map(c => c.amt), 1), [categoryTotals]);
+
+  // Table columns
   const tableColumns = [
     { key: 'guest', title: 'Guest / Company' },
     { key: 'category', title: 'Category' },
     { key: 'branch', title: 'Branch' },
     { key: 'date', title: 'Date' },
+    { key: 'paymentMethod', title: 'Payment' },
     { key: 'amount', title: 'Amount' },
     { key: 'status', title: 'Status' },
     { key: 'actions', title: 'Actions' },
@@ -64,9 +131,21 @@ export default function BillingReportsPage() {
     category: tx.category,
     branch: tx.branch,
     date: tx.date,
+    paymentMethod: tx.paymentMethod,
     amount: `$${tx.amount.toFixed(2)}`,
     status: tx.status,
   }));
+
+  // Export handlers
+  const handleExportCSV = () => {
+    exportToCSV(filteredData, 'revenue-report.csv');
+    setExportMenuOpen(false);
+  };
+
+  const handlePrint = () => {
+    setExportMenuOpen(false);
+    window.print();
+  };
 
   return (
     <div className={styles.page} data-testid="billing-reports-page">
@@ -77,7 +156,38 @@ export default function BillingReportsPage() {
             Analyze financial performance, transactions, and revenue distribution.
           </p>
         </div>
-        <Button variant="secondary" onClick={handleExport}>Export PDF / CSV</Button>
+        <div className={styles.exportWrapper} ref={exportMenuRef}>
+          <Button
+            variant="secondary"
+            onClick={() => setExportMenuOpen(prev => !prev)}
+            aria-haspopup="menu"
+            aria-expanded={exportMenuOpen}
+          >
+            Export ▾
+          </Button>
+          {exportMenuOpen && (
+            <div className={styles.exportMenu} role="menu">
+              <button
+                type="button"
+                className={styles.exportMenuItem}
+                role="menuitem"
+                onClick={handleExportCSV}
+              >
+                <span className={styles.exportMenuIcon}>⬇</span>
+                Download CSV
+              </button>
+              <button
+                type="button"
+                className={styles.exportMenuItem}
+                role="menuitem"
+                onClick={handlePrint}
+              >
+                <span className={styles.exportMenuIcon}>🖨</span>
+                Print / Save as PDF
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* KPI Section */}
@@ -96,7 +206,7 @@ export default function BillingReportsPage() {
           value={`$${pendingRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
           subtext="Awaiting settlement"
           delta="-2.1%"
-          isPositive={true}
+          isPositive={false}
         />
         <KpiCard
           icon="🧾"
@@ -145,22 +255,72 @@ export default function BillingReportsPage() {
             onChange={(e) => setDateFilter(e.target.value)}
           />
         </div>
+        {(searchQuery || branchFilter !== 'All' || categoryFilter !== 'All' || dateFilter) && (
+          <div className={styles.filterGroup} style={{ justifyContent: 'flex-end' }}>
+            <label className={styles.filterLabel}>&nbsp;</label>
+            <button
+              type="button"
+              className={styles.clearFilterBtn}
+              onClick={() => {
+                setSearchQuery('');
+                setBranchFilter('All');
+                setCategoryFilter('All');
+                setDateFilter('');
+              }}
+            >
+              ✕ Clear Filters
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Charts Section */}
-      <div className={styles.chartsGrid}>
-        <ChartCard
-          title="Revenue Trend"
-          subtitle="Revenue distribution over selected timeframe"
-          timeframe={chartTimeframe}
-          onTimeframeChange={setChartTimeframe}
-        />
+      {/* Charts + Category Breakdown Row */}
+      <div className={styles.analyticsRow}>
+        <div className={styles.chartCell}>
+          <ChartCard
+            title="Revenue Trend"
+            subtitle="Revenue distribution over selected timeframe"
+            timeframe={chartTimeframe}
+            onTimeframeChange={setChartTimeframe}
+          />
+        </div>
+
+        {categoryTotals.length > 0 && (
+          <div className={styles.categoryBreakdown}>
+            <div className={styles.breakdownHeader}>
+              <h3 className={styles.breakdownTitle}>Revenue by Category</h3>
+              <span className={styles.breakdownSubtitle}>Completed transactions</span>
+            </div>
+            <div className={styles.breakdownBars}>
+              {categoryTotals.map(({ cat, amt }) => (
+                <div key={cat} className={styles.breakdownRow}>
+                  <span className={styles.breakdownCatLabel}>{cat}</span>
+                  <div className={styles.breakdownBarTrack}>
+                    <div
+                      className={styles.breakdownBarFill}
+                      style={{
+                        width: `${Math.round((amt / categoryMax) * 100)}%`,
+                        backgroundColor: CATEGORY_COLORS[cat] || 'var(--color-primary)',
+                      }}
+                    />
+                  </div>
+                  <span className={styles.breakdownAmt}>
+                    ${amt.toLocaleString(undefined, { minimumFractionDigits: 0 })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Detailed Transactions Table */}
       <div className={styles.tableSection}>
         <div className={styles.tableHeader}>
-          <h3 className={styles.tableTitle}>Transaction Details</h3>
+          <h3 className={styles.tableTitle}>
+            Transaction Details
+            <span className={styles.tableCount}>{txCount} record{txCount !== 1 ? 's' : ''}</span>
+          </h3>
         </div>
         {tableData.length > 0 ? (
           <DataTable

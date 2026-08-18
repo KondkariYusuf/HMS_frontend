@@ -120,11 +120,11 @@
 }
 
 .kpi-occupied .kpiTopAccent {
-  background: #f27d7d;
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .kpi-checkout .kpiTopAccent {
-  background: #f4a621;
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .kpi-tomorrow .kpiTopAccent {
@@ -186,23 +186,23 @@
 }
 
 .icon-vacant {
-  background: #dff5f5;
+  background: var(--color-highlight-bg);
   color: #147a7e;
 }
 
 .icon-occupied {
-  background: #fcecea;
+  background: color-mix(in srgb, currentColor 15%, transparent);
   color: #a65c2b;
 }
 
 .icon-checkout {
-  background: #fff3c7;
+  background: color-mix(in srgb, currentColor 15%, transparent);
   color: #f39b14;
 }
 
 .icon-tomorrow {
-  background: #e8eded;
-  color: #4f5b5d;
+  background: var(--color-hover);
+  color: var(--color-text-primary);
 }
 
 /* =========================
@@ -279,7 +279,7 @@
 }
 
 .occupiedDot {
-  background: #f26e73;
+  background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 /* =========================
@@ -411,17 +411,17 @@
 }
 
 .available {
-  background: #dff4f2;
+  background: var(--color-highlight-bg);
   color: #108082;
 }
 
 .occupied {
-  background: #fdeeee;
+  background: color-mix(in srgb, currentColor 15%, transparent);
   color: #f05f66;
 }
 
 .checkout {
-  background: #fff4d5;
+  background: color-mix(in srgb, currentColor 15%, transparent);
   color: #ef9a18;
 }
 
@@ -467,8 +467,8 @@
   margin-left: -4px;
   border: 2px solid var(--color-surface);
   border-radius: 50%;
-  background: #edf1f1;
-  color: #414b4e;
+  background: var(--color-hover);
+  color: var(--color-text-primary);
   font-size: 9px;
   font-weight: 600;
 }
@@ -767,4 +767,23 @@
   .editRoomForm {
     gap: 14px;
   }
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+[data-theme="dark"] .available {
+  background: rgba(22, 163, 74, 0.15);
+  color: #86efac;
+}
+
+[data-theme="dark"] .occupied {
+  background: rgba(185, 28, 28, 0.15);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .checkout {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
 }

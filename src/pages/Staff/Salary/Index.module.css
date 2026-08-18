@@ -157,7 +157,7 @@
 }
 
 .outstanding .summaryBadge {
-    background: #fef2f2;
+    background: var(--color-danger-bg);
     color: var(--color-error);
 }
 
@@ -329,7 +329,7 @@
 }
 
 .absent {
-    background: #fef2f2;
+    background: var(--color-danger-bg);
     color: var(--color-error);
 }
 
@@ -644,3 +644,10 @@
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .deductionRow { background: rgba(185,28,28,0.12); }
+[data-theme="dark"] .earningRow { background: rgba(22,163,74,0.12); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .deductionBg { background: rgba(185,28,28,0.12) !important; }

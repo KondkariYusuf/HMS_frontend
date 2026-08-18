@@ -13,7 +13,7 @@
 
 .eyebrow {
   margin-bottom: 7px;
-  color: #6b7779;
+  color: var(--color-text-secondary);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -29,7 +29,7 @@
 
 .subtitle {
   margin: 7px 0 0;
-  color: #7a8587;
+  color: var(--color-text-secondary);
   font-size: 13px;
 }
 
@@ -42,10 +42,10 @@
 .statCard {
   padding: 17px 18px;
 
-  border: 1px solid #e8ecec;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
 
-  background: #ffffff;
+  background: var(--color-surface);
   box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
 }
 
@@ -55,7 +55,7 @@
 }
 
 .statCard span {
-  color: #758082;
+  color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 600;
 }
@@ -70,7 +70,7 @@
 
 .statCard small {
   margin-top: 3px;
-  color: #9aa3a5;
+  color: var(--color-text-secondary);
   font-size: 10px;
 }
 
@@ -84,10 +84,10 @@
 .addCard {
   min-width: 0;
 
-  border: 1px solid #e7ebeb;
+  border: 1px solid var(--color-border);
   border-radius: 12px;
 
-  background: #ffffff;
+  background: var(--color-surface);
 
   box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
 }
@@ -112,7 +112,7 @@
 
   border-radius: 9px;
 
-  background: #e5f1f1;
+  background: var(--color-highlight-bg);
   color: #0b686d;
 
   font-size: 10px;
@@ -142,12 +142,12 @@
 
 .statusActive {
   color: #08734f;
-  background: #e9f7f0;
+  background: var(--color-highlight-bg);
 }
 
 .statusInactive {
-  color: #777f80;
-  background: #f0f2f2;
+  color: var(--color-text-secondary);
+  background: var(--color-hover);
 }
 
 .branchInfo {
@@ -155,7 +155,7 @@
 }
 
 .code {
-  color: #9aa3a4;
+  color: var(--color-text-secondary);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -171,7 +171,7 @@
 .branchInfo p {
   margin: 5px 0 0;
 
-  color: #899394;
+  color: var(--color-text-secondary);
   font-size: 11px;
 }
 
@@ -183,16 +183,16 @@
   margin-top: 18px;
   padding-top: 13px;
 
-  border-top: 1px solid #edf0f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .manager span {
-  color: #9aa3a4;
+  color: var(--color-text-secondary);
   font-size: 9px;
 }
 
 .manager strong {
-  color: #536163;
+  color: var(--color-text-secondary);
   font-size: 11px;
 }
 
@@ -202,7 +202,7 @@
 
   margin-top: 15px;
 
-  border: 1px solid #edf0f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
 }
 
@@ -212,7 +212,7 @@
 }
 
 .metrics div+div {
-  border-left: 1px solid #edf0f0;
+  border-left: 1px solid var(--color-border);
 }
 
 .metrics strong,
@@ -227,7 +227,7 @@
 
 .metrics span {
   margin-top: 2px;
-  color: #969fa0;
+  color: var(--color-text-secondary);
   font-size: 9px;
 }
 
@@ -243,10 +243,10 @@
 
   height: 34px;
 
-  border: 1px solid #e1e6e6;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
 
-  background: #ffffff;
+  background: var(--color-surface);
 
   color: #0b686d;
 
@@ -258,7 +258,7 @@
 }
 
 .cardActions button:hover {
-  background: #f5f9f9;
+  background: var(--color-hover);
 }
 
 .addCard {
@@ -275,7 +275,7 @@
 
   cursor: pointer;
 
-  color: #7b8788;
+  color: var(--color-text-secondary);
 
   transition:
     background 0.16s ease,
@@ -283,7 +283,7 @@
 }
 
 .addCard:hover {
-  background: #fbfdfd;
+  background: var(--color-surface);
   border-color: #a9c6c7;
 }
 
@@ -297,7 +297,7 @@
 
   border-radius: 50%;
 
-  background: #edf5f5;
+  background: var(--color-highlight-bg);
   color: #0b686d;
 
   font-size: 22px;
@@ -305,13 +305,13 @@
 
 .addCard strong {
   margin-top: 11px;
-  color: #405254;
+  color: var(--color-text-primary);
   font-size: 12px;
 }
 
 .addCard small {
   margin-top: 5px;
-  color: #9aa3a4;
+  color: var(--color-text-secondary);
   font-size: 9px;
 }
 
@@ -340,7 +340,7 @@
   padding: 24px;
 
   border-radius: 14px;
-  background: #ffffff;
+  background: var(--color-surface);
 
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
 }
@@ -363,7 +363,7 @@
 .modalHeader p {
   margin: 5px 0 0;
 
-  color: #899394;
+  color: var(--color-text-secondary);
   font-size: 11px;
 }
 
@@ -374,9 +374,9 @@
   border: 0;
   border-radius: 6px;
 
-  background: #f2f4f4;
+  background: var(--color-hover);
 
-  color: #687274;
+  color: var(--color-text-secondary);
   font-size: 20px;
 
   cursor: pointer;
@@ -387,7 +387,7 @@
   flex-direction: column;
   gap: 6px;
 
-  color: #4e5d5f;
+  color: var(--color-text-primary);
   font-size: 11px;
   font-weight: 600;
 }
@@ -399,7 +399,7 @@
 
   padding: 0 11px;
 
-  border: 1px solid #e0e6e6;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
 
   outline: none;
@@ -426,7 +426,7 @@
   margin-top: 3px;
   padding-top: 15px;
 
-  border-top: 1px solid #edf0f0;
+  border-top: 1px solid var(--color-border);
 }
 
 .modalActions>button:first-child {
@@ -434,11 +434,11 @@
 
   padding: 0 14px;
 
-  border: 1px solid #dfe5e5;
+  border: 1px solid var(--color-border);
   border-radius: 7px;
 
-  background: #ffffff;
-  color: #667173;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
 
   font-size: 11px;
 
@@ -468,4 +468,30 @@
   .formGrid {
     grid-template-columns: 1fr;
   }
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .statusActive {
+  background: rgba(22, 163, 74, 0.2) !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .highlight {
+  background: var(--color-hover) !important;
+}
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .branchCard {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .activeStatus {
+  background: rgba(22, 163, 74, 0.2) !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .inactiveStatus {
+  background: var(--color-hover) !important;
+  color: var(--color-text-muted) !important;
 }
