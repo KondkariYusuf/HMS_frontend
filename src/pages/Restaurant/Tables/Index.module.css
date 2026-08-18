@@ -319,3 +319,13 @@
   color: var(--color-primary);
   transform: scale(1.03);
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .tableAvailable { background-color: rgba(37,99,235,0.15); }
+[data-theme="dark"] .tableOccupied { background-color: rgba(217,119,6,0.15); }
+[data-theme="dark"] .tableDirty { background-color: rgba(185,28,28,0.15); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .AVAILABLE { background-color: rgba(37,99,235,0.15) !important; }
+[data-theme="dark"] .OCCUPIED { background-color: rgba(217,119,6,0.15) !important; }
+[data-theme="dark"] .DIRTY, [data-theme="dark"] .RESERVED { background-color: rgba(185,28,28,0.15) !important; }

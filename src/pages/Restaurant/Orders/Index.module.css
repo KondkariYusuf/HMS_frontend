@@ -337,3 +337,13 @@
   opacity: 0.9;
   margin: 0;
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .statusCompleted { background-color: rgba(22,163,74,0.2); color: #86efac; }
+[data-theme="dark"] .statusPending { background-color: rgba(217,119,6,0.2); color: #fbbf24; }
+[data-theme="dark"] .statusInfo { background-color: rgba(37,99,235,0.2); color: #93c5fd; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .COMPLETED { background-color: rgba(22,163,74,0.2) !important; color: #86efac !important; }
+[data-theme="dark"] .PENDING { background-color: rgba(217,119,6,0.2) !important; color: #fbbf24 !important; }
+[data-theme="dark"] .IN_PROGRESS { background-color: rgba(37,99,235,0.2) !important; color: #93c5fd !important; }

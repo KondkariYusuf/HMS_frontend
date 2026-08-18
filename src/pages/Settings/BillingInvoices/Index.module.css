@@ -31,7 +31,7 @@
 }
 
 .crumbChevron {
-  color: #9ca3af;
+  color: var(--color-text-secondary);
 }
 
 .crumbActive {
@@ -44,7 +44,7 @@
 
 .mainCard,
 .settingsCard {
-  background: var(--color-surface, #ffffff);
+  background: var(--color-surface);
   border-radius: var(--radius-lg, 1rem);
   padding: 2.5rem;
   box-shadow:
@@ -80,7 +80,7 @@
 /* previewButton alias for outlineBtn */
 .previewButton {
   flex-shrink: 0;
-  background: var(--color-surface, #fff);
+  background: var(--color-surface);
   border: 1px solid var(--color-border, #e5e7eb);
   padding: 0.625rem 1.25rem;
   border-radius: 9999px;
@@ -92,8 +92,8 @@
 }
 
 .previewButton:hover {
-  background: var(--color-bg, #f9fafb);
-  border-color: #d1d5db;
+  background: var(--color-bg);
+  border-color: var(--color-border);
 }
 
 .headerIcon {
@@ -123,7 +123,7 @@
 
 .outlineBtn {
   flex-shrink: 0;
-  background: var(--color-surface, #fff);
+  background: var(--color-surface);
   border: 1px solid var(--color-border, #e5e7eb);
   padding: 0.625rem 1.25rem;
   border-radius: 9999px;
@@ -135,8 +135,8 @@
 }
 
 .outlineBtn:hover {
-  background: var(--color-bg, #f9fafb);
-  border-color: #d1d5db;
+  background: var(--color-bg);
+  border-color: var(--color-border);
 }
 
 /* =========================
@@ -236,7 +236,7 @@
   box-sizing: border-box;
   padding: 0.8rem 1rem;
   border: 1px solid var(--color-border, #e5e7eb);
-  background-color: var(--color-bg, #f9fafb);
+  background-color: var(--color-bg);
   border-radius: var(--radius-sm, 0.5rem);
   font-size: 0.875rem;
   color: var(--color-text-primary, #374151);
@@ -255,7 +255,7 @@
 
 .inputWrapper input:focus,
 .inputWrapper select:focus {
-  background-color: var(--color-surface, #fff);
+  background-color: var(--color-surface);
   border-color: var(--color-primary, #147a7e);
   box-shadow: 0 0 0 2px rgba(20, 122, 126, 0.08);
 }
@@ -268,7 +268,7 @@
 }
 
 .inputWrapper input::placeholder {
-  color: #9ca3af;
+  color: var(--color-text-secondary);
 }
 
 /* =========================
@@ -288,7 +288,7 @@
   box-sizing: border-box;
   padding: 0.8rem 2.75rem 0.8rem 1rem;
   border: 1px solid var(--color-border, #e5e7eb);
-  background-color: var(--color-bg, #f9fafb);
+  background-color: var(--color-bg);
   border-radius: var(--radius-sm, 0.5rem);
   font-size: 0.875rem;
   color: var(--color-text-primary, #374151);
@@ -304,7 +304,7 @@
 }
 
 .selectWrapper select:focus {
-  background-color: var(--color-surface, #fff);
+  background-color: var(--color-surface);
   border-color: var(--color-primary, #147a7e);
   box-shadow: 0 0 0 2px rgba(20, 122, 126, 0.08);
 }
@@ -433,7 +433,7 @@
 }
 
 .toggleOff {
-  background-color: #d1d5db;
+  background-color: var(--color-hover);
 }
 
 .toggleKnob {
@@ -442,7 +442,7 @@
   left: 2px;
   width: 24px;
   height: 24px;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 50%;
   transition: transform 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -526,7 +526,7 @@
 
 .proTipBanner,
 .proTip {
-  background-color: #f0f7f8;
+  background-color: var(--color-highlight-bg);
   border-radius: var(--radius-md, 0.75rem);
   padding: 1rem 1.25rem;
   display: flex;
@@ -584,7 +584,7 @@
   max-height: 90vh;
   overflow-y: auto;
   box-sizing: border-box;
-  background: #ffffff;
+  background: var(--color-surface);
   padding: 2rem;
   border-radius: 1rem;
   box-shadow:
@@ -598,14 +598,14 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .modalTitle {
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .closeButton {
@@ -617,7 +617,7 @@
   background: transparent;
   font-size: 1.5rem;
   line-height: 1;
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -625,8 +625,8 @@
 }
 
 .closeButton:hover {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--color-hover);
+  color: var(--color-text-primary);
 }
 
 /* =========================
@@ -634,10 +634,10 @@
    ========================= */
 
 .invoicePreview {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   padding: 2rem;
   border-radius: 0.5rem;
-  background-color: #fafafa;
+  background-color: var(--color-surface);
 }
 
 .invoiceHeader {
@@ -656,7 +656,7 @@
   text-align: right;
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .invoiceTo {
@@ -675,13 +675,13 @@
 .invoiceTable th,
 .invoiceTable td {
   padding: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
   text-align: left;
 }
 
 .invoiceTable th {
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-primary);
 }
 
 .invoiceTable .rightAlign {
@@ -693,7 +693,7 @@
   justify-content: flex-end;
   font-size: 1.125rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 /* =========================
@@ -1045,3 +1045,11 @@
   letter-spacing: 0.05em;
   text-align: center;
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .previewBg { background-color: var(--color-hover) !important; }
+[data-theme="dark"] .dividerLine { background-color: var(--color-border) !important; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .previewWrap { background-color: var(--color-hover) !important; }
+[data-theme="dark"] .divBar { background-color: var(--color-border) !important; }

@@ -618,3 +618,12 @@
   background-color: var(--color-primary-dark);
   color: var(--color-white);
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .statusGood { background-color: rgba(22,163,74,0.2); color: #86efac; }
+[data-theme="dark"] .statusWarning { background-color: rgba(217,119,6,0.2); color: #fbbf24; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .chartBar { background-color: var(--color-primary) !important; }
+[data-theme="dark"] .greenBadge { background-color: rgba(22,163,74,0.2) !important; color: #86efac !important; }
+[data-theme="dark"] .orangeBadge { background-color: rgba(217,119,6,0.2) !important; color: #fbbf24 !important; }

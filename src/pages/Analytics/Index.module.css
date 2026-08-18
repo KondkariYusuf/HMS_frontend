@@ -35,14 +35,14 @@
   line-height: 1.15;
   font-weight: 700;
   letter-spacing: -1px;
-  color: #1f2425;
+  color: var(--color-text-primary);
 }
 
 .subtitle {
   margin: 0;
   font-size: 18px;
   line-height: 1.4;
-  color: #4f5b5d;
+  color: var(--color-text-primary);
 }
 
 .topActions {
@@ -60,10 +60,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  background: #ffffff;
-  border: 1px solid #bdcacc;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 15px;
-  color: #202729;
+  color: var(--color-text-primary);
   font-family: inherit;
   font-size: 16px;
   font-weight: 600;
@@ -82,9 +82,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #bdcacc;
+  border: 1px solid var(--color-border);
   border-radius: 15px;
-  background: #ffffff;
+  background: var(--color-surface);
   color: #263234;
   font-size: 28px;
   line-height: 1;
@@ -112,10 +112,10 @@
 .roleButton {
   height: 40px;
   padding: 0 25px;
-  border: 1px solid #b8c6c8;
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: #ffffff;
-  color: #3e494b;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -146,9 +146,9 @@
   justify-content: space-between;
   padding: 22px 25px 22px 28px;
   border-radius: 24px;
-  background: #ffffff;
+  background: var(--color-surface);
   box-shadow: 0 5px 20px rgba(15, 92, 94, 0.07);
-  border-left: 5px solid #087579;
+  border-left: 5px solid var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -163,7 +163,7 @@
   line-height: 1;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: #4b5759;
+  color: var(--color-text-primary);
 }
 
 .payrollAmount {
@@ -171,7 +171,7 @@
   line-height: 1.15;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: #202526;
+  color: var(--color-text-primary);
 }
 
 .payrollIcon {
@@ -181,7 +181,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 15px;
-  background: #e3f7f8;
+  background: var(--color-highlight-bg);
   color: #006f74;
   font-size: 29px;
   font-weight: 700;
@@ -194,8 +194,8 @@
 .tableCard {
   width: 100%;
   overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #edf0f0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 24px;
   box-shadow: 0 5px 22px rgba(15, 92, 94, 0.06);
 }
@@ -216,9 +216,9 @@
 .salaryTable th {
   height: 68px;
   padding: 0 14px;
-  background: #f4f7f7;
-  border-bottom: 1px solid #e3e8e8;
-  color: #445052;
+  background: var(--color-table-header);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -251,8 +251,8 @@
 
 .salaryTable td {
   height: 136px;
-  border-bottom: 1px solid #edf0f0;
-  background: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
 .employeeCell {
@@ -265,7 +265,7 @@
   font-size: 16px;
   line-height: 1.35;
   font-weight: 700;
-  color: #202526;
+  color: var(--color-text-primary);
 }
 
 .employeeRole {
@@ -273,7 +273,7 @@
   margin-top: 2px;
   font-size: 14px;
   line-height: 1.35;
-  color: #586466;
+  color: var(--color-text-secondary);
 }
 
 .salaryCell,
@@ -282,14 +282,14 @@
   text-align: center;
   vertical-align: middle;
   font-size: 16px;
-  color: #455154;
+  color: var(--color-text-primary);
   white-space: nowrap;
 }
 
 .highlightHeader,
 .highlightCell,
 .highlightTotal {
-  background: #f1f8f8 !important;
+  background: var(--color-highlight-bg) !important;
 }
 
 .highlightHeader {
@@ -299,15 +299,15 @@
 .highlightCell {
   color: #006f74;
   font-weight: 700;
-  border-left: 1px solid #e1eded;
-  border-right: 1px solid #e1eded;
+  border-left: 1px solid var(--color-highlight-border);
+  border-right: 1px solid var(--color-highlight-border);
 }
 
 .totalCell {
   padding: 0 18px;
   text-align: right;
   vertical-align: middle;
-  color: #202526;
+  color: var(--color-text-primary);
   font-size: 19px;
   font-weight: 700;
   text-decoration: underline;
@@ -323,7 +323,7 @@
 
 .totalRow td {
   height: 116px;
-  background: #f8fafa;
+  background: var(--color-table-total-row);
   border-bottom: 0;
   font-weight: 700;
 }
@@ -334,7 +334,7 @@
   vertical-align: middle;
   font-size: 19px;
   line-height: 1.35;
-  color: #202526;
+  color: var(--color-text-primary);
 }
 
 .monthlyTotalLabel span {
@@ -346,7 +346,7 @@
   vertical-align: middle;
   padding: 0 8px;
   font-size: 16px;
-  color: #202526;
+  color: var(--color-text-primary);
   white-space: nowrap;
 }
 
@@ -357,8 +357,8 @@
   font-size: 16px;
   color: #006f74;
   font-weight: 700;
-  border-left: 1px solid #cfe2e3;
-  border-right: 1px solid #cfe2e3;
+  border-left: 1px solid var(--color-highlight-border);
+  border-right: 1px solid var(--color-highlight-border);
   white-space: nowrap;
 }
 
@@ -387,7 +387,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  color: #566164;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
@@ -403,10 +403,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #c4d0d2;
+  border: 1px solid var(--color-border);
   border-radius: 11px;
-  background: #ffffff;
-  color: #677274;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
   font-size: 25px;
   line-height: 1;
   cursor: pointer;
@@ -418,7 +418,7 @@
   padding: 0 7px;
   border: 0;
   background: transparent;
-  color: #263032;
+  color: var(--color-text-primary);
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -432,7 +432,7 @@
 }
 
 .morePages {
-  color: #555f61;
+  color: var(--color-text-secondary);
   font-weight: 600;
 }
 
@@ -514,3 +514,11 @@
     padding: 0 18px;
   }
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .topGuest { background: rgba(20,122,126,0.15); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .analyticsCard { background: var(--color-surface) !important; border-color: var(--color-border) !important; }
+[data-theme="dark"] .highlightRow { background: var(--color-highlight-bg) !important; }
+[data-theme="dark"] .metricBadge { background: var(--color-hover) !important; border-color: var(--color-border) !important; }

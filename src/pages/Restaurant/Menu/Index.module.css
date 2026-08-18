@@ -335,7 +335,7 @@
 }
 
 .securityCard {
-  border-left: 4px solid #b45309;
+  border-left: 4px solid #d97706;
 }
 
 .infoCardHeader {
@@ -404,3 +404,9 @@
 .infoLink:hover {
   text-decoration: underline;
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .deleteBg { background-color: rgba(185,28,28,0.15); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .deleteZone { background-color: rgba(185,28,28,0.12) !important; }

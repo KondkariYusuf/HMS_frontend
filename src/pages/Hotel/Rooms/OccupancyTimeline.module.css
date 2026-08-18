@@ -50,7 +50,7 @@
     display: inline-flex;
     align-items: center;
     padding: 4px;
-    background: #ffffff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 999px;
     box-shadow: 0 2px 8px rgba(24, 44, 52, 0.04);
@@ -93,7 +93,7 @@
     padding: 8px 14px;
     border: 1px solid var(--color-border);
     border-radius: 12px;
-    background: #ffffff;
+    background: var(--color-surface);
     color: var(--color-text-primary);
     font-family: inherit;
     font-size: 13px;
@@ -150,7 +150,7 @@
 
 .timelineCard {
     overflow: hidden;
-    background: #ffffff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 18px;
     box-shadow: var(--shadow-card);
@@ -160,8 +160,8 @@
     display: grid;
     grid-template-columns: 170px repeat(7, minmax(105px, 1fr));
     min-width: 905px;
-    border-bottom: 1px solid #edf1f2;
-    background: #ffffff;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .roomHeader {
@@ -183,7 +183,7 @@
     align-items: center;
     justify-content: center;
     gap: 2px;
-    border-left: 1px solid #f0f3f4;
+    border-left: 1px solid var(--color-border);
     color: var(--color-text-secondary);
 }
 
@@ -198,7 +198,7 @@
 }
 
 .todayHeader {
-    background: #dff2f1;
+    background: var(--color-highlight-bg);
 }
 
 .todayHeader span,
@@ -216,7 +216,7 @@
     grid-template-columns: 170px repeat(7, minmax(105px, 1fr));
     min-width: 905px;
     min-height: 104px;
-    border-bottom: 1px solid #eff2f3;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .timelineRow:last-child {
@@ -231,8 +231,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    background: #ffffff;
-    border: 1px solid #e9edee;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     box-shadow: 0 2px 7px rgba(18, 40, 47, 0.03);
 }
@@ -250,7 +250,7 @@
 }
 
 .timelineCell {
-    border-left: 1px solid #f1f3f4;
+    border-left: 1px solid var(--color-border);
 }
 
 .todayColumn {
@@ -292,7 +292,7 @@
 }
 
 .occupied {
-    background: #fff0ed;
+    background: var(--color-hover);
     border-left-color: #ff7d75;
     color: #e93d37;
 }
@@ -302,7 +302,7 @@
 }
 
 .pending {
-    background: #fff7dc;
+    background: color-mix(in srgb, currentColor 15%, transparent);
     border-left-color: #ffc43e;
     color: #805f4f;
 }
@@ -312,7 +312,7 @@
 }
 
 .confirmed {
-    background: #daf3f1;
+    background: var(--color-highlight-bg);
     border-left-color: #4db7b1;
     color: #087b79;
 }
@@ -322,9 +322,9 @@
 }
 
 .maintenance {
-    background: #edf0f1;
-    border-left-color: #cfd6d7;
-    color: #596466;
+    background: var(--color-hover);
+    border-left-color: var(--color-border);
+    color: var(--color-text-secondary);
 }
 
 /* =========================
@@ -338,8 +338,8 @@
     gap: 22px;
     flex-wrap: wrap;
     padding: 15px 18px;
-    border-top: 1px solid #edf1f2;
-    background: #ffffff;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
 }
 
 .legendTitle {
@@ -365,11 +365,11 @@
 }
 
 .dot-occupied {
-    background: #ff8078;
+    background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .dot-pending {
-    background: #ffc542;
+    background: color-mix(in srgb, currentColor 15%, transparent);
 }
 
 .dot-confirmed {
@@ -396,7 +396,7 @@
     display: flex;
     flex-direction: column;
     gap: 9px;
-    background: #ffffff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 14px;
     box-shadow: var(--shadow-card);
@@ -447,7 +447,7 @@
 
 .secondary-rate {
     padding: 2px 5px;
-    border: 1px solid #4bcf74;
+    border: 1px solid rgba(22,163,74,0.5);
     color: #21a24d;
     line-height: 1;
 }
@@ -558,3 +558,14 @@
         bottom: 20px;
     }
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .available { background: rgba(22,163,74,0.15) !important; }
+[data-theme="dark"] .occupied { background: rgba(185,28,28,0.15) !important; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .timelineCell { border-color: var(--color-border) !important; }
+[data-theme="dark"] .timelineHeader { border-color: var(--color-border) !important; }
+[data-theme="dark"] .roomRow { border-color: var(--color-border) !important; }
+[data-theme="dark"] .available { background: rgba(22,163,74,0.15) !important; }
+[data-theme="dark"] .occupied { background: rgba(185,28,28,0.2) !important; }

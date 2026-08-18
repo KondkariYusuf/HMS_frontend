@@ -4,5 +4,258 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 24px;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.configBtn {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.configBtn:hover {
+  background: #f0fdf4;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.kpiCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.kpiIconBox {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--color-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.kpiContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiLabel {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.kpiValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.ledgerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ledgerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ledgerTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filterPill {
+  padding: 6px 16px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterPill:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.activeFilter {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.activeFilter:hover {
+  color: #fff;
+}
+
+.tableCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 16px;
+  background: var(--color-table-header);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s;
+}
+
+.tableRow:hover {
+  background: var(--color-table-row-hover);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.table td {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.txId {
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.customerName {
+  font-weight: 600;
+}
+
+.typeBadge {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.EARN {
+  background: #dcfce7;
+  color: #166534;
+}
+.REDEEM {
+  background: #fef9c3;
+  color: #854d0e;
+}
+.ADJUST {
+  background: var(--color-hover);
+  color: #475569;
+}
+
+.points {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.positivePoints {
+  color: #16a34a;
+}
+.negativePoints {
+  color: #dc2626;
+}
+
+.balance {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.reasonCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.referenceText {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px !important;
+  color: var(--color-text-secondary);
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .activeStatus { background: rgba(22,163,74,0.2); }
+[data-theme="dark"] .pendingStatus { background: rgba(217,119,6,0.2); }
+
+/* === Supplemental Dark Overrides === */
+[data-theme="dark"] .loyaltyCard { background: var(--color-surface) !important; }

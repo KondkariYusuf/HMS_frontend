@@ -296,7 +296,7 @@
 }
 
 .vacatedStatus {
-    background: #fff7ed;
+    background: var(--color-surface);
     color: #ea580c;
 }
 
@@ -620,3 +620,19 @@
         padding: var(--space-md);
     }
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .clean { background: rgba(22,163,74,0.15); }
+[data-theme="dark"] .dirty { background: rgba(217,119,6,0.15); }
+[data-theme="dark"] .urgent { background: rgba(185,28,28,0.15); }
+[data-theme="dark"] .statusCard { background: rgba(185,28,28,0.12); }
+[data-theme="dark"] .cleanCard { background: rgba(22,163,74,0.12); }
+[data-theme="dark"] .pendingCard { background: rgba(217,119,6,0.12); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .CLEAN { background: rgba(22,163,74,0.15) !important; }
+[data-theme="dark"] .DIRTY { background: rgba(217,119,6,0.15) !important; }
+[data-theme="dark"] .URGENT { background: rgba(185,28,28,0.15) !important; }
+[data-theme="dark"] .statusPanel { background: rgba(185,28,28,0.12) !important; }
+[data-theme="dark"] .cleanPanel { background: rgba(22,163,74,0.12) !important; }
+[data-theme="dark"] .pendingPanel { background: rgba(217,119,6,0.12) !important; }
