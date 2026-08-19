@@ -212,6 +212,7 @@
   background-color: var(--color-surface);
   outline: none;
   transition: border-color 0.2s ease;
+  height: 36px;
 }
 
 .cellInput:focus {
@@ -238,7 +239,7 @@
   border: none;
   padding: var(--space-sm) 0;
   outline: none;
-  width: 70px;
+  width: 100%;
   font-family: var(--font-family);
   font-size: var(--font-size-base);
   color: var(--color-text-primary);
@@ -256,6 +257,7 @@
   background-color: var(--color-surface);
   outline: none;
   cursor: pointer;
+  height: 36px;
 }
 
 /* =========================
