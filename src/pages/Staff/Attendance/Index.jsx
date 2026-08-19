@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Index.module.css';
 
 const attendanceSummary = [
@@ -48,7 +48,7 @@ const staffFilters = [
     'Housekeeping',
 ];
 
-const managers = [
+const INITIAL_MANAGERS = [
     {
         id: 'emp-201',
         name: 'Eleanor Vance',
@@ -75,7 +75,7 @@ const managers = [
     },
 ];
 
-const waiters = [
+const INITIAL_WAITERS = [
     {
         id: 'emp-204',
         name: 'Sara Lopez',
@@ -112,7 +112,7 @@ const getInitials = (name) => {
         .toUpperCase();
 };
 
-function StaffCard({ staff }) {
+function StaffCard({ staff, onStatusChange }) {
     return (
         <div
             className={`${styles.staffCard} ${staff.marked ? styles.markedCard : ''
@@ -129,7 +129,7 @@ function StaffCard({ staff }) {
                     <p className={styles.staffSalary}>{staff.salary}</p>
                 </div>
 
-                <button className={styles.moreButton} type="button">
+                <button className={styles.moreButton} type="button" onClick={() => window.alert(`Options for ${staff.name}: Edit, View Profile`)}>
                     ⋮
                 </button>
 
@@ -145,13 +145,15 @@ function StaffCard({ staff }) {
                     type="button"
                     className={`${styles.statusButton} ${styles.presentButton} ${staff.status === 'Present' ? styles.active : ''
                         }`}
+                    onClick={() => onStatusChange(staff.id, 'Present')}
                 >
                     Present
                 </button>
 
                 <button
                     type="button"
-                    className={`${styles.statusButton} ${styles.doubleButton}`}
+                    className={`${styles.statusButton} ${styles.doubleButton} ${staff.status === 'Double' ? styles.active : ''}`}
+                    onClick={() => onStatusChange(staff.id, 'Double')}
                 >
                     Double
                 </button>
@@ -160,6 +162,7 @@ function StaffCard({ staff }) {
                     type="button"
                     className={`${styles.statusButton} ${styles.leaveButton} ${staff.status === 'Leave' ? styles.active : ''
                         }`}
+                    onClick={() => onStatusChange(staff.id, 'Leave')}
                 >
                     Leave
                 </button>
@@ -168,6 +171,7 @@ function StaffCard({ staff }) {
                     <button
                         type="button"
                         className={`${styles.statusButton} ${styles.absentButton} ${styles.active}`}
+                        onClick={() => onStatusChange(staff.id, 'Absent')}
                     >
                         Absent
                     </button>
@@ -176,6 +180,7 @@ function StaffCard({ staff }) {
                         type="button"
                         className={styles.helpButton}
                         aria-label="Unmarked"
+                        onClick={() => onStatusChange(staff.id, 'Absent')}
                     >
                         ?
                     </button>
@@ -195,7 +200,7 @@ function StaffCard({ staff }) {
     );
 }
 
-function StaffSection({ title, total, staff }) {
+function StaffSection({ title, total, staff, onStatusChange, onSelectAll }) {
     return (
         <section className={styles.staffSection}>
             <div className={styles.sectionHeader}>
@@ -212,6 +217,7 @@ function StaffSection({ title, total, staff }) {
                 <button
                     type="button"
                     className={styles.selectAllButton}
+                    onClick={() => onSelectAll(title)}
                 >
                     Select All
                 </button>
@@ -222,6 +228,7 @@ function StaffSection({ title, total, staff }) {
                     <StaffCard
                         key={employee.id}
                         staff={employee}
+                        onStatusChange={onStatusChange}
                     />
                 ))}
             </div>
@@ -230,6 +237,41 @@ function StaffSection({ title, total, staff }) {
 }
 
 export default function StaffAttendance() {
+    const [activeFilter, setActiveFilter] = useState('All Staff');
+    const [managers, setManagers] = useState(INITIAL_MANAGERS);
+    const [waiters, setWaiters] = useState(INITIAL_WAITERS);
+
+    const handleStatusChange = (id, newStatus) => {
+        setManagers((prev) =>
+            prev.map((emp) =>
+                emp.id === id ? { ...emp, status: newStatus, marked: true } : emp
+            )
+        );
+        setWaiters((prev) =>
+            prev.map((emp) =>
+                emp.id === id ? { ...emp, status: newStatus, marked: true } : emp
+            )
+        );
+    };
+
+    const handleSelectAll = (sectionTitle) => {
+        const markAll = (list) =>
+            list.map((emp) => ({ ...emp, status: 'Present', marked: true }));
+        if (sectionTitle === 'Managers') setManagers(markAll);
+        if (sectionTitle === 'Waiters') setWaiters(markAll);
+    };
+
+    const handleExportPDF = () => window.print();
+
+    const handleFloatingSubmit = () => {
+        const allMarked = [...managers, ...waiters].every((e) => e.marked);
+        if (allMarked) {
+            window.alert('All attendance marked and submitted successfully!');
+        } else {
+            window.alert('Attendance submitted. Note: some staff members are still unmarked.');
+        }
+    };
+
     return (
         <div className={styles.page}>
             <header className={styles.header}>
@@ -257,6 +299,7 @@ export default function StaffAttendance() {
                     <button
                         type="button"
                         className={styles.exportButton}
+                        onClick={handleExportPDF}
                     >
                         ↓ &nbsp; Export PDF
                     </button>
@@ -264,12 +307,13 @@ export default function StaffAttendance() {
             </header>
 
             <nav className={styles.filterBar}>
-                {staffFilters.map((filter, index) => (
+                {staffFilters.map((filter) => (
                     <button
                         key={filter}
                         type="button"
-                        className={`${styles.filterButton} ${index === 0 ? styles.activeFilter : ''
+                        className={`${styles.filterButton} ${activeFilter === filter ? styles.activeFilter : ''
                             }`}
+                        onClick={() => setActiveFilter(filter)}
                     >
                         {filter}
                     </button>
@@ -304,18 +348,23 @@ export default function StaffAttendance() {
                 title="Managers"
                 total="12"
                 staff={managers}
+                onStatusChange={handleStatusChange}
+                onSelectAll={handleSelectAll}
             />
 
             <StaffSection
                 title="Waiters"
                 total="32"
                 staff={waiters}
+                onStatusChange={handleStatusChange}
+                onSelectAll={handleSelectAll}
             />
 
             <button
                 type="button"
                 className={styles.floatingButton}
                 aria-label="Attendance action"
+                onClick={handleFloatingSubmit}
             >
                 ✓
             </button>

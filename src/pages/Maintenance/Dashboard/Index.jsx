@@ -164,6 +164,50 @@ export default function MaintenanceDashboardPage() {
   const [newTaskName, setNewTaskName] = useState('');
   const [newReporter, setNewReporter] = useState('');
 
+  // Edit task state
+  const [editingTask, setEditingTask] = useState(null);
+  const [editTaskName, setEditTaskName] = useState('');
+  const [editReporter, setEditReporter] = useState('');
+  const [editStatus, setEditStatus] = useState('PENDING');
+  const [editPriority, setEditPriority] = useState('Normal');
+
+  const handleOpenEdit = (task) => {
+    setEditingTask(task);
+    setEditTaskName(task.name);
+    // Parse reporter from meta string: "Reported X ago • By REPORTER"
+    const byMatch = task.meta.match(/By (.+)$/);
+    setEditReporter(byMatch ? byMatch[1] : '');
+    setEditStatus(task.status);
+    setEditPriority(task.priority);
+  };
+
+  const handleEditTask = (e) => {
+    e.preventDefault();
+    if (!editTaskName.trim()) return;
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === editingTask.id
+          ? {
+              ...t,
+              name: editTaskName.trim(),
+              meta: editReporter.trim()
+                ? `${t.meta.split(' •')[0]} • By ${editReporter.trim()}`
+                : t.meta,
+              status: editStatus,
+              priority: editPriority,
+            }
+          : t
+      )
+    );
+    setEditingTask(null);
+  };
+
+  const handleUndoTask = (taskId) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, status: 'PENDING' } : t))
+    );
+  };
+
   const handleAddTask = (e) => {
     e.preventDefault();
     if (!newTaskName || !newReporter) return;
@@ -238,6 +282,65 @@ export default function MaintenanceDashboardPage() {
               <div className={styles.modalActions}>
                 <button type="button" className={styles.cancelButton} onClick={() => setIsModalOpen(false)}>Cancel</button>
                 <button type="submit" className={styles.primaryButton}>Add Task</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Task Modal */}
+      {editingTask && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h2 className={styles.modalTitle}>Edit Task</h2>
+            <form onSubmit={handleEditTask}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Task Name</label>
+                <input
+                  type="text"
+                  value={editTaskName}
+                  onChange={(e) => setEditTaskName(e.target.value)}
+                  className={styles.input}
+                  placeholder="e.g. Broken AC in Room 101"
+                  required
+                  autoFocus
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Reported By</label>
+                <input
+                  type="text"
+                  value={editReporter}
+                  onChange={(e) => setEditReporter(e.target.value)}
+                  className={styles.input}
+                  placeholder="e.g. Guest (John Doe) or Housekeeping"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Status</label>
+                <select
+                  value={editStatus}
+                  onChange={(e) => setEditStatus(e.target.value)}
+                  className={styles.input}
+                >
+                  <option value="PENDING">PENDING</option>
+                  <option value="COMPLETED">COMPLETED</option>
+                </select>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Priority</label>
+                <select
+                  value={editPriority}
+                  onChange={(e) => setEditPriority(e.target.value)}
+                  className={styles.input}
+                >
+                  <option value="Normal">Normal</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.cancelButton} onClick={() => setEditingTask(null)}>Cancel</button>
+                <button type="submit" className={styles.primaryButton}>Save Changes</button>
               </div>
             </form>
           </div>
@@ -365,7 +468,14 @@ export default function MaintenanceDashboardPage() {
                 <span className={`${styles.badge} ${task.status === 'PENDING' ? styles.badgePending : styles.badgeCompleted}`}>
                   {task.status}
                 </span>
-                {task.status === 'COMPLETED' && <button className={styles.undoBtn}>Undo</button>}
+                {task.status === 'COMPLETED' && <button className={styles.undoBtn} onClick={() => handleUndoTask(task.id)}>Undo</button>}
+                <button
+                  className={styles.undoBtn}
+                  onClick={() => handleOpenEdit(task)}
+                  aria-label={`Edit task: ${task.name}`}
+                >
+                  Edit
+                </button>
               </div>
             </div>
           ))}

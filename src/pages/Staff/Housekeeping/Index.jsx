@@ -134,6 +134,7 @@ export default function HousekeepingDashboard() {
                     <button
                         type="button"
                         className={styles.filterButton}
+                        onClick={() => window.alert('Filters: Room Status | Assignee | Floor | Priority')}
                     >
                         ☰ &nbsp; Filters
                     </button>
@@ -141,6 +142,7 @@ export default function HousekeepingDashboard() {
                     <button
                         type="button"
                         className={styles.printButton}
+                        onClick={() => window.print()}
                     >
                         ▣ &nbsp; Print List
                     </button>
@@ -239,6 +241,7 @@ export default function HousekeepingDashboard() {
                                 type="button"
                                 className={styles.taskAction}
                                 aria-label={`Action for ${task.room}`}
+                                onClick={() => window.alert(`${task.action === 'check' ? 'Inspecting' : 'Editing task for'} ${task.room}\nGuest: ${task.guest}\nStatus: ${task.status}`)}
                             >
                                 {task.action === 'check' ? '☑' : '✎'}
                             </button>
@@ -249,6 +252,7 @@ export default function HousekeepingDashboard() {
                 <button
                     type="button"
                     className={styles.viewAllButton}
+                    onClick={() => window.alert('Viewing all housekeeping tasks for today.')}
                 >
                     VIEW ALL HOUSEKEEPING TASKS
                     <span>→</span>
@@ -299,6 +303,7 @@ export default function HousekeepingDashboard() {
                             type="button"
                             className={styles.moreButton}
                             aria-label="More staff options"
+                            onClick={() => window.alert('Staff Options: View Schedule | Reassign | View History')}
                         >
                             •••
                         </button>
@@ -321,6 +326,7 @@ export default function HousekeepingDashboard() {
                     <button
                         type="button"
                         className={styles.assignButton}
+                        onClick={() => window.alert('Assign New Task:\nSelect staff member and room to assign a new housekeeping task.')}
                     >
                         + ASSIGN NEW TASK
                     </button>

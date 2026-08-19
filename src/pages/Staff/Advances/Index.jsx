@@ -5,8 +5,49 @@
  * @figmaFrame Professional Staff Advances Dashboard
  */
 
-import React from 'react';
+/* global Blob, URL */
+import React, { useState } from 'react';
 import styles from './Index.module.css';
+
+// Give Advance Modal
+function GiveAdvanceModal({ onClose }) {
+    const [name, setName] = useState('');
+    const [amount, setAmount] = useState('');
+    const [deduction, setDeduction] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (name.trim() && amount) {
+            window.alert(`Advance of KES ${Number(amount).toLocaleString()} issued to ${name.trim()}.\nMonthly deduction: KES ${deduction || '0'}.`);
+            onClose();
+        }
+    };
+
+    const overlayStyle = { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 };
+    const cardStyle = { background: 'var(--color-surface)', borderRadius: 18, padding: '32px 36px', width: 420, maxWidth: '92vw', boxShadow: '0 8px 40px rgba(0,0,0,0.22)' };
+    const labelStyle = { display: 'block', marginBottom: 6, fontSize: 12, fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.5px' };
+    const inputStyle = { width: '100%', padding: '11px 14px', borderRadius: 9, border: '1px solid var(--color-border)', background: 'var(--color-bg)', color: 'var(--color-text-primary)', fontSize: 15, boxSizing: 'border-box', marginBottom: 18 };
+
+    return (
+        <div style={overlayStyle} onClick={onClose}>
+            <div style={cardStyle} onClick={(e) => e.stopPropagation()}>
+                <h3 style={{ margin: '0 0 24px', fontSize: 20 }}>Give Advance</h3>
+                <form onSubmit={handleSubmit}>
+                    <label style={labelStyle}>EMPLOYEE NAME</label>
+                    <input style={inputStyle} type="text" placeholder="Employee name..." value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
+                    <label style={labelStyle}>ADVANCE AMOUNT (KES)</label>
+                    <input style={inputStyle} type="number" min="1" placeholder="0" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                    <label style={labelStyle}>MONTHLY DEDUCTION (KES)</label>
+                    <input style={inputStyle} type="number" min="0" placeholder="0" value={deduction} onChange={(e) => setDeduction(e.target.value)} />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+                        <button type="button" onClick={onClose} style={{ padding: '10px 22px', borderRadius: 9, border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-secondary)', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
+                        <button type="submit" style={{ padding: '10px 22px', borderRadius: 9, border: 'none', background: 'var(--color-primary)', color: 'white', cursor: 'pointer', fontWeight: 700 }}>Issue Advance</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
 
 // ─── Summary Data ─────────────────────────────────────────────────────────────
 
@@ -92,9 +133,29 @@ const advanceLedger = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+function exportLedgerCSV(ledger) {
+    const headers = ['Name', 'Department', 'Given In', 'Deducted', 'Status', 'Outstanding', 'Cleared'];
+    const rows = ledger.map((a) => [a.name, a.department, a.givenIn, a.deducted, a.status, a.outstanding, a.cleared ? 'Yes' : 'No']);
+    const csv = [headers, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'advances-ledger.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
 export default function StaffAdvances() {
+    const [showModal, setShowModal] = useState(false);
+    const [page, setPage] = useState(1);
+    const totalPages = 3;
+
     return (
         <div className={styles.page}>
+            {showModal && <GiveAdvanceModal onClose={() => setShowModal(false)} />}
 
             {/* Page Header */}
             <header className={styles.header}>
@@ -125,6 +186,7 @@ export default function StaffAdvances() {
                     <button
                         type="button"
                         className={styles.giveAdvanceButton}
+                        onClick={() => setShowModal(true)}
                     >
                         + Give Advance
                     </button>
@@ -172,6 +234,7 @@ export default function StaffAdvances() {
                         <button
                             type="button"
                             className={styles.viewAllButton}
+                            onClick={() => window.alert('Viewing all advances issued in July 2024.')}
                         >
                             View All
                         </button>
@@ -204,6 +267,7 @@ export default function StaffAdvances() {
                         <button
                             type="button"
                             className={styles.viewAllButton}
+                            onClick={() => window.alert('Viewing all deductions for July 2024.')}
                         >
                             View All
                         </button>
@@ -279,6 +343,7 @@ export default function StaffAdvances() {
                             type="button"
                             className={styles.iconButton}
                             aria-label="Filter advances"
+                            onClick={() => window.alert('Filter: All | Active | Completed')}
                         >
                             ≡
                         </button>
@@ -287,6 +352,7 @@ export default function StaffAdvances() {
                             type="button"
                             className={styles.iconButton}
                             aria-label="Download ledger"
+                            onClick={() => exportLedgerCSV(advanceLedger)}
                         >
                             ↓
                         </button>
@@ -398,11 +464,11 @@ export default function StaffAdvances() {
                     </span>
 
                     <div className={styles.pagination}>
-                        <button type="button">
+                        <button type="button" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
                             Previous
                         </button>
 
-                        <button type="button">
+                        <button type="button" disabled={page === totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>
                             Next
                         </button>
                     </div>

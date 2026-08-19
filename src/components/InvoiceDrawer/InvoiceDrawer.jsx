@@ -115,7 +115,7 @@ export default function InvoiceDrawer({ isOpen, onClose, invoice }) {
           {invoice?.amountDue > 0 ? (
             <button className={styles.payBtn}>Record Payment</button>
           ) : (
-            <button className={styles.downloadBtn}>Download PDF</button>
+            <button className={styles.downloadBtn} onClick={() => window.print()}>Download PDF</button>
           )}
         </footer>
       </div>
