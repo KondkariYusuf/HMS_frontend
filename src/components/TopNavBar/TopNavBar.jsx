@@ -5,8 +5,8 @@
  * @figmaFrame Figma frame: Header - TopNavBar
  */
 
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Avatar from '@components/Avatar/Avatar';
 import { useAuth } from '@hooks/useAuth';
@@ -230,8 +230,57 @@ export default function TopNavBar({
 
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [maintenanceTab, setMaintenanceTab] = useState('Property View');
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const notificationRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!notificationRef.current?.contains(event.target)) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const notificationControl = (
+    <div className={styles.notificationControl} ref={notificationRef}>
+      <button
+        type="button"
+        className={styles.iconButton}
+        aria-label="Notifications"
+        aria-expanded={isNotificationOpen}
+        onClick={() => setIsNotificationOpen((isOpen) => !isOpen)}
+      >
+        <BellIcon />
+        {hasNotification && <span className={styles.notificationDot} />}
+      </button>
+
+      {isNotificationOpen && (
+        <div className={styles.notificationMenu} role="dialog" aria-label="Notification center">
+          <div className={styles.notificationMenuHeader}>
+            <h3>Notification Center</h3>
+            {hasNotification && <span className={styles.notificationCount}>New</span>}
+          </div>
+          <p className={styles.notificationEmpty}>No new notifications.</p>
+          <button
+            type="button"
+            className={styles.notificationLink}
+            onClick={() => {
+              setIsNotificationOpen(false);
+              navigate('/notifications');
+            }}
+          >
+            Open notification center
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   const isMaintenance = location.pathname.startsWith('/maintenance');
 
@@ -310,13 +359,7 @@ export default function TopNavBar({
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
 
-          <button
-            type="button"
-            className={styles.iconButton}
-            aria-label="Notifications"
-          >
-            <BellIcon />
-          </button>
+          {notificationControl}
 
           <div className={styles.avatarEmpty} />
         </div>
@@ -335,12 +378,6 @@ export default function TopNavBar({
     >
       <div className={styles.leftSection}>
         <div className={styles.titleWrapper}>
-          <span className={styles.hospitalityText}>
-            HospitalityOS
-          </span>
-
-          <span className={styles.titleDivider}>|</span>
-
           <h2 className={styles.pageTitle}>
             {title}
           </h2>
@@ -413,17 +450,7 @@ export default function TopNavBar({
           {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
         </button>
 
-        <button
-          type="button"
-          className={styles.iconButton}
-          aria-label="Notifications"
-        >
-          <BellIcon />
-
-          {hasNotification && (
-            <span className={styles.notificationDot} />
-          )}
-        </button>
+        {notificationControl}
 
         <div className={styles.profileBlock}>
           <Avatar

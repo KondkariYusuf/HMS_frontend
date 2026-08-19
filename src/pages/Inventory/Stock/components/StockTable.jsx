@@ -3,7 +3,7 @@ import Badge from '@components/Badge/Badge';
 import Button from '@components/Button/Button';
 import styles from './StockTable.module.css';
 
-export default function StockTable({ stockData, onAdjust, onWastage }) {
+export default function StockTable({ stockData, onAdjust, onWastage, onViewDetails }) {
   
   const columns = [
     {
@@ -71,7 +71,20 @@ export default function StockTable({ stockData, onAdjust, onWastage }) {
         </thead>
         <tbody>
           {stockData.map((row) => (
-            <tr key={row.productId} className={styles.tr}>
+            <tr
+              key={row.productId}
+              className={styles.tr}
+              onClick={() => onViewDetails(row)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onViewDetails(row);
+                }
+              }}
+              tabIndex="0"
+              role="button"
+              aria-label={`View details for ${row.productName}`}
+            >
               {columns.map((col, idx) => (
                 <td key={idx} className={styles.td}>
                   {col.accessor(row)}

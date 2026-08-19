@@ -214,7 +214,7 @@ const navigationGroups = [
     items: [
       {
         path: '/inventory/products',
-        label: 'Products & Stock',
+        label: 'Products',
       },
       {
         path: '/inventory/stock',

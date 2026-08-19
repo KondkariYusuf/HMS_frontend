@@ -37,6 +37,11 @@
   background-color: var(--color-bg);
 }
 
+.tr:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
 .td {
   padding: 1rem;
   font-family: var(--font-family);
@@ -48,6 +53,7 @@
 .productCell {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .productName {

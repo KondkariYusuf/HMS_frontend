@@ -4,10 +4,12 @@
  * @reference Frame: Professional food order Analytics dashboard.jpeg
  */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import useRestaurantAnalytics from '@hooks/useRestaurantAnalytics';
 import styles from './Index.module.css';
 
 export default function RestaurantAnalyticsPage() {
+  const navigate = useNavigate();
   const {
     transactions,
     searchQuery,
@@ -289,11 +291,7 @@ export default function RestaurantAnalyticsPage() {
           <button
             type="button"
             className={styles.viewAllBtn}
-            onClick={() => {
-              if (typeof window !== 'undefined') {
-                window.alert('Redirecting to full menu catalogue analytics...');
-              }
-            }}
+            onClick={() => navigate('/restaurant/menu')}
           >
             View All Menu Analytics
           </button>
