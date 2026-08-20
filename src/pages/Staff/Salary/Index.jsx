@@ -4,7 +4,7 @@
  * @figmaFrame Professional Staff & Salary Dashboard
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Index.module.css';
 
 // ─── Summary Data ─────────────────────────────────────────────────────────────
@@ -126,11 +126,72 @@ const operations = [
   },
 ];
 
+// Simple Add Employee modal
+function AddEmployeeModal({ onClose }) {
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (name.trim() && role.trim()) {
+      onClose();
+    }
+  };
+
+  const overlayStyle = {
+    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+  };
+  const cardStyle = {
+    background: 'var(--color-surface)', borderRadius: 18, padding: '32px 36px',
+    width: 400, maxWidth: '92vw', boxShadow: '0 8px 40px rgba(0,0,0,0.22)',
+  };
+  const labelStyle = { display: 'block', marginBottom: 6, fontSize: 12, fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.5px' };
+  const inputStyle = { width: '100%', padding: '11px 14px', borderRadius: 9, border: '1px solid var(--color-border)', background: 'var(--color-bg)', color: 'var(--color-text-primary)', fontSize: 15, boxSizing: 'border-box', marginBottom: 18 };
+
+  return (
+    <div style={overlayStyle} onClick={onClose}>
+      <div style={cardStyle} onClick={(e) => e.stopPropagation()}>
+        <h3 style={{ margin: '0 0 24px', fontSize: 20 }}>Add Employee</h3>
+        <form onSubmit={handleSubmit}>
+          <label style={labelStyle}>FULL NAME</label>
+          <input style={inputStyle} type="text" placeholder="Employee name..." value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
+          <label style={labelStyle}>ROLE / DEPARTMENT</label>
+          <input style={inputStyle} type="text" placeholder="e.g. Housekeeping Supervisor" value={role} onChange={(e) => setRole(e.target.value)} required />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+            <button type="button" onClick={onClose} style={{ padding: '10px 22px', borderRadius: 9, border: '1px solid var(--color-border)', background: 'transparent', color: 'var(--color-text-secondary)', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
+            <button type="submit" style={{ padding: '10px 22px', borderRadius: 9, border: 'none', background: 'var(--color-primary)', color: 'white', cursor: 'pointer', fontWeight: 700 }}>Add Employee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function StaffSalaryDashboard() {
+  const [showAddEmployee, setShowAddEmployee] = useState(false);
+
+  const handleExportReport = () => window.print();
+
+  const handleOperationClick = (operationId) => {
+    const messages = {
+      attendance: 'Redirecting to Mark Attendance...',
+      salary: 'Redirecting to View Salary...',
+      advance: 'Redirecting to Give Advance...',
+      staff: 'Opening Add Employee form...',
+    };
+    if (operationId === 'staff') {
+      setShowAddEmployee(true);
+    } else {
+      window.alert(messages[operationId]);
+    }
+  };
+
   return (
     <div className={styles.page}>
+      {showAddEmployee && <AddEmployeeModal onClose={() => setShowAddEmployee(false)} />}
 
       {/* ── Page Header ── */}
       <header className={styles.header}>
@@ -146,6 +207,7 @@ export default function StaffSalaryDashboard() {
           <button
             type="button"
             className={styles.exportButton}
+            onClick={handleExportReport}
           >
             ⇩ &nbsp; Export Report
           </button>
@@ -153,6 +215,7 @@ export default function StaffSalaryDashboard() {
           <button
             type="button"
             className={styles.addEmployeeButton}
+            onClick={() => setShowAddEmployee(true)}
           >
             + &nbsp; Add Employee
           </button>
@@ -207,6 +270,7 @@ export default function StaffSalaryDashboard() {
             <button
               type="button"
               className={styles.historyButton}
+              onClick={() => window.alert('View History — Attendance history log')}
             >
               View History →
             </button>
@@ -269,6 +333,7 @@ export default function StaffSalaryDashboard() {
                         type="button"
                         className={styles.moreButton}
                         aria-label={`More options for ${employee.name}`}
+                        onClick={() => window.alert(`Options for ${employee.name}: Edit, View Profile, Change Status`)}
                       >
                         •••
                       </button>
@@ -350,7 +415,7 @@ export default function StaffSalaryDashboard() {
             </div>
 
             <div className={styles.payoutActions}>
-              <button type="button">
+              <button type="button" onClick={() => window.alert('Payroll Details:\nGross: $142,500\nDeductions: $8,420.50\nNet Payable: $134,079.50\nNext Payout: Aug 01')}>
                 Details
               </button>
 
@@ -358,6 +423,7 @@ export default function StaffSalaryDashboard() {
                 type="button"
                 className={styles.printSmallButton}
                 aria-label="Print payout details"
+                onClick={() => window.print()}
               >
                 ▣
               </button>
@@ -381,6 +447,7 @@ export default function StaffSalaryDashboard() {
               type="button"
               key={operation.id}
               className={styles.operationCard}
+              onClick={() => handleOperationClick(operation.id)}
             >
               <span className={styles.operationIcon}>
                 {operation.icon}

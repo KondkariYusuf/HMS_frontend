@@ -7,8 +7,24 @@
  * @returns {JSX.Element} Monthly salary dashboard screen.
  */
 
+/* global Blob, URL */
 import React, { useMemo, useState } from 'react';
 import styles from './Index.module.css';
+
+function exportPayrollCSV(staffList) {
+  const headers = ['Name', 'Role', 'Present', 'Double', 'Leave', 'Absent', 'Daily Rate', 'Gross', 'Advance', 'Net'];
+  const rows = staffList.map((m) => [m.name, m.role, m.present, m.double, m.leave, m.absent, m.daily, m.gross, m.advance, m.net]);
+  const csv = [headers, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'payroll-register.csv');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 const departments = ['All Staff', 'Housekeeping', 'Reception', 'Kitchen', 'Security'];
 
@@ -238,14 +254,14 @@ export default function MonthlySalary() {
           </p>
         </div>
 
-        <button type="button" className={styles.printButton}>
+        <button type="button" className={styles.printButton} onClick={() => window.print()}>
           <PrinterIcon />
           <span>Print All Receipts</span>
         </button>
       </section>
 
       <section className={styles.filters} aria-label="Payroll filters">
-        <button type="button" className={styles.monthSelector}>
+        <button type="button" className={styles.monthSelector} onClick={() => window.alert('Month Selector: Choose a month to view payroll data.\nCurrent: October 2023')}>
           <CalendarIcon />
           <span>October 2023</span>
           <span className={styles.monthChevron} aria-hidden="true">
@@ -308,6 +324,7 @@ export default function MonthlySalary() {
               type="button"
               className={styles.tableActionButton}
               aria-label="Filter payroll register"
+              onClick={() => window.alert('Filter Payroll: All Staff | By Department | By Status')}
             >
               <FilterIcon />
             </button>
@@ -316,6 +333,7 @@ export default function MonthlySalary() {
               type="button"
               className={styles.tableActionButton}
               aria-label="Download payroll register"
+              onClick={() => exportPayrollCSV(filteredStaff)}
             >
               <DownloadIcon />
             </button>

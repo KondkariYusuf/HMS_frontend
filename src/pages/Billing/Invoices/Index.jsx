@@ -36,7 +36,7 @@ export default function BillingInvoicesPage() {
             Manage all guest folios, restaurant bills, and supplier invoices. Total: {totalInvoices}
           </p>
         </div>
-        <button className={styles.exportBtn}>Export Report</button>
+        <button className={styles.exportBtn} onClick={() => window.print()}>Export Report</button>
       </header>
 
       <div className={styles.toolbar}>
