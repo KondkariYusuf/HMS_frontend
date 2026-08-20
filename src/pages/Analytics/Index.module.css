@@ -256,7 +256,7 @@
 }
 
 .employeeCell {
-  padding: 20px 18px 20px 90px;
+  padding: var(--space-md);
   vertical-align: middle;
 }
 

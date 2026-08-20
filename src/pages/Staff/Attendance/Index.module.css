@@ -903,3 +903,35 @@
         font-size: var(--font-size-base);
     }
 }
+
+/* ── 26. DARK MODE OVERRIDES ─────────────────────────────── */
+
+:global([data-theme='dark']) .markedCard {
+    background-color: rgba(20, 122, 126, 0.1);
+}
+
+:global([data-theme='dark']) .double .summaryIcon,
+:global([data-theme='dark']) .doubleButton {
+    background-color: rgba(0, 137, 123, 0.2);
+    border-color: rgba(0, 137, 123, 0.3);
+    color: #4db6ac;
+}
+
+:global([data-theme='dark']) .leave .summaryIcon,
+:global([data-theme='dark']) .leaveButton {
+    background-color: rgba(146, 64, 14, 0.2);
+    border-color: rgba(146, 64, 14, 0.3);
+    color: #fbbf24;
+}
+
+:global([data-theme='dark']) .absent .summaryIcon,
+:global([data-theme='dark']) .absentButton {
+    background-color: rgba(185, 28, 28, 0.2);
+    border-color: rgba(185, 28, 28, 0.3);
+    color: #f87171;
+}
+
+:global([data-theme='dark']) .unmarked .summaryIcon {
+    background-color: var(--color-border);
+    color: var(--color-text-muted);
+}

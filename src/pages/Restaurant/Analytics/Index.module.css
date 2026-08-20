@@ -53,14 +53,8 @@
 /* KPI Summary Cards Grid */
 .kpiGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--space-lg);
-}
-
-@media (max-width: 900px) {
-  .kpiGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .kpiCard {
@@ -220,14 +214,8 @@
 /* Middle Section split (2 columns) */
 .middleGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: var(--space-lg);
-}
-
-@media (max-width: 900px) {
-  .middleGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .middleCard {
