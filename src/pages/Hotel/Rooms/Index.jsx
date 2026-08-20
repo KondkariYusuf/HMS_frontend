@@ -1,349 +1,113 @@
 /**
  * @file Hotel/Rooms/Index.jsx
- * @description Room management dashboard for monitoring room occupancy,
- * availability, guest stays, and floor-level room status.
- * @figmaFrame Refined Room Management Dashboard
+ * @description Room Management dashboard & inventory interface for SyncStays platform.
+ * Connected strictly to live backend APIs:
+ * - GET /api/room
+ * - GET /api/room/:id
+ * - POST /api/room
+ * - PUT /api/room/:id
+ * - DELETE /api/room/:id
+ * - Live Room Types from GET /api/room-type
+ * - Live Amenities from GET /api/amenity
  */
 
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Modal from '@components/Modal/Modal';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import Button from '@components/Button/Button';
+import Badge from '@components/Badge/Badge';
+import Modal from '@components/Modal/Modal';
+import ConfirmationModal from '@components/ConfirmationModal/ConfirmationModal';
+import Toast from '@components/Toast/Toast';
 import FloorConfigurationModal from '@components/FloorConfigurationModal/FloorConfigurationModal';
+import roomService from '@services/roomService';
+import roomTypeService from '@services/roomTypeService';
+import amenityService from '@services/amenityService';
 import styles from './Index.module.css';
 
-const STORAGE_KEY = 'hms-room-management-data';
-
-const ROOM_TYPE_FILTERS = [
-  'All Rooms',
-  'Deluxe Suite',
-  'Executive Twin',
-  'Single King',
-];
-
-const ROOM_TYPES = [
-  'Deluxe Suite',
-  'Executive Twin',
-  'Single King',
-  'Deluxe Ocean View',
-  'Executive King',
-];
-
-const ROOM_STATUSES = ['available', 'occupied', 'checkout'];
-
-const INITIAL_FLOORS = [
-  {
-    floor: 'Floor 04',
-    units: 24,
-    occupied: 18,
-    rooms: [
-      {
-        id: 401,
-        roomType: 'Deluxe Ocean View',
-        capacity: 2,
-        status: 'available',
-        note: 'Ready for check-in',
-        guest: '',
-        duration: '',
-        action: '',
-        guests: [],
-      },
-      {
-        id: 402,
-        roomType: 'Executive Twin',
-        capacity: 2,
-        status: 'occupied',
-        guest: 'Jonathan Everett',
-        duration: 'Oct 12 - Oct 18',
-        guests: ['JE', 'AE'],
-        note: '',
-        action: '',
-      },
-      {
-        id: 403,
-        roomType: 'Single King',
-        capacity: 2,
-        status: 'checkout',
-        guest: 'Sarah Jenkins',
-        action: 'Pending Inspection',
-        guests: [],
-        note: '',
-        duration: '',
-      },
-      {
-        id: 404,
-        roomType: 'Deluxe Suite',
-        capacity: 2,
-        status: 'occupied',
-        guest: 'Marcus Thorne',
-        duration: 'Oct 10 - Oct 14',
-        guests: [],
-        note: '',
-        action: '',
-      },
-    ],
-  },
-  {
-    floor: 'Floor 03',
-    units: 24,
-    occupied: 21,
-    rooms: [
-      {
-        id: 301,
-        roomType: 'Deluxe Suite',
-        capacity: 2,
-        status: 'occupied',
-        guest: 'Clara Oswald',
-        duration: 'Oct 08 - Oct 15',
-        guests: [],
-        note: '',
-        action: '',
-      },
-      {
-        id: 302,
-        roomType: 'Executive Twin',
-        capacity: 2,
-        status: 'occupied',
-        guest: 'Arthur Williams',
-        duration: 'Oct 11 - Oct 20',
-        guests: [],
-        note: '',
-        action: '',
-      },
-      {
-        id: 303,
-        roomType: 'Executive King',
-        capacity: 2,
-        status: 'available',
-        note: 'Inspected & Sanitized',
-        guest: '',
-        duration: '',
-        action: '',
-        guests: [],
-      },
-      {
-        id: 304,
-        roomType: 'Deluxe Suite',
-        capacity: 2,
-        status: 'occupied',
-        guest: 'Elena Martinez',
-        duration: 'Oct 12 - Oct 14',
-        guests: [],
-        note: '',
-        action: '',
-      },
-    ],
-  },
-];
-
-const KPI_DATA = [
-  {
-    label: 'Vacant',
-    value: '42',
-    secondary: '12% from yesterday',
-    icon: '▥',
-    type: 'vacant',
-  },
-  {
-    label: 'Occupied',
-    value: '158',
-    secondary: '79.0% total occupancy',
-    icon: '♙',
-    type: 'occupied',
-  },
-  {
-    label: 'Checkout Today',
-    value: '24',
-    secondary: '8 urgent pending',
-    icon: '↪',
-    type: 'checkout',
-  },
-  {
-    label: 'Checkout Tomorrow',
-    value: '31',
-    secondary: 'Forecasted 74% turnover',
-    icon: '▣',
-    type: 'tomorrow',
-  },
-];
-
-function loadInitialFloors() {
-  if (typeof window === 'undefined') {
-    return INITIAL_FLOORS;
-  }
-
-  try {
-    const savedData = window.localStorage.getItem(STORAGE_KEY);
-
-    if (!savedData) {
-      return INITIAL_FLOORS;
-    }
-
-    const parsedData = JSON.parse(savedData);
-
-    if (!Array.isArray(parsedData)) {
-      return INITIAL_FLOORS;
-    }
-
-    return parsedData;
-  } catch (error) {
-    console.error('Failed to load room management data:', error);
-    return INITIAL_FLOORS;
-  }
-}
-
-function saveFloorsToStorage(floors) {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(floors),
-    );
-  } catch (error) {
-    console.error('Failed to save room management data:', error);
-  }
-}
-
-function getStatusLabel(status) {
-  if (status === 'available') {
-    return 'Available';
-  }
-
-  if (status === 'occupied') {
-    return 'Occupied';
-  }
-
-  return 'Checkout';
-}
-
 function StatusBadge({ status }) {
+  const normStatus = (status || 'AVAILABLE').toUpperCase();
+  const isAvailable = normStatus === 'AVAILABLE' || normStatus === 'VACANT';
+  const isOccupied = normStatus === 'OCCUPIED';
+  const isCheckout = normStatus === 'CHECKOUT' || normStatus === 'DIRTY' || normStatus === 'CLEANING';
+
+  const label = isAvailable
+    ? 'Available'
+    : isOccupied
+    ? 'Occupied'
+    : isCheckout
+    ? 'Checkout / Dirty'
+    : normStatus;
+
+  const styleClass = isAvailable
+    ? styles.available
+    : isOccupied
+    ? styles.occupied
+    : styles.checkout;
+
   return (
-    <span className={`${styles.statusBadge} ${styles[status]}`}>
-      {getStatusLabel(status)}
+    <span className={`${styles.statusBadge} ${styleClass}`}>
+      {label}
     </span>
   );
 }
 
-function RoomCard({ room, onClick }) {
+function RoomCard({ room }) {
+  const normStatus = (room.status || 'AVAILABLE').toUpperCase();
+  const isAvailable = normStatus === 'AVAILABLE' || normStatus === 'VACANT';
+
   return (
-    <button
-      type="button"
-      className={styles.roomCardButton}
-      onClick={() => onClick(room)}
-      aria-label={`Edit room ${room.id}`}
-    >
-      <article className={styles.roomCard}>
-        <div className={styles.roomCardHeader}>
-          <h3 className={styles.roomNumber}>{room.id}</h3>
+    <article className={styles.roomCard}>
+      <div className={styles.roomCardHeader}>
+        <h3 className={styles.roomNumber}>{room.roomNumber}</h3>
+        <StatusBadge status={room.status} />
+      </div>
 
-          <StatusBadge status={room.status} />
-        </div>
+      {isAvailable ? (
+        <>
+          <div className={styles.roomInfoBlock}>
+            <span className={styles.infoLabel}>Room Type</span>
+            <strong className={styles.infoValue}>
+              {room.roomTypeName || 'Standard Room'}
+            </strong>
+          </div>
 
-        {room.status === 'available' ? (
-          <>
-            <div className={styles.roomInfoBlock}>
-              <span className={styles.infoLabel}>Room Type</span>
+          <div className={styles.roomCardFooter}>
+            <span>{room.rateText || `Rate: ₹${room.effectiveRate || room.rateOverride || 0}`}</span>
+            <span className={styles.readyIcon}>✓</span>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={styles.roomInfoBlock}>
+            <span className={styles.infoLabel}>Guest / Status</span>
+            <strong className={styles.infoValue}>
+              {room.guestName || room.status}
+            </strong>
+          </div>
 
-              <strong className={styles.infoValue}>
-                {room.roomType || 'Not specified'}
-              </strong>
-            </div>
-
-            <div className={styles.roomCardFooter}>
-              <span>
-                {room.note ||
-                  `Capacity: ${room.capacity || 1} guests`}
-              </span>
-
-              <span className={styles.readyIcon}>✓</span>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className={styles.roomInfoBlock}>
-              <span className={styles.infoLabel}>Guest</span>
-
-              <strong className={styles.infoValue}>
-                {room.guest || 'No guest assigned'}
-              </strong>
-            </div>
-
-            {room.status === 'checkout' ? (
-              <div className={styles.roomInfoBlock}>
-                <span className={styles.actionRequired}>
-                  Action Required
-                </span>
-
-                <span className={styles.pendingText}>
-                  {room.action || 'Pending Inspection'}
-                </span>
-              </div>
-            ) : (
-              <div className={styles.roomInfoBlock}>
-                <span className={styles.infoLabel}>
-                  Stay Duration
-                </span>
-
-                <div className={styles.durationRow}>
-                  <span className={styles.infoValue}>
-                    {room.duration || 'Not specified'}
-                  </span>
-
-                  {room.guests?.length > 0 && (
-                    <div className={styles.guestAvatars}>
-                      {room.guests.map((guest) => (
-                        <span
-                          key={guest}
-                          className={styles.guestAvatar}
-                        >
-                          {guest}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        <span className={styles.editHint}>
-          Click to edit
-        </span>
-      </article>
-    </button>
+          <div className={styles.roomInfoBlock}>
+            <span className={styles.infoLabel}>Room Category</span>
+            <span className={styles.infoValue}>{room.roomTypeName || 'Room'}</span>
+          </div>
+        </>
+      )}
+    </article>
   );
 }
 
-function FloorSection({ floor, onRoomClick }) {
-  const occupiedCount = floor.rooms.filter(
-    (room) => room.status === 'occupied',
-  ).length;
-
+function FloorSection({ floor }) {
   return (
     <section className={styles.floorSection}>
       <div className={styles.floorHeader}>
         <span className={styles.floorAccent} />
-
-        <h2 className={styles.floorTitle}>
-          {floor.floor}
-        </h2>
-
+        <h2 className={styles.floorTitle}>{floor.floorName}</h2>
         <span className={styles.floorMeta}>
-          {floor.units} Units • {occupiedCount} Occupied
+          {floor.rooms.length} Units • {floor.occupiedCount} Occupied
         </span>
       </div>
 
       <div className={styles.roomsGrid}>
         {floor.rooms.map((room) => (
-          <RoomCard
-            key={room.id}
-            room={room}
-            onClick={onRoomClick}
-          />
+          <RoomCard key={room.id} room={room} />
         ))}
       </div>
     </section>
@@ -352,797 +116,973 @@ function FloorSection({ floor, onRoomClick }) {
 
 function KpiCard({ item }) {
   return (
-    <article
-      className={`${styles.kpiCard} ${styles[`kpi-${item.type}`]
-        }`}
-    >
+    <article className={`${styles.kpiCard} ${styles[`kpi-${item.type}`]}`}>
       <div className={styles.kpiTopAccent} />
-
       <div className={styles.kpiContent}>
         <div>
-          <span className={styles.kpiLabel}>
-            {item.label}
-          </span>
-
-          <strong className={styles.kpiValue}>
-            {item.value}
-          </strong>
+          <span className={styles.kpiLabel}>{item.label}</span>
+          <strong className={styles.kpiValue}>{item.value}</strong>
         </div>
-
-        <div
-          className={`${styles.kpiIcon} ${styles[`icon-${item.type}`]
-            }`}
-        >
+        <div className={`${styles.kpiIcon} ${styles[`icon-${item.type}`]}`}>
           {item.icon}
         </div>
       </div>
-
-      <span
-        className={`${styles.kpiSecondary} ${item.type === 'checkout'
-            ? styles.urgentText
-            : ''
-          }`}
-      >
+      <span className={`${styles.kpiSecondary} ${item.type === 'checkout' ? styles.urgentText : ''}`}>
         {item.secondary}
       </span>
     </article>
   );
 }
 
-function EditRoomModal({
-  room,
-  isOpen,
-  onClose,
-  onSave,
-}) {
-  const [formData, setFormData] = useState(null);
-
-  React.useEffect(() => {
-    if (!room || !isOpen) {
-      return;
-    }
-
-    setFormData({
-      roomNumber: String(room.id ?? ''),
-      roomType:
-        room.roomType || ROOM_TYPES[0],
-      capacity: room.capacity || 1,
-      status:
-        room.status || 'available',
-      guest: room.guest || '',
-      duration: room.duration || '',
-      note: room.note || '',
-      action: room.action || '',
-    });
-  }, [room, isOpen]);
-
-  if (!room || !formData) {
-    return null;
-  }
-
-  const updateField = (field, value) => {
-    setFormData((current) => ({
-      ...current,
-      [field]: value,
-    }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const roomNumber =
-      formData.roomNumber.trim();
-
-    if (!roomNumber) {
-      return;
-    }
-
-    const updatedRoom = {
-      ...room,
-      id: roomNumber,
-      roomType: formData.roomType,
-      capacity: Math.max(
-        1,
-        Number(formData.capacity) || 1,
-      ),
-      status: formData.status,
-      guest: formData.guest.trim(),
-      duration: formData.duration.trim(),
-      note: formData.note.trim(),
-      action: formData.action.trim(),
-    };
-
-    onSave(updatedRoom);
-  };
-
-  const footerContent = (
-    <div className={styles.editModalFooter}>
-      <Button
-        variant="ghost"
-        onClick={onClose}
-      >
-        Cancel
-      </Button>
-
-      <Button
-        variant="primary"
-        onClick={handleSubmit}
-      >
-        Save Changes
-      </Button>
-    </div>
-  );
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Edit Room ${room.id}`}
-      footer={footerContent}
-    >
-      <form
-        className={styles.editRoomForm}
-        onSubmit={handleSubmit}
-      >
-        <div className={styles.formGrid}>
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-number"
-              className={styles.formLabel}
-            >
-              Room Number
-            </label>
-
-            <input
-              id="edit-room-number"
-              type="text"
-              value={formData.roomNumber}
-              onChange={(event) =>
-                updateField(
-                  'roomNumber',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-              placeholder="e.g. 401"
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-type"
-              className={styles.formLabel}
-            >
-              Room Type
-            </label>
-
-            <select
-              id="edit-room-type"
-              value={formData.roomType}
-              onChange={(event) =>
-                updateField(
-                  'roomType',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-            >
-              {ROOM_TYPES.map((type) => (
-                <option
-                  key={type}
-                  value={type}
-                >
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-capacity"
-              className={styles.formLabel}
-            >
-              Guest Capacity
-            </label>
-
-            <input
-              id="edit-room-capacity"
-              type="number"
-              min="1"
-              value={formData.capacity}
-              onChange={(event) =>
-                updateField(
-                  'capacity',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-status"
-              className={styles.formLabel}
-            >
-              Status
-            </label>
-
-            <select
-              id="edit-room-status"
-              value={formData.status}
-              onChange={(event) =>
-                updateField(
-                  'status',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-            >
-              {ROOM_STATUSES.map((status) => (
-                <option
-                  key={status}
-                  value={status}
-                >
-                  {getStatusLabel(status)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {formData.status !== 'available' && (
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-guest"
-              className={styles.formLabel}
-            >
-              Guest
-            </label>
-
-            <input
-              id="edit-room-guest"
-              type="text"
-              value={formData.guest}
-              onChange={(event) =>
-                updateField(
-                  'guest',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-              placeholder="Guest name"
-            />
-          </div>
-        )}
-
-        {formData.status === 'occupied' && (
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-duration"
-              className={styles.formLabel}
-            >
-              Stay Duration
-            </label>
-
-            <input
-              id="edit-room-duration"
-              type="text"
-              value={formData.duration}
-              onChange={(event) =>
-                updateField(
-                  'duration',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-              placeholder="e.g. Oct 12 - Oct 18"
-            />
-          </div>
-        )}
-
-        {formData.status === 'available' && (
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-note"
-              className={styles.formLabel}
-            >
-              Room Note
-            </label>
-
-            <input
-              id="edit-room-note"
-              type="text"
-              value={formData.note}
-              onChange={(event) =>
-                updateField(
-                  'note',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-              placeholder="e.g. Ready for check-in"
-            />
-          </div>
-        )}
-
-        {formData.status === 'checkout' && (
-          <div className={styles.formGroup}>
-            <label
-              htmlFor="edit-room-action"
-              className={styles.formLabel}
-            >
-              Action Required
-            </label>
-
-            <input
-              id="edit-room-action"
-              type="text"
-              value={formData.action}
-              onChange={(event) =>
-                updateField(
-                  'action',
-                  event.target.value,
-                )
-              }
-              className={styles.formInput}
-              placeholder="e.g. Pending Inspection"
-            />
-          </div>
-        )}
-      </form>
-    </Modal>
-  );
-}
-
 export default function HotelRoomsPage() {
-  const navigate = useNavigate();
+  // Navigation View State
+  const [activeTab, setActiveTab] = useState('OVERVIEW'); // 'OVERVIEW' | 'TABLE'
 
-  const [searchTerm, setSearchTerm] =
-    useState('');
+  // Real Backend State
+  const [rooms, setRooms] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [roomTypeFilter, setRoomTypeFilter] =
-    useState('All Rooms');
+  // Search & Filter States
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roomTypeFilter, setRoomTypeFilter] = useState('ALL');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
-  const [statusFilter, setStatusFilter] =
-    useState('all');
+  // Modal Control States
+  const [isFloorModalOpen, setFloorModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingRoom, setEditingRoom] = useState(null);
+  const [deletingRoom, setDeletingRoom] = useState(null);
 
-  const [floors, setFloors] =
-    useState(loadInitialFloors);
+  // Form Field State for Add/Edit
+  const [formData, setFormData] = useState({
+    roomNumber: '',
+    floor: '1',
+    roomTypeId: '',
+    rateOverride: '',
+    isSmoking: false,
+    status: 'AVAILABLE',
+    amenityIds: [],
+  });
 
-  const [isFloorModalOpen, setFloorModalOpen] =
-    useState(false);
+  // Global Toast State
+  const [toast, setToast] = useState(null);
 
-  const [selectedRoom, setSelectedRoom] =
-    useState(null);
-
-  const [isRoomModalOpen, setRoomModalOpen] =
-    useState(false);
-
-  const updateFloors = (updatedFloors) => {
-    setFloors(updatedFloors);
-    saveFloorsToStorage(updatedFloors);
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
   };
 
-  const handleRoomClick = (room) => {
-    setSelectedRoom(room);
-    setRoomModalOpen(true);
-  };
+  /**
+   * Fetch room types & amenities for dropdowns and lookup maps
+   */
+  const fetchDependencies = useCallback(async () => {
+    try {
+      const [rtRes, amRes] = await Promise.all([
+        roomTypeService.getAll(),
+        amenityService.getAll(),
+      ]);
 
-  const handleRoomSave = (updatedRoom) => {
-    const updatedFloors = floors.map(
-      (floor) => ({
-        ...floor,
-        rooms: floor.rooms.map(
-          (room) =>
-            String(room.id) ===
-              String(selectedRoom.id)
-              ? updatedRoom
-              : room,
-        ),
-      }),
-    );
+      let rtList = [];
+      if (Array.isArray(rtRes?.data)) rtList = rtRes.data;
+      else if (rtRes?.data && Array.isArray(rtRes.data.roomTypes)) rtList = rtRes.data.roomTypes;
+      else if (rtRes?.data && Array.isArray(rtRes.data.data)) rtList = rtRes.data.data;
+      else if (Array.isArray(rtRes)) rtList = rtRes;
 
-    updateFloors(updatedFloors);
+      let amList = [];
+      if (Array.isArray(amRes?.data)) amList = amRes.data;
+      else if (amRes?.data && Array.isArray(amRes.data.amenities)) amList = amRes.data.amenities;
+      else if (amRes?.data && Array.isArray(amRes.data.data)) amList = amRes.data.data;
+      else if (Array.isArray(amRes)) amList = amRes;
 
-    setSelectedRoom(updatedRoom);
-    setRoomModalOpen(false);
-  };
+      setRoomTypes(
+        rtList.map((item, idx) => ({
+          id: item.id || item._id || `rt-${idx}`,
+          name: item.name || item.title || 'Room Type',
+          code: item.code || item.typeCode || '',
+          baseRate: item.baseRate || item.price || 0,
+        }))
+      );
 
-  const handleFloorSave = (
-    configuration,
-  ) => {
-    const updatedFloors = floors.map(
-      (floor) => {
-        if (
-          floor.floor !==
-          configuration.floorName
-        ) {
-          return floor;
+      setAmenities(
+        amList.map((item, idx) => ({
+          id: item.id || item._id || `am-${idx}`,
+          name: item.name || item.title || 'Amenity',
+          code: item.code || '',
+        }))
+      );
+    } catch (err) {
+      console.warn('Unable to load dependencies for Room management:', err);
+    }
+  }, []);
+
+  // Room Type Lookup Map
+  const roomTypesMap = useMemo(() => {
+    const map = {};
+    roomTypes.forEach((rt) => {
+      map[rt.id] = rt;
+    });
+    return map;
+  }, [roomTypes]);
+
+  // Amenity Lookup Map
+  const amenitiesMap = useMemo(() => {
+    const map = {};
+    amenities.forEach((am) => {
+      map[am.id] = am;
+    });
+    return map;
+  }, [amenities]);
+
+  /**
+   * Fetch rooms from backend GET /api/room
+   */
+  const fetchRooms = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await roomService.getAll();
+
+      let roomsData = [];
+      if (Array.isArray(response?.data)) {
+        roomsData = response.data;
+      } else if (response?.data && Array.isArray(response.data.rooms)) {
+        roomsData = response.data.rooms;
+      } else if (response?.data && Array.isArray(response.data.data)) {
+        roomsData = response.data.data;
+      } else if (Array.isArray(response)) {
+        roomsData = response;
+      }
+
+      const normalizedRooms = roomsData.map((item, index) => {
+        const id = item.id || item._id || `rm-${index}`;
+        const roomNumber = String(item.roomNumber || item.number || item.id || index + 101);
+        const floor = String(item.floor || 'Floor 01');
+        const roomTypeId =
+          item.roomTypeId ||
+          item.roomType?.id ||
+          (typeof item.roomType === 'string' ? item.roomType : '');
+
+        const typeObj = typeof item.roomType === 'object' ? item.roomType : roomTypesMap[roomTypeId];
+        const roomTypeName = typeObj?.name || item.roomTypeName || 'Standard Room';
+
+        const rateOverride = item.rateOverride || item.effectiveRate || typeObj?.baseRate || 0;
+        const isSmoking = Boolean(item.isSmoking);
+        const status = (item.status || 'AVAILABLE').toUpperCase();
+
+        let roomAmenityIds = [];
+        if (Array.isArray(item.amenityIds)) roomAmenityIds = item.amenityIds;
+        else if (Array.isArray(item.amenities)) {
+          roomAmenityIds = item.amenities.map((a) => (typeof a === 'string' ? a : a.id));
         }
 
-        const existingRoomsById =
-          new Map(
-            floor.rooms.map(
-              (room) => [
-                String(room.id),
-                room,
-              ],
-            ),
-          );
-
-        const updatedRooms =
-          configuration.rooms.map(
-            (room) => {
-              const existingRoom =
-                existingRoomsById.get(
-                  String(
-                    room.roomNumber,
-                  ),
-                );
-
-              return {
-                ...(existingRoom || {}),
-                id: String(
-                  room.roomNumber,
-                ),
-                roomType:
-                  room.roomType,
-                capacity:
-                  room.capacity,
-                status:
-                  existingRoom?.status ||
-                  'available',
-                guest:
-                  existingRoom?.guest ||
-                  '',
-                duration:
-                  existingRoom?.duration ||
-                  '',
-                note:
-                  existingRoom?.note ||
-                  'Ready for check-in',
-                action:
-                  existingRoom?.action ||
-                  '',
-                guests:
-                  existingRoom?.guests ||
-                  [],
-              };
-            },
-          );
-
         return {
-          ...floor,
-          floor:
-            configuration.floorName,
-          units: Math.max(
-            floor.units || 0,
-            updatedRooms.length,
-          ),
-          rooms: updatedRooms,
+          id,
+          roomNumber,
+          floor: floor.startsWith('Floor') ? floor : `Floor ${floor.padStart(2, '0')}`,
+          roomTypeId,
+          roomTypeName,
+          rateOverride,
+          isSmoking,
+          status,
+          amenityIds: roomAmenityIds,
+          rawItem: item,
         };
+      });
+
+      setRooms(normalizedRooms);
+    } catch (err) {
+      console.error('API Error fetching rooms:', err);
+      setError(
+        err.message || 'Failed to communicate with backend server (http://localhost:5000).'
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [roomTypesMap]);
+
+  useEffect(() => {
+    fetchDependencies();
+  }, [fetchDependencies]);
+
+  useEffect(() => {
+    fetchRooms();
+  }, [fetchRooms]);
+
+  // ==========================================
+  // DYNAMIC KPI CALCULATIONS FROM BACKEND DATA
+  // ==========================================
+  const kpiData = useMemo(() => {
+    const total = rooms.length;
+    const vacantCount = rooms.filter(
+      (r) => r.status === 'AVAILABLE' || r.status === 'VACANT'
+    ).length;
+    const occupiedCount = rooms.filter((r) => r.status === 'OCCUPIED').length;
+    const checkoutCount = rooms.filter(
+      (r) => r.status === 'DIRTY' || r.status === 'CLEANING' || r.status === 'CHECKOUT'
+    ).length;
+    const maintenanceCount = rooms.filter(
+      (r) => r.status === 'OUT_OF_ORDER' || r.status === 'BLOCKED'
+    ).length;
+
+    const occPct = total > 0 ? ((occupiedCount / total) * 100).toFixed(1) : '0';
+
+    return [
+      {
+        label: 'Vacant / Available',
+        value: String(vacantCount),
+        secondary: `${total - occupiedCount} rooms ready`,
+        icon: '▥',
+        type: 'vacant',
       },
-    );
+      {
+        label: 'Occupied',
+        value: String(occupiedCount),
+        secondary: `${occPct}% total occupancy`,
+        icon: '♙',
+        type: 'occupied',
+      },
+      {
+        label: 'Housekeeping / Dirty',
+        value: String(checkoutCount),
+        secondary: 'Pending inspection',
+        icon: '↪',
+        type: 'checkout',
+      },
+      {
+        label: 'Maintenance / Out of Order',
+        value: String(maintenanceCount),
+        secondary: 'Under service',
+        icon: '▣',
+        type: 'tomorrow',
+      },
+    ];
+  }, [rooms]);
 
-    updateFloors(updatedFloors);
-    setFloorModalOpen(false);
-  };
+  // ==========================================
+  // DYNAMIC FLOOR GROUPINGS FOR DASHBOARD
+  // ==========================================
+  const floorGroups = useMemo(() => {
+    const groups = {};
 
-  const filteredFloors = useMemo(() => {
-    const normalizedSearch =
-      searchTerm
-        .trim()
-        .toLowerCase();
+    rooms.forEach((rm) => {
+      const flName = rm.floor;
+      if (!groups[flName]) {
+        groups[flName] = {
+          floorName: flName,
+          rooms: [],
+          occupiedCount: 0,
+        };
+      }
+      groups[flName].rooms.push(rm);
+      if (rm.status === 'OCCUPIED') {
+        groups[flName].occupiedCount += 1;
+      }
+    });
 
-    return floors
-      .map((floor) => {
-        const filteredRooms =
-          floor.rooms.filter(
-            (room) => {
-              const roomNumber =
-                String(room.id || '');
+    // Filter rooms by search, room type filter, and status filter
+    const normalizedSearch = searchTerm.trim().toLowerCase();
 
-              const matchesSearch =
-                !normalizedSearch ||
-                roomNumber.includes(
-                  normalizedSearch,
-                ) ||
-                room.guest
-                  ?.toLowerCase()
-                  .includes(
-                    normalizedSearch,
-                  ) ||
-                room.roomType
-                  ?.toLowerCase()
-                  .includes(
-                    normalizedSearch,
-                  );
+    return Object.values(groups)
+      .map((flGroup) => {
+        const filteredRooms = flGroup.rooms.filter((rm) => {
+          const matchesSearch =
+            !normalizedSearch ||
+            rm.roomNumber.toLowerCase().includes(normalizedSearch) ||
+            rm.roomTypeName.toLowerCase().includes(normalizedSearch);
 
-              const matchesRoomType =
-                roomTypeFilter ===
-                'All Rooms' ||
-                room.roomType ===
-                roomTypeFilter ||
-                (roomTypeFilter ===
-                  'Deluxe Suite' &&
-                  room.roomType
-                    ?.toLowerCase()
-                    .includes(
-                      'deluxe',
-                    )) ||
-                (roomTypeFilter ===
-                  'Executive Twin' &&
-                  room.roomType
-                    ?.toLowerCase()
-                    .includes(
-                      'executive',
-                    )) ||
-                (roomTypeFilter ===
-                  'Single King' &&
-                  room.roomType
-                    ?.toLowerCase()
-                    .includes(
-                      'king',
-                    ));
+          const matchesType =
+            roomTypeFilter === 'ALL' || rm.roomTypeId === roomTypeFilter;
 
-              const matchesStatus =
-                statusFilter ===
-                'all' ||
-                room.status ===
-                statusFilter;
+          const matchesStatus =
+            statusFilter === 'all' ||
+            (statusFilter === 'available' && (rm.status === 'AVAILABLE' || rm.status === 'VACANT')) ||
+            (statusFilter === 'occupied' && rm.status === 'OCCUPIED');
 
-              return (
-                matchesSearch &&
-                matchesRoomType &&
-                matchesStatus
-              );
-            },
-          );
+          return matchesSearch && matchesType && matchesStatus;
+        });
 
         return {
-          ...floor,
+          ...flGroup,
           rooms: filteredRooms,
         };
       })
-      .filter(
-        (floor) =>
-          floor.rooms.length > 0,
+      .filter((flGroup) => flGroup.rooms.length > 0);
+  }, [rooms, searchTerm, roomTypeFilter, statusFilter]);
+
+  // Filtered Rooms for Data Table View
+  const filteredTableRooms = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    return rooms.filter((rm) => {
+      const matchesSearch =
+        !normalizedSearch ||
+        rm.roomNumber.toLowerCase().includes(normalizedSearch) ||
+        rm.roomTypeName.toLowerCase().includes(normalizedSearch);
+      const matchesType =
+        roomTypeFilter === 'ALL' || rm.roomTypeId === roomTypeFilter;
+      const matchesStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'available' && (rm.status === 'AVAILABLE' || rm.status === 'VACANT')) ||
+        (statusFilter === 'occupied' && rm.status === 'OCCUPIED');
+      return matchesSearch && matchesType && matchesStatus;
+    });
+  }, [rooms, searchTerm, roomTypeFilter, statusFilter]);
+
+  const totalPages = Math.ceil(filteredTableRooms.length / pageSize) || 1;
+  const paginatedTableRooms = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredTableRooms.slice(start, start + pageSize);
+  }, [filteredTableRooms, currentPage, pageSize]);
+
+  // Handlers for Add / Edit Modal
+  const handleOpenAddModal = () => {
+    const defaultRoomTypeId = roomTypes.length > 0 ? roomTypes[0].id : '';
+    setFormData({
+      roomNumber: '',
+      floor: 'Floor 01',
+      roomTypeId: defaultRoomTypeId,
+      rateOverride: '',
+      isSmoking: false,
+      status: 'AVAILABLE',
+      amenityIds: [],
+    });
+    setIsAddModalOpen(true);
+  };
+
+  const handleOpenEditModal = async (roomItem) => {
+    try {
+      const res = await roomService.getById(roomItem.id);
+      const data = res?.data || roomItem;
+      setEditingRoom(roomItem);
+      setFormData({
+        roomNumber: data.roomNumber || roomItem.roomNumber,
+        floor: data.floor || roomItem.floor || 'Floor 01',
+        roomTypeId: data.roomTypeId || roomItem.roomTypeId || (roomTypes.length > 0 ? roomTypes[0].id : ''),
+        rateOverride: data.rateOverride ? String(data.rateOverride) : String(roomItem.rateOverride || ''),
+        isSmoking: Boolean(data.isSmoking || roomItem.isSmoking),
+        status: data.status || roomItem.status || 'AVAILABLE',
+        amenityIds: data.amenityIds || roomItem.amenityIds || [],
+      });
+    } catch {
+      setEditingRoom(roomItem);
+      setFormData({
+        roomNumber: roomItem.roomNumber,
+        floor: roomItem.floor || 'Floor 01',
+        roomTypeId: roomItem.roomTypeId || (roomTypes.length > 0 ? roomTypes[0].id : ''),
+        rateOverride: roomItem.rateOverride ? String(roomItem.rateOverride) : '',
+        isSmoking: roomItem.isSmoking,
+        status: roomItem.status || 'AVAILABLE',
+        amenityIds: roomItem.amenityIds || [],
+      });
+    }
+  };
+
+  /**
+   * Save Room Handler (Connected to POST /api/room & PUT /api/room/:id)
+   */
+  const handleSaveRoom = async (e) => {
+    e.preventDefault();
+    if (!formData.roomNumber.trim()) {
+      showToast('Room number is required.', 'error');
+      return;
+    }
+    if (!formData.roomTypeId) {
+      showToast('Room Type selection is required.', 'error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const payload = {
+      roomNumber: formData.roomNumber.trim(),
+      floor: formData.floor.trim() || 'Floor 01',
+      roomTypeId: formData.roomTypeId,
+      rateOverride: formData.rateOverride ? Number(formData.rateOverride) : null,
+      isSmoking: formData.isSmoking,
+      status: formData.status,
+      amenityIds: formData.amenityIds,
+    };
+
+    try {
+      if (editingRoom) {
+        const response = await roomService.update(editingRoom.id, payload);
+        showToast(
+          response?.message || `Room ${formData.roomNumber} updated successfully.`,
+          'success'
+        );
+        setEditingRoom(null);
+        setFormData({
+          roomNumber: '',
+          floor: 'Floor 01',
+          roomTypeId: '',
+          rateOverride: '',
+          isSmoking: false,
+          status: 'AVAILABLE',
+          amenityIds: [],
+        });
+        await fetchRooms();
+      } else {
+        const response = await roomService.create(payload);
+        showToast(
+          response?.message || `Room ${formData.roomNumber} created successfully.`,
+          'success'
+        );
+        setIsAddModalOpen(false);
+        setFormData({
+          roomNumber: '',
+          floor: 'Floor 01',
+          roomTypeId: '',
+          rateOverride: '',
+          isSmoking: false,
+          status: 'AVAILABLE',
+          amenityIds: [],
+        });
+        await fetchRooms();
+      }
+    } catch (err) {
+      console.error(`API Error ${editingRoom ? 'updating' : 'creating'} room:`, err);
+      showToast(
+        err.message || `Failed to ${editingRoom ? 'update' : 'create'} room on the server.`,
+        'error'
       );
-  }, [
-    floors,
-    searchTerm,
-    roomTypeFilter,
-    statusFilter,
-  ]);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /**
+   * Delete Room Handler (Connected to DELETE /api/room/:id)
+   */
+  const handleDeleteConfirm = async () => {
+    if (!deletingRoom) return;
+    setIsSubmitting(true);
+    try {
+      const response = await roomService.delete(deletingRoom.id);
+      showToast(
+        response?.message || `Room ${deletingRoom.roomNumber} deleted successfully.`,
+        'success'
+      );
+      setDeletingRoom(null);
+      await fetchRooms();
+    } catch (err) {
+      console.error('API Error deleting room:', err);
+      showToast(
+        err.message || 'Failed to delete room on the server.',
+        'error'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const toggleAmenitySelection = (amenityId) => {
+    setFormData((prev) => {
+      const exists = prev.amenityIds.includes(amenityId);
+      return {
+        ...prev,
+        amenityIds: exists
+          ? prev.amenityIds.filter((id) => id !== amenityId)
+          : [...prev.amenityIds, amenityId],
+      };
+    });
+  };
 
   return (
-    <div
-      className={styles.page}
-      data-testid="hotel-rooms-page"
-    >
+    <div className={styles.page} data-testid="hotel-rooms-page">
+      {/* Toast Notification Banner */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      {/* Top Mobile Search */}
       <div className={styles.topSearchMobile}>
         <input
           type="text"
           value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(
-              event.target.value,
-            )
-          }
-          placeholder="Search rooms, guests..."
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="Search rooms, types..."
           className={styles.searchInput}
         />
       </div>
 
-      <header
-        className={styles.pageHeader}
-      >
+      {/* Page Header */}
+      <header className={styles.pageHeader}>
         <div>
-          <h1 className={styles.title}>
-            Room Management
-          </h1>
-
+          <h1 className={styles.title}>Room Management & Inventory</h1>
           <p className={styles.subtitle}>
-            Monitor occupancy and room
-            status across all floors in
-            real-time.
+            Monitor floor-level room status, occupancy, and manage property inventory.
           </p>
         </div>
 
-        <button
-          type="button"
-          className={
-            styles.configureButton
-          }
-          onClick={() =>
-            setFloorModalOpen(true)
-          }
-        >
-          Configure Floors
-        </button>
+        <div className={styles.headerActions}>
+          <button
+            type="button"
+            className={styles.configureButton}
+            onClick={() => setFloorModalOpen(true)}
+          >
+            Configure Floors
+          </button>
+          <Button variant="primary" onClick={handleOpenAddModal}>
+            + Add Room
+          </Button>
+        </div>
       </header>
 
-      <section
-        className={styles.kpiGrid}
-        aria-label="Room summary"
-      >
-        {KPI_DATA.map((item) => (
-          <KpiCard
-            key={item.label}
-            item={item}
-          />
+      {/* Tab View Switcher */}
+      <div className={styles.tabContainer}>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === 'OVERVIEW' ? styles.tabButtonActive : ''
+          }`}
+          onClick={() => setActiveTab('OVERVIEW')}
+        >
+          🏢 Floor Overview & KPIs
+        </button>
+        <button
+          className={`${styles.tabButton} ${
+            activeTab === 'TABLE' ? styles.tabButtonActive : ''
+          }`}
+          onClick={() => setActiveTab('TABLE')}
+        >
+          📋 Room Inventory Table ({rooms.length})
+        </button>
+      </div>
+
+      {/* Dynamic KPI Summary Cards */}
+      <section className={styles.kpiGrid} aria-label="Room summary">
+        {kpiData.map((item) => (
+          <KpiCard key={item.label} item={item} />
         ))}
       </section>
 
+      {/* Controls Bar: Search & Category Filters */}
       <section className={styles.filters}>
-        <div
-          className={
-            styles.roomTypeFilters
-          }
-        >
-          {ROOM_TYPE_FILTERS.map(
-            (filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() =>
-                  setRoomTypeFilter(
-                    filter,
-                  )
-                }
-                className={`${styles.filterButton
-                  } ${roomTypeFilter ===
-                    filter
-                    ? styles.activeFilter
-                    : ''
-                  }`}
-              >
-                {filter}
-              </button>
-            ),
-          )}
+        <div className={styles.roomTypeFilters}>
+          <button
+            type="button"
+            onClick={() => setRoomTypeFilter('ALL')}
+            className={`${styles.filterButton} ${
+              roomTypeFilter === 'ALL' ? styles.activeFilter : ''
+            }`}
+          >
+            All Room Types
+          </button>
+          {roomTypes.map((rt) => (
+            <button
+              key={rt.id}
+              type="button"
+              onClick={() => setRoomTypeFilter(rt.id)}
+              className={`${styles.filterButton} ${
+                roomTypeFilter === rt.id ? styles.activeFilter : ''
+              }`}
+            >
+              {rt.name}
+            </button>
+          ))}
         </div>
 
-        <div
-          className={
-            styles.statusFilters
-          }
-        >
+        <div className={styles.statusFilters}>
           <button
             type="button"
             onClick={() =>
-              setStatusFilter(
-                (current) =>
-                  current ===
-                    'available'
-                    ? 'all'
-                    : 'available',
+              setStatusFilter((current) =>
+                current === 'available' ? 'all' : 'available'
               )
             }
-            className={`${styles.statusFilterButton
-              } ${statusFilter ===
-                'available'
-                ? styles.activeStatusFilter
-                : ''
-              }`}
+            className={`${styles.statusFilterButton} ${
+              statusFilter === 'available' ? styles.activeStatusFilter : ''
+            }`}
           >
-            <span
-              className={`${styles.filterDot
-                } ${styles.availableDot
-                }`}
-            />
-
+            <span className={`${styles.filterDot} ${styles.availableDot}`} />
             Available
           </button>
 
           <button
             type="button"
             onClick={() =>
-              setStatusFilter(
-                (current) =>
-                  current ===
-                    'occupied'
-                    ? 'all'
-                    : 'occupied',
+              setStatusFilter((current) =>
+                current === 'occupied' ? 'all' : 'occupied'
               )
             }
-            className={`${styles.statusFilterButton
-              } ${statusFilter ===
-                'occupied'
-                ? styles.activeStatusFilter
-                : ''
-              }`}
+            className={`${styles.statusFilterButton} ${
+              statusFilter === 'occupied' ? styles.activeStatusFilter : ''
+            }`}
           >
-            <span
-              className={`${styles.filterDot
-                } ${styles.occupiedDot
-                }`}
-            />
-
+            <span className={`${styles.filterDot} ${styles.occupiedDot}`} />
             Occupied
           </button>
         </div>
       </section>
 
-      <div
-        className={styles.floorList}
-      >
-        {filteredFloors.length > 0 ? (
-          filteredFloors.map(
-            (floor) => (
-              <FloorSection
-                key={floor.floor}
-                floor={floor}
-                onRoomClick={
-                  handleRoomClick
-                }
-              />
-            ),
-          )
-        ) : (
-          <div
-            className={
-              styles.emptyState
-            }
-          >
-            <h3>
-              No rooms found
-            </h3>
+      {/* VIEW 1: FLOOR OVERVIEW & KPIS */}
+      {activeTab === 'OVERVIEW' && (
+        <div className={styles.floorList}>
+          {loading ? (
+            <div className={styles.emptyState}>
+              <h3>Fetching rooms from backend (http://localhost:5000/api/room)...</h3>
+            </div>
+          ) : error ? (
+            <div className={styles.emptyState}>
+              <h3 style={{ color: 'var(--color-error)' }}>⚠️ {error}</h3>
+              <Button variant="secondary" size="sm" onClick={fetchRooms}>
+                Retry Connection
+              </Button>
+            </div>
+          ) : floorGroups.length > 0 ? (
+            floorGroups.map((floor) => (
+              <FloorSection key={floor.floorName} floor={floor} />
+            ))
+          ) : (
+            <div className={styles.emptyState}>
+              <h3>No rooms found</h3>
+              <p>Try changing your search or room filters.</p>
+            </div>
+          )}
+        </div>
+      )}
 
-            <p>
-              Try changing your search
-              or room filters.
-            </p>
+      {/* VIEW 2: ROOM INVENTORY DATA TABLE */}
+      {activeTab === 'TABLE' && (
+        <div className={styles.tableCard}>
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>Room Number</th>
+                  <th className={styles.th}>Floor</th>
+                  <th className={styles.th}>Room Type</th>
+                  <th className={styles.th}>Rate / Override</th>
+                  <th className={styles.th}>Amenities</th>
+                  <th className={styles.th}>Status</th>
+                  <th className={styles.th}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className={styles.emptyState}>
+                      Fetching room inventory from backend (http://localhost:5000/api/room)...
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan={7} className={styles.emptyState}>
+                      <div style={{ color: 'var(--color-error)', marginBottom: 'var(--space-sm)' }}>
+                        ⚠️ {error}
+                      </div>
+                      <Button variant="secondary" size="sm" onClick={fetchRooms}>
+                        Retry Connection
+                      </Button>
+                    </td>
+                  </tr>
+                ) : paginatedTableRooms.length > 0 ? (
+                  paginatedTableRooms.map((rm) => (
+                    <tr key={rm.id} className={styles.tr}>
+                      <td className={styles.td}>
+                        <span className={styles.codeBadge}>{rm.roomNumber}</span>
+                      </td>
+                      <td className={styles.td}>
+                        <span>{rm.floor}</span>
+                      </td>
+                      <td className={styles.td}>
+                        <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>
+                          {rm.roomTypeName}
+                        </span>
+                      </td>
+                      <td className={styles.td}>
+                        <span style={{ fontWeight: 700, color: 'var(--color-primary-dark)' }}>
+                          ₹{Number(rm.rateOverride).toLocaleString('en-IN')}
+                        </span>
+                      </td>
+                      <td className={styles.td}>
+                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                          {rm.amenityIds && rm.amenityIds.length > 0 ? (
+                            rm.amenityIds.map((amId, idx) => (
+                              <Badge key={idx} variant="secondary">
+                                {amenitiesMap[amId]?.name || amId}
+                              </Badge>
+                            ))
+                          ) : (
+                            <span style={{ color: 'var(--color-text-muted)' }}>
+                              Default amenities
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className={styles.td}>
+                        <StatusBadge status={rm.status} />
+                      </td>
+                      <td className={styles.td}>
+                        <div className={styles.actionsCell}>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => handleOpenEditModal(rm)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            style={{ color: 'var(--color-error)' }}
+                            onClick={() => setDeletingRoom(rm)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className={styles.emptyState}>
+                      No rooms match the selected filter criteria.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
-      </div>
 
+          {/* Table Pagination Bar */}
+          {!loading && !error && (
+            <div className={styles.paginationBar}>
+              <div className={styles.paginationInfo}>
+                Showing{' '}
+                {filteredTableRooms.length === 0
+                  ? 0
+                  : (currentPage - 1) * pageSize + 1}{' '}
+                to {Math.min(currentPage * pageSize, filteredTableRooms.length)} of{' '}
+                {filteredTableRooms.length} rooms
+              </div>
+              <div className={styles.paginationControls}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={currentPage <= 1}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                >
+                  Previous
+                </Button>
+                <span
+                  style={{
+                    fontSize: 'var(--font-size-md)',
+                    fontWeight: 600,
+                    color: 'var(--color-text-secondary)',
+                  }}
+                >
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={currentPage >= totalPages}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Floating Action Button */}
       <button
         type="button"
-        className={
-          styles.quickReservationButton
-        }
-        aria-label="Create quick reservation"
-        onClick={() =>
-          navigate(
-            '/hotel/reservations',
-          )
-        }
+        className={styles.quickReservationButton}
+        onClick={handleOpenAddModal}
+        aria-label="Create room"
       >
-        <span
-          className={styles.plusIcon}
-        >
-          +
-        </span>
-
-        Quick Reservation
+        <span className={styles.plusIcon}>+</span>
+        Add Room
       </button>
 
+      {/* Floor Configuration Modal */}
       <FloorConfigurationModal
-        isOpen={
-          isFloorModalOpen
-        }
-        onClose={() =>
-          setFloorModalOpen(false)
-        }
-        onSave={
-          handleFloorSave
-        }
+        isOpen={isFloorModalOpen}
+        onClose={() => setFloorModalOpen(false)}
+        onSave={() => setFloorModalOpen(false)}
       />
 
-      <EditRoomModal
-        room={selectedRoom}
-        isOpen={
-          isRoomModalOpen
+      {/* Add / Edit Room Modal */}
+      <Modal
+        isOpen={isAddModalOpen || !!editingRoom}
+        onClose={() => {
+          if (isSubmitting) return;
+          setIsAddModalOpen(false);
+          setEditingRoom(null);
+        }}
+        title={editingRoom ? `Edit Room ${editingRoom.roomNumber}` : 'Add New Room'}
+        footer={
+          <>
+            <Button
+              variant="ghost"
+              disabled={isSubmitting}
+              onClick={() => {
+                setIsAddModalOpen(false);
+                setEditingRoom(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              disabled={isSubmitting}
+              onClick={handleSaveRoom}
+            >
+              {isSubmitting
+                ? 'Saving...'
+                : editingRoom
+                ? 'Save Changes'
+                : 'Create Room'}
+            </Button>
+          </>
         }
-        onClose={() =>
-          setRoomModalOpen(false)
-        }
-        onSave={
-          handleRoomSave
-        }
+      >
+        <form onSubmit={handleSaveRoom} className={styles.formGrid}>
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Room Number *</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="e.g. 101, 204"
+                value={formData.roomNumber}
+                disabled={isSubmitting}
+                onChange={(e) =>
+                  setFormData({ ...formData, roomNumber: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Floor</label>
+              <input
+                type="text"
+                className={styles.formInput}
+                placeholder="e.g. Floor 01, 2"
+                value={formData.floor}
+                disabled={isSubmitting}
+                onChange={(e) =>
+                  setFormData({ ...formData, floor: e.target.value })
+                }
+              />
+            </div>
+          </div>
+
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Room Type *</label>
+              <select
+                className={styles.formSelect}
+                value={formData.roomTypeId}
+                disabled={isSubmitting}
+                onChange={(e) =>
+                  setFormData({ ...formData, roomTypeId: e.target.value })
+                }
+                required
+              >
+                <option value="">Select Room Type...</option>
+                {roomTypes.map((rt) => (
+                  <option key={rt.id} value={rt.id}>
+                    {rt.name} ({rt.code})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Rate Override (₹)</label>
+              <input
+                type="number"
+                min="0"
+                className={styles.formInput}
+                placeholder="Optional override price"
+                value={formData.rateOverride}
+                disabled={isSubmitting}
+                onChange={(e) =>
+                  setFormData({ ...formData, rateOverride: e.target.value })
+                }
+              />
+            </div>
+          </div>
+
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Operational Status *</label>
+              <select
+                className={styles.formSelect}
+                value={formData.status}
+                disabled={isSubmitting}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value })
+                }
+              >
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="OCCUPIED">OCCUPIED</option>
+                <option value="DIRTY">DIRTY</option>
+                <option value="CLEANING">CLEANING</option>
+                <option value="OUT_OF_ORDER">OUT OF ORDER</option>
+                <option value="BLOCKED">BLOCKED</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Smoking Allowed</label>
+              <select
+                className={styles.formSelect}
+                value={formData.isSmoking ? 'true' : 'false'}
+                disabled={isSubmitting}
+                onChange={(e) =>
+                  setFormData({ ...formData, isSmoking: e.target.value === 'true' })
+                }
+              >
+                <option value="false">Non-Smoking</option>
+                <option value="true">Smoking Room</option>
+              </select>
+            </div>
+          </div>
+
+          {amenities.length > 0 && (
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Amenity Overrides</label>
+              <div className={styles.amenityCheckboxGrid}>
+                {amenities.map((am) => (
+                  <label key={am.id} className={styles.amenityCheckboxItem}>
+                    <input
+                      type="checkbox"
+                      checked={formData.amenityIds.includes(am.id)}
+                      disabled={isSubmitting}
+                      onChange={() => toggleAmenitySelection(am.id)}
+                    />
+                    <span>{am.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </form>
+      </Modal>
+
+      {/* Delete Room Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={!!deletingRoom}
+        onClose={() => {
+          if (isSubmitting) return;
+          setDeletingRoom(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Room"
+        message={`Are you sure you want to delete room ${deletingRoom?.roomNumber}?`}
+        isDestructive={true}
       />
     </div>
   );

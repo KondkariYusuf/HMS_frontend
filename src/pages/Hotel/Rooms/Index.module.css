@@ -1,6 +1,6 @@
 /**
  * @file Hotel/Rooms/Index.module.css
- * @description Styling for Refined Room Management Dashboard
+ * @description Styling for Refined Room Management Dashboard & Inventory Table
  */
 
 .page {
@@ -12,7 +12,7 @@
 }
 
 /* =========================
-   HEADER
+   HEADER & TABS
 ========================= */
 
 .pageHeader {
@@ -20,6 +20,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  flex-wrap: wrap;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .title {
@@ -56,6 +63,37 @@
   border-color: var(--color-primary);
   background: var(--color-primary-light);
   transform: translateY(-1px);
+}
+
+.tabContainer {
+  display: flex;
+  gap: var(--space-sm);
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 0;
+  margin-bottom: var(--space-xs);
+}
+
+.tabButton {
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  font-family: var(--font-family);
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+
+.tabButton:hover {
+  color: var(--color-primary);
+}
+
+.tabButtonActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 /* =========================
@@ -583,6 +621,157 @@
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
+}
+
+/* =========================
+   TABLE VIEW STYLES
+========================= */
+
+.tableCard {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: var(--font-family);
+}
+
+.th {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.15s ease;
+}
+
+.tr:hover {
+  background-color: rgba(20, 122, 126, 0.03);
+}
+
+.td {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+.codeBadge {
+  font-family: monospace;
+  font-weight: 700;
+  background: rgba(20, 122, 126, 0.1);
+  color: var(--color-primary-dark);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-md);
+  display: inline-block;
+}
+
+.actionsCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.paginationBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.paginationInfo {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.formLabel {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.formInput,
+.formTextarea,
+.formSelect {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+}
+
+.formInput:focus,
+.formTextarea:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.amenityCheckboxGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+  max-height: 140px;
+  overflow-y: auto;
+  padding: var(--space-xs);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+}
+
+.amenityCheckboxItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
 }
 
 /* =========================

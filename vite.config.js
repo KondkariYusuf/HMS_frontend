@@ -24,6 +24,7 @@ export default defineConfig({
       '@constants': fileURLToPath(
         new URL('./src/constants', import.meta.url)
       ),
+      '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
     },
   },
 });

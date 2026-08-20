@@ -23,6 +23,9 @@ import AnalyticsPage from '@pages/Analytics/Index';
 
 /* Hotel Domain */
 import HotelRoomsPage from '@pages/Hotel/Rooms/Index';
+import HotelRoomTypesPage from '@pages/Hotel/RoomTypes/Index';
+import HotelAmenitiesPage from '@pages/Hotel/Amenities/Index';
+import HotelExtraServicesPage from '@pages/Hotel/ExtraServices/Index';
 import RoomOccupancyTimelinePage from '@pages/Hotel/Rooms/OccupancyTimeline';
 import HotelGuestsPage from '@pages/Hotel/Guests/Index';
 import GuestDetailsPage from '@pages/Hotel/Guests/Details/Index';
@@ -132,6 +135,18 @@ export const router = createBrowserRouter([
         element: <HotelRoomsPage />,
       },
 
+      {
+        path: 'hotel/room-types',
+        element: <HotelRoomTypesPage />,
+      },
+      {
+        path: 'hotel/amenities',
+        element: <HotelAmenitiesPage />,
+      },
+      {
+        path: 'hotel/extra-services',
+        element: <HotelExtraServicesPage />,
+      },
       {
         path: 'hotel/rooms/occupancy-timeline',
         element: <RoomOccupancyTimelinePage />,
