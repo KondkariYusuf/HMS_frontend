@@ -8,9 +8,16 @@ import InventoryTabs from '../components/InventoryTabs';
 import StockTable from './components/StockTable';
 import StockAdjustmentModal from './components/StockAdjustmentModal';
 import WastageModal from './components/WastageModal';
+import ProductDetailsModal from '../Products/components/ProductDetailsModal';
 
 // Mock Data
-import { mockStock } from '../mockData';
+import {
+  mockBrands,
+  mockCategories,
+  mockProductTypes,
+  mockProducts,
+  mockStock,
+} from '../mockData';
 import styles from './Index.module.css';
 
 export default function InventoryStockPage() {
@@ -20,8 +27,10 @@ export default function InventoryStockPage() {
 
   const [isAdjustOpen, setIsAdjustOpen] = useState(false);
   const [isWastageOpen, setIsWastageOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const [selectedStock, setSelectedStock] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
 
   // Filtering
@@ -46,6 +55,19 @@ export default function InventoryStockPage() {
   const handleWastageClick = (stockItem) => {
     setSelectedStock(stockItem);
     setIsWastageOpen(true);
+  };
+
+  const handleViewDetails = (stockItem) => {
+    const product = mockProducts.find((item) => item.id === stockItem.productId);
+    setSelectedProduct(product || {
+      id: stockItem.productId,
+      name: stockItem.productName,
+      sku: stockItem.sku,
+      stockUnitCode: stockItem.stockUnitCode,
+      reorderLevel: stockItem.reorderLevel,
+      status: 'ACTIVE',
+    });
+    setIsDetailsOpen(true);
   };
 
   const handleSaveAdjustment = (adjustData) => {
@@ -112,6 +134,7 @@ export default function InventoryStockPage() {
           stockData={filteredStock}
           onAdjust={handleAdjustClick}
           onWastage={handleWastageClick}
+          onViewDetails={handleViewDetails}
         />
       </div>
 
@@ -127,6 +150,15 @@ export default function InventoryStockPage() {
         onClose={() => setIsWastageOpen(false)}
         onSave={handleSaveWastage}
         stockItem={selectedStock}
+      />
+
+      <ProductDetailsModal
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
+        product={selectedProduct}
+        categories={mockCategories}
+        brands={mockBrands}
+        productTypes={mockProductTypes}
       />
 
       {toastMessage && (

@@ -88,7 +88,7 @@ export const navigationGroups = [
         items: [
             {
                 path: '/inventory/products',
-                label: 'Products & Stock',
+                label: 'Products',
                 icon: 'box',
             },
             {
