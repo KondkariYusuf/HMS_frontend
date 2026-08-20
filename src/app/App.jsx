@@ -3,7 +3,7 @@
  * @description Main application entry component.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './AuthContext';
 import { ThemeProvider } from './ThemeContext';
