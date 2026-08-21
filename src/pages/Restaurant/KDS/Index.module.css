@@ -63,7 +63,7 @@
 }
 
 .posNavLink:hover {
-  background-color: #c5e7e5;
+  background-color: var(--color-secondary-hover);
   transform: translateY(-1px);
 }
 
@@ -435,29 +435,28 @@
 }
 
 [data-theme='dark'] .posNavLink {
-  background-color: var(--color-hover);
-  color: var(--color-primary);
+  color: #5eead4;
+  background-color: transparent;
 }
 
 [data-theme='dark'] .posNavLink:hover {
-  background-color: var(--color-primary);
-  color: #ffffff;
+  background-color: var(--color-secondary-hover);
 }
 
 [data-theme='dark'] .ticketCardQueued {
-  border-color: #60a5fa;
+  border-color: #3b82f6;
 }
 
 [data-theme='dark'] .ticketCardPreparing {
-  border-color: #fbbf24;
+  border-color: #f59e0b;
 }
 
 [data-theme='dark'] .ticketCardReady {
-  border-color: #34d399;
+  border-color: #10b981;
 }
 
 [data-theme='dark'] .ticketCardServed {
-  border-color: #64748b;
+  border-color: var(--color-border);
 }
 
 [data-theme='dark'] .timerGreen {
@@ -467,36 +466,56 @@
 
 [data-theme='dark'] .timerAmber {
   background: rgba(217, 119, 6, 0.2);
-  color: #fbbf24;
+  color: #fcd34d;
 }
 
 [data-theme='dark'] .timerRed {
-  background: rgba(185, 28, 28, 0.2);
+  background: rgba(220, 38, 38, 0.2);
   color: #fca5a5;
 }
 
 [data-theme='dark'] .statusQueued {
-  background: rgba(37, 99, 235, 0.2);
+  background: rgba(59, 130, 246, 0.2);
   color: #93c5fd;
 }
 
 [data-theme='dark'] .statusPreparing {
   background: rgba(217, 119, 6, 0.2);
-  color: #fbbf24;
+  color: #fcd34d;
 }
 
 [data-theme='dark'] .statusReady {
-  background: rgba(22, 163, 74, 0.25);
+  background: rgba(22, 163, 74, 0.2);
   color: #86efac;
 }
 
 [data-theme='dark'] .statusServed {
   background: var(--color-hover);
-  color: #cbd5e1;
+  color: var(--color-text-muted);
+}
+
+[data-theme='dark'] .rushBadge {
+  background: var(--color-error);
 }
 
 [data-theme='dark'] .itemNote {
   color: #fca5a5;
+}
+
+[data-theme='dark'] .prepBtn {
+  background: rgba(217, 119, 6, 0.8);
+}
+
+[data-theme='dark'] .prepBtn:hover {
+  background: rgba(217, 119, 6, 1);
+}
+
+[data-theme='dark'] .readyBtn {
+  background: rgba(16, 185, 129, 0.8);
+}
+
+[data-theme='dark'] .readyBtn:hover {
+  background: rgba(16, 185, 129, 1);
 }
 
 [data-theme='dark'] .completedTag {
