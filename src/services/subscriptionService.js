@@ -5,11 +5,10 @@
  */
 
 const getApiBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_BASE_URL;
-  if (envUrl) {
-    return envUrl.endsWith('/') ? `${envUrl}subscription-plan` : `${envUrl}/subscription-plan`;
-  }
-  return 'http://localhost:5000/api/subscription-plan';
+  const envUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  const cleanBase = envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+  const apiBase = cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
+  return `${apiBase}/subscription-plan`;
 };
 
 const getAuthHeaders = () => {

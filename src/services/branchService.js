@@ -5,11 +5,10 @@
  */
 
 const getApiBaseUrl = () => {
-  const envUrl = import.meta.env.VITE_API_BASE_URL;
-  if (envUrl) {
-    return envUrl.endsWith('/') ? `${envUrl}organization-branch` : `${envUrl}/organization-branch`;
-  }
-  return 'http://localhost:5000/api/organization-branch';
+  const envUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  const cleanBase = envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+  const apiBase = cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
+  return `${apiBase}/organization-branch`;
 };
 
 const getAuthHeaders = () => {
