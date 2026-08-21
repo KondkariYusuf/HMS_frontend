@@ -50,7 +50,18 @@ export async function apiRequest(endpoint, options = {}) {
 
   try {
     const response = await fetch(url, config);
-    const result = await response.json();
+    const responseText = await response.text();
+    let result;
+
+    try {
+      result = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      throw new ApiError(
+        'Notification service is unavailable. Start the backend API or configure VITE_API_BASE_URL.',
+        response.status,
+        'INVALID_API_RESPONSE'
+      );
+    }
 
     if (!response.ok || result.success === false) {
       const errorMsg = result.message || 'An unexpected API error occurred.';
