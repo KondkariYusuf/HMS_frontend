@@ -59,9 +59,31 @@ function RoomMappingCard({ room, onChange }) {
 }
 
 export default function AdminSettingsPage() {
-  const [hotelName, setHotelName] = useState('Grand Hotel Group');
-  const [taxRate, setTaxRate] = useState('12.5');
-  const [currency, setCurrency] = useState('USD');
+  const getStoredSettings = () => {
+    try {
+      const stored = localStorage.getItem('syncstays_admin_settings');
+      if (stored) return JSON.parse(stored);
+    } catch (e) {
+      console.warn('Failed to load settings:', e);
+    }
+    return null;
+  };
+
+  const [hotelName, setHotelName] = useState(() => {
+    const settings = getStoredSettings();
+    return settings?.hotelName || 'Grand Hotel Group';
+  });
+
+  const [taxRate, setTaxRate] = useState(() => {
+    const settings = getStoredSettings();
+    return settings?.taxRate ? String(settings.taxRate) : '12.5';
+  });
+
+  const [currency, setCurrency] = useState(() => {
+    const settings = getStoredSettings();
+    return settings?.currency || 'USD';
+  });
+
   const [currencyList, setCurrencyList] = useState([
     { code: 'USD', symbol: '$' },
     { code: 'EUR', symbol: '€' },
@@ -76,7 +98,10 @@ export default function AdminSettingsPage() {
   const [newTypeName, setNewTypeName] = useState('');
   const [newTypeDesc, setNewTypeDesc] = useState('');
   const [showOrgTypeModal, setShowOrgTypeModal] = useState(false);
-  const [rooms, setRooms] = useState(INITIAL_ROOMS);
+  const [rooms, setRooms] = useState(() => {
+    const settings = getStoredSettings();
+    return settings?.rooms || INITIAL_ROOMS;
+  });
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -134,8 +159,13 @@ export default function AdminSettingsPage() {
       rooms,
     };
 
-    console.log('Hotel configuration saved:', configuration);
-    setSaved(true);
+    try {
+      localStorage.setItem('syncstays_admin_settings', JSON.stringify(configuration));
+      console.log('Hotel configuration saved:', configuration);
+      setSaved(true);
+    } catch (e) {
+      console.error('Failed to save settings:', e);
+    }
   };
 
   const handleExport = () => {
