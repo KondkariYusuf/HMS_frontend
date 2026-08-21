@@ -8,8 +8,10 @@
 import React, {
   createContext,
   useContext,
+  useEffect,
   useState,
 } from 'react';
+import { branchService } from '@services/branchService';
 
 const AuthContext = createContext(null);
 
@@ -110,6 +112,34 @@ export function AuthProvider({ children }) {
       DEFAULT_BRANCHES[0]?.id || null
     )
   );
+
+  useEffect(() => {
+    async function loadApiBranches() {
+      try {
+        const res = await branchService.getAll();
+        const rawList = res?.data?.responses || res?.data?.rows || res?.data?.data || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        
+        if (Array.isArray(rawList) && rawList.length > 0) {
+          const apiBranches = rawList.map((b) => ({
+            id: b.id || b._id,
+            name: b.branchName || b.name,
+            code: b.code || `BR-${b.id}`,
+            location: b.address || b.addressLine1 || b.location || 'Branch Location',
+            manager: b.manager || 'Unassigned',
+            rooms: b.rooms || 0,
+            staff: b.staff || 0,
+            occupancy: b.occupancy || 0,
+            status: b.status === 'INACTIVE' ? 'Inactive' : 'Active',
+          }));
+          setBranches(apiBranches);
+          persistJson(BRANCHES_STORAGE_KEY, apiBranches);
+        }
+      } catch (err) {
+        console.warn('Branch API offline, using local branch state.', err);
+      }
+    }
+    loadApiBranches();
+  }, []);
 
   const persistBranches = (nextBranches) => {
     setBranches(nextBranches);
