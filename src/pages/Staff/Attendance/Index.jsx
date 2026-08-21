@@ -103,6 +103,63 @@ const INITIAL_WAITERS = [
     },
 ];
 
+const INITIAL_RECEPTION = [
+    {
+        id: 'emp-207',
+        name: 'Clara Oswald',
+        role: 'FRONT DESK AGENT',
+        salary: '$3,800 / month',
+        status: 'Present',
+        marked: false,
+    },
+    {
+        id: 'emp-208',
+        name: 'James Bond',
+        role: 'CONCIERGE LEAD',
+        salary: '$4,200 / month',
+        status: 'Present',
+        marked: true,
+    },
+];
+
+const INITIAL_KITCHEN = [
+    {
+        id: 'emp-209',
+        name: 'Gordon Ramsay',
+        role: 'EXECUTIVE CHEF',
+        salary: '$8,500 / month',
+        status: 'Present',
+        marked: true,
+    },
+    {
+        id: 'emp-210',
+        name: 'Remy Rat',
+        role: 'SOUS CHEF',
+        salary: '$4,600 / month',
+        status: 'Present',
+        marked: false,
+    },
+];
+
+const INITIAL_HOUSEKEEPING = [
+    {
+        id: 'emp-211',
+        name: 'Sarah Johnson',
+        role: 'HOUSEKEEPING LEAD',
+        salary: '$3,500 / month',
+        status: 'Present',
+        marked: false,
+    },
+    {
+        id: 'emp-212',
+        name: 'Anita Roy',
+        role: 'ROOM ATTENDANT',
+        salary: '$2,800 / month',
+        status: 'Present',
+        marked: false,
+    },
+];
+
 const getInitials = (name) => {
     return name
         .split(' ')
@@ -240,18 +297,20 @@ export default function StaffAttendance() {
     const [activeFilter, setActiveFilter] = useState('All Staff');
     const [managers, setManagers] = useState(INITIAL_MANAGERS);
     const [waiters, setWaiters] = useState(INITIAL_WAITERS);
+    const [reception, setReception] = useState(INITIAL_RECEPTION);
+    const [kitchen, setKitchen] = useState(INITIAL_KITCHEN);
+    const [housekeeping, setHousekeeping] = useState(INITIAL_HOUSEKEEPING);
 
     const handleStatusChange = (id, newStatus) => {
-        setManagers((prev) =>
+        const updateList = (prev) =>
             prev.map((emp) =>
                 emp.id === id ? { ...emp, status: newStatus, marked: true } : emp
-            )
-        );
-        setWaiters((prev) =>
-            prev.map((emp) =>
-                emp.id === id ? { ...emp, status: newStatus, marked: true } : emp
-            )
-        );
+            );
+        setManagers(updateList);
+        setWaiters(updateList);
+        setReception(updateList);
+        setKitchen(updateList);
+        setHousekeeping(updateList);
     };
 
     const handleSelectAll = (sectionTitle) => {
@@ -259,18 +318,24 @@ export default function StaffAttendance() {
             list.map((emp) => ({ ...emp, status: 'Present', marked: true }));
         if (sectionTitle === 'Managers') setManagers(markAll);
         if (sectionTitle === 'Waiters') setWaiters(markAll);
+        if (sectionTitle === 'Reception') setReception(markAll);
+        if (sectionTitle === 'Kitchen') setKitchen(markAll);
+        if (sectionTitle === 'Housekeeping') setHousekeeping(markAll);
     };
 
     const handleExportPDF = () => window.print();
 
     const handleFloatingSubmit = () => {
-        const allMarked = [...managers, ...waiters].every((e) => e.marked);
+        const allStaffList = [...managers, ...waiters, ...reception, ...kitchen, ...housekeeping];
+        const allMarked = allStaffList.every((e) => e.marked);
         if (allMarked) {
             window.alert('All attendance marked and submitted successfully!');
         } else {
             window.alert('Attendance submitted. Note: some staff members are still unmarked.');
         }
     };
+
+    const showAll = activeFilter === 'All Staff';
 
     return (
         <div className={styles.page}>
@@ -344,21 +409,55 @@ export default function StaffAttendance() {
                 ))}
             </section>
 
-            <StaffSection
-                title="Managers"
-                total="12"
-                staff={managers}
-                onStatusChange={handleStatusChange}
-                onSelectAll={handleSelectAll}
-            />
+            {(showAll || activeFilter === 'Managers') && (
+                <StaffSection
+                    title="Managers"
+                    total={managers.length}
+                    staff={managers}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
 
-            <StaffSection
-                title="Waiters"
-                total="32"
-                staff={waiters}
-                onStatusChange={handleStatusChange}
-                onSelectAll={handleSelectAll}
-            />
+            {(showAll || activeFilter === 'Waiters') && (
+                <StaffSection
+                    title="Waiters"
+                    total={waiters.length}
+                    staff={waiters}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
+
+            {(showAll || activeFilter === 'Reception') && (
+                <StaffSection
+                    title="Reception"
+                    total={reception.length}
+                    staff={reception}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
+
+            {(showAll || activeFilter === 'Kitchen') && (
+                <StaffSection
+                    title="Kitchen"
+                    total={kitchen.length}
+                    staff={kitchen}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
+
+            {(showAll || activeFilter === 'Housekeeping') && (
+                <StaffSection
+                    title="Housekeeping"
+                    total={housekeeping.length}
+                    staff={housekeeping}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
 
             <button
                 type="button"

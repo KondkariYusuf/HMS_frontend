@@ -7,46 +7,9 @@
 import React, { useState } from 'react';
 import styles from './Index.module.css';
 
-// ─── Summary Data ─────────────────────────────────────────────────────────────
-
-const summaryCards = [
-  {
-    id: 'active-staff',
-    icon: '♟',
-    label: 'ACTIVE STAFF',
-    value: '24',
-    badge: '+2 this month',
-    variant: 'staff',
-  },
-  {
-    id: 'present-today',
-    icon: '✓',
-    label: 'PRESENT TODAY',
-    value: '21',
-    badge: '87.5%',
-    variant: 'present',
-  },
-  {
-    id: 'total-payroll',
-    icon: '₹',
-    label: 'TOTAL PAYROLL',
-    value: '₹1,42,500',
-    badge: '+4.2%',
-    variant: 'payroll',
-  },
-  {
-    id: 'outstanding',
-    icon: '▣',
-    label: 'OUTSTANDING ADVANCES',
-    value: '₹4,52,100',
-    badge: 'Requires review',
-    variant: 'outstanding',
-  },
-];
-
 // ─── Attendance Data ──────────────────────────────────────────────────────────
 
-const attendanceData = [
+const INITIAL_ATTENDANCE_DATA = [
   {
     id: 'emp-101',
     initials: 'SJ',
@@ -127,13 +90,14 @@ const operations = [
 ];
 
 // Simple Add Employee modal
-function AddEmployeeModal({ onClose }) {
+function AddEmployeeModal({ onAdd, onClose }) {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name.trim() && role.trim()) {
+      onAdd(name.trim(), role.trim());
       onClose();
     }
   };
@@ -172,8 +136,36 @@ function AddEmployeeModal({ onClose }) {
 
 export default function StaffSalaryDashboard() {
   const [showAddEmployee, setShowAddEmployee] = useState(false);
+  const [attendanceList, setAttendanceList] = useState(INITIAL_ATTENDANCE_DATA);
 
   const handleExportReport = () => window.print();
+
+  const handleAddEmployee = (empName, empRole) => {
+    const initials = empName
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = String(hours % 12 || 12).padStart(2, '0');
+    const checkIn = `${formattedHours}:${minutes} ${ampm}`;
+
+    const newEmp = {
+      id: `emp-${Date.now().toString().slice(-3)}`,
+      initials: initials || 'EM',
+      name: empName,
+      role: empRole,
+      checkIn,
+      status: 'Present',
+      statusType: 'present',
+    };
+
+    setAttendanceList((prev) => [newEmp, ...prev]);
+  };
 
   const handleOperationClick = (operationId) => {
     const messages = {
@@ -189,9 +181,49 @@ export default function StaffSalaryDashboard() {
     }
   };
 
+  const summaryCards = [
+    {
+      id: 'active-staff',
+      icon: '♟',
+      label: 'ACTIVE STAFF',
+      value: String(24 + (attendanceList.length - INITIAL_ATTENDANCE_DATA.length)),
+      badge: '+2 this month',
+      variant: 'staff',
+    },
+    {
+      id: 'present-today',
+      icon: '✓',
+      label: 'PRESENT TODAY',
+      value: String(21 + (attendanceList.length - INITIAL_ATTENDANCE_DATA.length)),
+      badge: '87.5%',
+      variant: 'present',
+    },
+    {
+      id: 'total-payroll',
+      icon: '₹',
+      label: 'TOTAL PAYROLL',
+      value: '₹1,42,500',
+      badge: '+4.2%',
+      variant: 'payroll',
+    },
+    {
+      id: 'outstanding',
+      icon: '▣',
+      label: 'OUTSTANDING ADVANCES',
+      value: '₹4,52,100',
+      badge: 'Requires review',
+      variant: 'outstanding',
+    },
+  ];
+
   return (
     <div className={styles.page}>
-      {showAddEmployee && <AddEmployeeModal onClose={() => setShowAddEmployee(false)} />}
+      {showAddEmployee && (
+        <AddEmployeeModal
+          onAdd={handleAddEmployee}
+          onClose={() => setShowAddEmployee(false)}
+        />
+      )}
 
       {/* ── Page Header ── */}
       <header className={styles.header}>
@@ -289,7 +321,7 @@ export default function StaffSalaryDashboard() {
               </thead>
 
               <tbody>
-                {attendanceData.map((employee) => (
+                {attendanceList.map((employee) => (
                   <tr key={employee.id}>
 
                     <td>

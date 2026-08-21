@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Index.module.css';
 
 const attendanceSummary = [
@@ -48,7 +48,7 @@ const staffFilters = [
     'Housekeeping',
 ];
 
-const managers = [
+const INITIAL_MANAGERS = [
     {
         id: 'emp-201',
         name: 'Eleanor Vance',
@@ -75,7 +75,7 @@ const managers = [
     },
 ];
 
-const waiters = [
+const INITIAL_WAITERS = [
     {
         id: 'emp-204',
         name: 'Sara Lopez',
@@ -103,6 +103,63 @@ const waiters = [
     },
 ];
 
+const INITIAL_RECEPTION = [
+    {
+        id: 'emp-207',
+        name: 'Clara Oswald',
+        role: 'FRONT DESK AGENT',
+        salary: '$3,800 / month',
+        status: 'Present',
+        marked: false,
+    },
+    {
+        id: 'emp-208',
+        name: 'James Bond',
+        role: 'CONCIERGE LEAD',
+        salary: '$4,200 / month',
+        status: 'Present',
+        marked: true,
+    },
+];
+
+const INITIAL_KITCHEN = [
+    {
+        id: 'emp-209',
+        name: 'Gordon Ramsay',
+        role: 'EXECUTIVE CHEF',
+        salary: '$8,500 / month',
+        status: 'Present',
+        marked: true,
+    },
+    {
+        id: 'emp-210',
+        name: 'Remy Rat',
+        role: 'SOUS CHEF',
+        salary: '$4,600 / month',
+        status: 'Present',
+        marked: false,
+    },
+];
+
+const INITIAL_HOUSEKEEPING = [
+    {
+        id: 'emp-211',
+        name: 'Sarah Johnson',
+        role: 'HOUSEKEEPING LEAD',
+        salary: '$3,500 / month',
+        status: 'Present',
+        marked: false,
+    },
+    {
+        id: 'emp-212',
+        name: 'Anita Roy',
+        role: 'ROOM ATTENDANT',
+        salary: '$2,800 / month',
+        status: 'Present',
+        marked: false,
+    },
+];
+
 const getInitials = (name) => {
     return name
         .split(' ')
@@ -112,7 +169,7 @@ const getInitials = (name) => {
         .toUpperCase();
 };
 
-function StaffCard({ staff }) {
+function StaffCard({ staff, onStatusChange }) {
     return (
         <div
             className={`${styles.staffCard} ${staff.marked ? styles.markedCard : ''
@@ -129,7 +186,7 @@ function StaffCard({ staff }) {
                     <p className={styles.staffSalary}>{staff.salary}</p>
                 </div>
 
-                <button className={styles.moreButton} type="button">
+                <button className={styles.moreButton} type="button" onClick={() => window.alert(`Options for ${staff.name}: Edit, View Profile`)}>
                     ⋮
                 </button>
 
@@ -145,13 +202,15 @@ function StaffCard({ staff }) {
                     type="button"
                     className={`${styles.statusButton} ${styles.presentButton} ${staff.status === 'Present' ? styles.active : ''
                         }`}
+                    onClick={() => onStatusChange(staff.id, 'Present')}
                 >
                     Present
                 </button>
 
                 <button
                     type="button"
-                    className={`${styles.statusButton} ${styles.doubleButton}`}
+                    className={`${styles.statusButton} ${styles.doubleButton} ${staff.status === 'Double' ? styles.active : ''}`}
+                    onClick={() => onStatusChange(staff.id, 'Double')}
                 >
                     Double
                 </button>
@@ -160,6 +219,7 @@ function StaffCard({ staff }) {
                     type="button"
                     className={`${styles.statusButton} ${styles.leaveButton} ${staff.status === 'Leave' ? styles.active : ''
                         }`}
+                    onClick={() => onStatusChange(staff.id, 'Leave')}
                 >
                     Leave
                 </button>
@@ -168,6 +228,7 @@ function StaffCard({ staff }) {
                     <button
                         type="button"
                         className={`${styles.statusButton} ${styles.absentButton} ${styles.active}`}
+                        onClick={() => onStatusChange(staff.id, 'Absent')}
                     >
                         Absent
                     </button>
@@ -176,6 +237,7 @@ function StaffCard({ staff }) {
                         type="button"
                         className={styles.helpButton}
                         aria-label="Unmarked"
+                        onClick={() => onStatusChange(staff.id, 'Absent')}
                     >
                         ?
                     </button>
@@ -195,7 +257,7 @@ function StaffCard({ staff }) {
     );
 }
 
-function StaffSection({ title, total, staff }) {
+function StaffSection({ title, total, staff, onStatusChange, onSelectAll }) {
     return (
         <section className={styles.staffSection}>
             <div className={styles.sectionHeader}>
@@ -212,6 +274,7 @@ function StaffSection({ title, total, staff }) {
                 <button
                     type="button"
                     className={styles.selectAllButton}
+                    onClick={() => onSelectAll(title)}
                 >
                     Select All
                 </button>
@@ -222,6 +285,7 @@ function StaffSection({ title, total, staff }) {
                     <StaffCard
                         key={employee.id}
                         staff={employee}
+                        onStatusChange={onStatusChange}
                     />
                 ))}
             </div>
@@ -230,6 +294,49 @@ function StaffSection({ title, total, staff }) {
 }
 
 export default function StaffAttendance() {
+    const [activeFilter, setActiveFilter] = useState('All Staff');
+    const [managers, setManagers] = useState(INITIAL_MANAGERS);
+    const [waiters, setWaiters] = useState(INITIAL_WAITERS);
+    const [reception, setReception] = useState(INITIAL_RECEPTION);
+    const [kitchen, setKitchen] = useState(INITIAL_KITCHEN);
+    const [housekeeping, setHousekeeping] = useState(INITIAL_HOUSEKEEPING);
+
+    const handleStatusChange = (id, newStatus) => {
+        const updateList = (prev) =>
+            prev.map((emp) =>
+                emp.id === id ? { ...emp, status: newStatus, marked: true } : emp
+            );
+        setManagers(updateList);
+        setWaiters(updateList);
+        setReception(updateList);
+        setKitchen(updateList);
+        setHousekeeping(updateList);
+    };
+
+    const handleSelectAll = (sectionTitle) => {
+        const markAll = (list) =>
+            list.map((emp) => ({ ...emp, status: 'Present', marked: true }));
+        if (sectionTitle === 'Managers') setManagers(markAll);
+        if (sectionTitle === 'Waiters') setWaiters(markAll);
+        if (sectionTitle === 'Reception') setReception(markAll);
+        if (sectionTitle === 'Kitchen') setKitchen(markAll);
+        if (sectionTitle === 'Housekeeping') setHousekeeping(markAll);
+    };
+
+    const handleExportPDF = () => window.print();
+
+    const handleFloatingSubmit = () => {
+        const allStaffList = [...managers, ...waiters, ...reception, ...kitchen, ...housekeeping];
+        const allMarked = allStaffList.every((e) => e.marked);
+        if (allMarked) {
+            window.alert('All attendance marked and submitted successfully!');
+        } else {
+            window.alert('Attendance submitted. Note: some staff members are still unmarked.');
+        }
+    };
+
+    const showAll = activeFilter === 'All Staff';
+
     return (
         <div className={styles.page}>
             <header className={styles.header}>
@@ -257,6 +364,7 @@ export default function StaffAttendance() {
                     <button
                         type="button"
                         className={styles.exportButton}
+                        onClick={handleExportPDF}
                     >
                         ↓ &nbsp; Export PDF
                     </button>
@@ -264,12 +372,13 @@ export default function StaffAttendance() {
             </header>
 
             <nav className={styles.filterBar}>
-                {staffFilters.map((filter, index) => (
+                {staffFilters.map((filter) => (
                     <button
                         key={filter}
                         type="button"
-                        className={`${styles.filterButton} ${index === 0 ? styles.activeFilter : ''
+                        className={`${styles.filterButton} ${activeFilter === filter ? styles.activeFilter : ''
                             }`}
+                        onClick={() => setActiveFilter(filter)}
                     >
                         {filter}
                     </button>
@@ -300,22 +409,61 @@ export default function StaffAttendance() {
                 ))}
             </section>
 
-            <StaffSection
-                title="Managers"
-                total="12"
-                staff={managers}
-            />
+            {(showAll || activeFilter === 'Managers') && (
+                <StaffSection
+                    title="Managers"
+                    total={managers.length}
+                    staff={managers}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
 
-            <StaffSection
-                title="Waiters"
-                total="32"
-                staff={waiters}
-            />
+            {(showAll || activeFilter === 'Waiters') && (
+                <StaffSection
+                    title="Waiters"
+                    total={waiters.length}
+                    staff={waiters}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
+
+            {(showAll || activeFilter === 'Reception') && (
+                <StaffSection
+                    title="Reception"
+                    total={reception.length}
+                    staff={reception}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
+
+            {(showAll || activeFilter === 'Kitchen') && (
+                <StaffSection
+                    title="Kitchen"
+                    total={kitchen.length}
+                    staff={kitchen}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
+
+            {(showAll || activeFilter === 'Housekeeping') && (
+                <StaffSection
+                    title="Housekeeping"
+                    total={housekeeping.length}
+                    staff={housekeeping}
+                    onStatusChange={handleStatusChange}
+                    onSelectAll={handleSelectAll}
+                />
+            )}
 
             <button
                 type="button"
                 className={styles.floatingButton}
                 aria-label="Attendance action"
+                onClick={handleFloatingSubmit}
             >
                 ✓
             </button>
