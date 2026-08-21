@@ -387,6 +387,7 @@ export default function AdminSettingsPage() {
                       setOrgTypes((prev) => [...prev, { ...payload, id: Date.now() }]);
                     }
                   } catch (err) {
+                    console.warn('Org type create API offline, using fallback:', err);
                     setOrgTypes((prev) => [...prev, { ...payload, id: Date.now() }]);
                   }
                   setShowOrgTypeModal(false);
