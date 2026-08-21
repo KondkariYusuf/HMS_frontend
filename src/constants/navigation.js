@@ -199,6 +199,11 @@ export const navigationGroups = [
                 icon: 'bed',
             },
             {
+                path: '/admin/subscription',
+                label: 'Subscription Plans',
+                icon: 'calendar',
+            },
+            {
                 path: '/admin/settings',
                 label: 'Settings',
                 icon: 'gear',

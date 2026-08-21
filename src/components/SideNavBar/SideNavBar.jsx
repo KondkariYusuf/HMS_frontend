@@ -321,6 +321,10 @@ const navigationGroups = [
         label: 'Branches',
       },
       {
+        path: '/admin/subscription',
+        label: 'Subscription Plans',
+      },
+      {
         path: '/admin/settings',
         label: 'Settings',
       },

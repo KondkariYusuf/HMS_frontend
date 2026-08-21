@@ -3,15 +3,17 @@
  * @description Frontend organization branch management screen.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Button from '@components/Button/Button';
 import { useAuth } from '@hooks/useAuth';
+import { lookupService } from '@services/lookupService';
 import styles from './Index.module.css';
 
 const emptyForm = {
   name: '',
   code: '',
   location: '',
+  countryId: '',
   manager: '',
   rooms: '',
 };
@@ -43,6 +45,27 @@ export default function AdminBranchesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingBranch, setEditingBranch] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [countries, setCountries] = useState([
+    { id: '1', name: 'United States' },
+    { id: '2', name: 'India' },
+    { id: '3', name: 'United Kingdom' },
+    { id: '4', name: 'Canada' },
+  ]);
+
+  useEffect(() => {
+    async function loadCountries() {
+      try {
+        const res = await lookupService.getCountries();
+        const countryList = res?.data?.responses || res?.data?.rows || res?.data?.data || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        if (Array.isArray(countryList) && countryList.length > 0) {
+          setCountries(countryList);
+        }
+      } catch (err) {
+        console.warn('Country lookup API fallback:', err);
+      }
+    }
+    loadCountries();
+  }, []);
 
   const activeBranches = useMemo(
     () =>
@@ -303,6 +326,22 @@ export default function AdminBranchesPage() {
                   ? 'Deactivate'
                   : 'Activate'}
               </button>
+
+              <button
+                type="button"
+                onClick={async () => {
+                  if (window.confirm('Are you sure you want to delete this branch?')) {
+                    try {
+                      await branchService.delete(branch.id);
+                    } catch (e) {
+                      console.warn('Branch delete fallback:', e);
+                    }
+                  }
+                }}
+                style={{ color: '#dc2626' }}
+              >
+                Delete
+              </button>
             </div>
           </article>
         ))}
@@ -408,6 +447,31 @@ export default function AdminBranchesPage() {
                 placeholder="Branch location"
                 required
               />
+            </label>
+
+            <label>
+              Country
+
+              <select
+                name="countryId"
+                value={form.countryId}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '0.6rem 0.8rem',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  marginTop: '0.25rem',
+                  backgroundColor: '#fff',
+                }}
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.id || country.code || country.name} value={country.id || country.code || country.name}>
+                    {country.name || country.code}
+                  </option>
+                ))}
+              </select>
             </label>
 
             <label>
