@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import Avatar from '@components/Avatar/Avatar';
 import { useAuth } from '@hooks/useAuth';
+import { useNotifications } from '@hooks/useNotifications';
 import { useTheme } from '@app/ThemeContext';
 import styles from './TopNavBar.module.css';
 
@@ -219,7 +220,6 @@ export default function TopNavBar({
   tabs = [],
   activeTab = '',
   onTabChange,
-  hasNotification = true,
 }) {
   const {
     user,
@@ -235,6 +235,13 @@ export default function TopNavBar({
   const [maintenanceTab, setMaintenanceTab] = useState('Property View');
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef(null);
+  const {
+    notifications,
+    unreadCount,
+    loading: notificationsLoading,
+    error: notificationsError,
+    markAsRead,
+  } = useNotifications();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -247,6 +254,17 @@ export default function TopNavBar({
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
+  const recentNotifications = notifications.slice(0, 5);
+
+  const handleNotificationClick = async (notification) => {
+    await markAsRead(notification.id);
+    setIsNotificationOpen(false);
+
+    if (typeof notification.link === 'string' && notification.link.startsWith('/')) {
+      navigate(notification.link);
+    }
+  };
+
   const notificationControl = (
     <div className={styles.notificationControl} ref={notificationRef}>
       <button
@@ -257,16 +275,44 @@ export default function TopNavBar({
         onClick={() => setIsNotificationOpen((isOpen) => !isOpen)}
       >
         <BellIcon />
-        {hasNotification && <span className={styles.notificationDot} />}
+        {unreadCount > 0 && (
+          <span className={styles.notificationBadge} aria-label={`${unreadCount} unread notifications`}>
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
       </button>
 
       {isNotificationOpen && (
         <div className={styles.notificationMenu} role="dialog" aria-label="Notification center">
           <div className={styles.notificationMenuHeader}>
             <h3>Notification Center</h3>
-            {hasNotification && <span className={styles.notificationCount}>New</span>}
+            {unreadCount > 0 && <span className={styles.notificationCount}>{unreadCount} unread</span>}
           </div>
-          <p className={styles.notificationEmpty}>No new notifications.</p>
+          {notificationsLoading && <p className={styles.notificationEmpty}>Loading notifications...</p>}
+          {!notificationsLoading && notificationsError && (
+            <p className={styles.notificationError}>{notificationsError}</p>
+          )}
+          {!notificationsLoading && !notificationsError && recentNotifications.length === 0 && (
+            <p className={styles.notificationEmpty}>You are all caught up.</p>
+          )}
+          {!notificationsLoading && !notificationsError && recentNotifications.length > 0 && (
+            <div className={styles.notificationList}>
+              {recentNotifications.map((notification) => (
+                <button
+                  type="button"
+                  className={`${styles.notificationItem} ${!notification.isRead ? styles.unreadNotification : ''}`}
+                  key={notification._key}
+                  onClick={() => handleNotificationClick(notification)}
+                >
+                  <span className={styles.notificationType}>{notification.type.slice(0, 1)}</span>
+                  <span className={styles.notificationItemContent}>
+                    <strong>{notification.title}</strong>
+                    <span>{notification.body || 'No additional details.'}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
           <button
             type="button"
             className={styles.notificationLink}
@@ -275,7 +321,7 @@ export default function TopNavBar({
               navigate('/notifications');
             }}
           >
-            Open notification center
+            View all notifications
           </button>
         </div>
       )}
