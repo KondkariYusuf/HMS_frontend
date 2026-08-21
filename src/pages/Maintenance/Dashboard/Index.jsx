@@ -79,6 +79,22 @@ const getIconByName = (name) => {
   }
 };
 
+const MOCK_HISTORY_RECORDS = Array.from({ length: 156 }).map((_, i) => {
+  const categories = ['Plumbing', 'Electrical', 'HVAC', 'Carpentry', 'General'];
+  const statuses = ['COMPLETED', 'RESOLVED', 'CLOSED'];
+  const priorities = ['High', 'Normal', 'Low'];
+  const num = 156 - i;
+  return {
+    id: `MT-${1000 + num}`,
+    task: `Maintenance Issue #${num}: ${['Leaking Pipe', 'AC Service', 'Door Lock Repair', 'Light Fixture Replace', 'Tile Patching', 'Elevator Check'][i % 6]} in Room ${(i % 30) + 101}`,
+    category: categories[i % categories.length],
+    reporter: `Staff (${['Sarah J.', 'David M.', 'Alex R.', 'Elena P.'][i % 4]})`,
+    date: `2024-0${(i % 8) + 1}-${String((i % 28) + 1).padStart(2, '0')}`,
+    status: statuses[i % statuses.length],
+    priority: priorities[i % priorities.length],
+  };
+});
+
 export default function MaintenanceDashboardPage() {
   const [tasks, setTasks] = useState([
     {
@@ -116,12 +132,15 @@ export default function MaintenanceDashboardPage() {
   ]);
 
   const [activeTaskTab, setActiveTaskTab] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   
   const [inventoryItems, setInventoryItems] = useState([
     { id: 1, name: 'LED Bulbs E27', count: 2, icon: 'MapPin' },
     { id: 2, name: 'Air Filters', count: 5, icon: 'Filter' }
   ]);
   const [isInventoryModalOpen, setIsInventoryModalOpen] = useState(false);
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+
   const [newInvName, setNewInvName] = useState('');
   const [newInvCount, setNewInvCount] = useState('');
 
@@ -148,6 +167,9 @@ export default function MaintenanceDashboardPage() {
       fullDate: d,
     };
   });
+
+  const monthName = startOfViewWeek.toLocaleString('default', { month: 'long' });
+  const yearNum = startOfViewWeek.getFullYear();
 
   // Mock Agenda Data based on selected date
   const getAgendaForDay = (fullDate) => {
@@ -235,26 +257,29 @@ export default function MaintenanceDashboardPage() {
       id: Date.now(),
       name: newInvName,
       count: parseInt(newInvCount) || 0,
-      icon: 'Box' // Default icon for new items
+      icon: 'Box'
     };
 
     setInventoryItems([...inventoryItems, newItem]);
     setNewInvName('');
     setNewInvCount('');
-    setIsInventoryModalOpen(false);
   };
 
-  const filteredTasks = tasks.filter(task => {
-    if (activeTaskTab === 'High Priority') return task.priority === 'High';
-    return true; // All
+  const filteredTasks = tasks.filter((task) => {
+    const matchesPriority =
+      activeTaskTab === 'High Priority' ? task.priority === 'High' : true;
+    const matchesSearch =
+      task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.meta.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesPriority && matchesSearch;
   });
 
   return (
     <div className={styles.page}>
       {/* Add Task Modal */}
       {isModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2 className={styles.modalTitle}>Add New Task</h2>
             <form onSubmit={handleAddTask}>
               <div className={styles.formGroup}>
@@ -290,8 +315,8 @@ export default function MaintenanceDashboardPage() {
 
       {/* Edit Task Modal */}
       {editingTask && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} onClick={() => setEditingTask(null)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <h2 className={styles.modalTitle}>Edit Task</h2>
             <form onSubmit={handleEditTask}>
               <div className={styles.formGroup}>
@@ -347,11 +372,33 @@ export default function MaintenanceDashboardPage() {
         </div>
       )}
 
-      {/* Inventory Modal */}
+      {/* Manage Inventory Modal */}
       {isInventoryModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h2 className={styles.modalTitle}>Add Inventory Item</h2>
+        <div className={styles.modalOverlay} onClick={() => setIsInventoryModalOpen(false)}>
+          <div className={styles.modalContent} style={{ maxWidth: 520, width: '92vw' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 className={styles.modalTitle} style={{ margin: 0 }}>Manage Inventory</h2>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setIsInventoryModalOpen(false)}
+                style={{ padding: '6px 14px', borderRadius: 8, cursor: 'pointer' }}
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div style={{ marginBottom: 24, maxHeight: 180, overflowY: 'auto' }}>
+              <h4 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>CURRENT INVENTORY ITEMS</h4>
+              {inventoryItems.map((item) => (
+                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'var(--color-bg)', borderRadius: 8, marginBottom: 8, border: '1px solid var(--color-border)' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{item.name}</span>
+                  <span style={{ background: 'rgba(229,62,62,0.15)', color: '#e53e3e', padding: '4px 10px', borderRadius: 12, fontWeight: 700, fontSize: 13 }}>{item.count} Left</span>
+                </div>
+              ))}
+            </div>
+
+            <h4 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 700, color: 'var(--color-text-muted)', letterSpacing: '0.5px' }}>ADD NEW INVENTORY ITEM</h4>
             <form onSubmit={handleAddInventory}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Item Name</label>
@@ -377,9 +424,62 @@ export default function MaintenanceDashboardPage() {
               </div>
               <div className={styles.modalActions}>
                 <button type="button" className={styles.cancelButton} onClick={() => setIsInventoryModalOpen(false)}>Cancel</button>
-                <button type="submit" className={styles.primaryButton}>Add Item</button>
+                <button type="submit" className={styles.primaryButton}>+ Add Item</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Maintenance History Modal */}
+      {isHistoryModalOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsHistoryModalOpen(false)}>
+          <div className={styles.modalContent} style={{ maxWidth: 850, width: '92vw', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div>
+                <h2 className={styles.modalTitle} style={{ margin: 0 }}>Maintenance History Records</h2>
+                <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--color-text-secondary)' }}>Showing all 156 completed &amp; resolved maintenance records</p>
+              </div>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setIsHistoryModalOpen(false)}
+                style={{ padding: '6px 14px', borderRadius: 8, cursor: 'pointer' }}
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: 'auto', borderRadius: 10, border: '1px solid var(--color-border)' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                <thead style={{ background: 'var(--color-bg)', position: 'sticky', top: 0, zIndex: 2 }}>
+                  <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--color-border)' }}>
+                    <th style={{ padding: '12px 16px' }}>ID</th>
+                    <th style={{ padding: '12px 16px' }}>TASK NAME</th>
+                    <th style={{ padding: '12px 16px' }}>CATEGORY</th>
+                    <th style={{ padding: '12px 16px' }}>REPORTED BY</th>
+                    <th style={{ padding: '12px 16px' }}>DATE</th>
+                    <th style={{ padding: '12px 16px' }}>STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {MOCK_HISTORY_RECORDS.map((rec) => (
+                    <tr key={rec.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                      <td style={{ padding: '10px 16px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{rec.id}</td>
+                      <td style={{ padding: '10px 16px', color: 'var(--color-text-primary)' }}>{rec.task}</td>
+                      <td style={{ padding: '10px 16px', color: 'var(--color-text-secondary)' }}>{rec.category}</td>
+                      <td style={{ padding: '10px 16px', color: 'var(--color-text-secondary)' }}>{rec.reporter}</td>
+                      <td style={{ padding: '10px 16px', color: 'var(--color-text-muted)' }}>{rec.date}</td>
+                      <td style={{ padding: '10px 16px' }}>
+                        <span style={{ background: 'rgba(72,187,120,0.15)', color: '#2f855a', padding: '3px 9px', borderRadius: 12, fontWeight: 700, fontSize: 12 }}>
+                          {rec.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -393,7 +493,13 @@ export default function MaintenanceDashboardPage() {
         <div className={styles.headerActions}>
           <div className={styles.searchWrapper}>
             <SearchIcon />
-            <input type="text" placeholder="Quick find task..." className={styles.searchInput} />
+            <input
+              type="text"
+              placeholder="Quick find task..."
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           <button className={styles.primaryButton} onClick={() => setIsModalOpen(true)}>
             + Add Task
@@ -436,7 +542,7 @@ export default function MaintenanceDashboardPage() {
         <div className={styles.taskListHeader}>
           <div className={styles.taskListTitleWrapper}>
             <div className={styles.indicator}></div>
-            <h2 className={styles.sectionTitle}>Active & Pending Issues</h2>
+            <h2 className={styles.sectionTitle}>Active &amp; Pending Issues</h2>
           </div>
           <div className={styles.tabs}>
             <button 
@@ -455,34 +561,49 @@ export default function MaintenanceDashboardPage() {
         </div>
 
         <div className={styles.taskList}>
-          {filteredTasks.map(task => (
-            <div key={task.id} className={styles.taskItem}>
-              <div className={styles.taskMain}>
-                <div className={styles.taskIcon}>{getIconByName(task.icon)}</div>
-                <div>
-                  <div className={styles.taskName}>{task.name}</div>
-                  <div className={styles.taskMeta}>{task.meta}</div>
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map(task => (
+              <div key={task.id} className={styles.taskItem}>
+                <div className={styles.taskMain}>
+                  <div className={styles.taskIcon}>{getIconByName(task.icon)}</div>
+                  <div>
+                    <div className={styles.taskName}>{task.name}</div>
+                    <div className={styles.taskMeta}>{task.meta}</div>
+                  </div>
+                </div>
+                <div className={styles.taskStatus}>
+                  <span className={`${styles.badge} ${task.status === 'PENDING' ? styles.badgePending : styles.badgeCompleted}`}>
+                    {task.status}
+                  </span>
+                  {task.status === 'COMPLETED' && <button className={styles.undoBtn} onClick={() => handleUndoTask(task.id)}>Undo</button>}
+                  <button
+                    className={styles.undoBtn}
+                    onClick={() => handleOpenEdit(task)}
+                    aria-label={`Edit task: ${task.name}`}
+                  >
+                    Edit
+                  </button>
                 </div>
               </div>
-              <div className={styles.taskStatus}>
-                <span className={`${styles.badge} ${task.status === 'PENDING' ? styles.badgePending : styles.badgeCompleted}`}>
-                  {task.status}
-                </span>
-                {task.status === 'COMPLETED' && <button className={styles.undoBtn} onClick={() => handleUndoTask(task.id)}>Undo</button>}
-                <button
-                  className={styles.undoBtn}
-                  onClick={() => handleOpenEdit(task)}
-                  aria-label={`Edit task: ${task.name}`}
-                >
-                  Edit
-                </button>
-              </div>
+            ))
+          ) : (
+            <div style={{ padding: '24px', textStyle: 'italic', color: 'var(--color-text-muted)' }}>
+              No tasks found matching your search.
             </div>
-          ))}
+          )}
         </div>
 
         <div className={styles.historyLinkWrapper}>
-          <a href="#" className={styles.historyLink}>View All 156 History Records</a>
+          <a
+            href="#history"
+            className={styles.historyLink}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsHistoryModalOpen(true);
+            }}
+          >
+            View All 156 History Records
+          </a>
         </div>
       </div>
 
@@ -511,7 +632,7 @@ export default function MaintenanceDashboardPage() {
         {/* Weekly Overview */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.sectionTitle}>Weekly Overview</h2>
+            <h2 className={styles.sectionTitle}>Weekly Overview &mdash; {monthName} {yearNum}</h2>
             <div className={styles.navArrows}>
               <span className={styles.arrow} onClick={() => setCurrentWeekOffset(prev => prev - 1)} style={{ cursor: 'pointer' }}>{'<'}</span>
               <span className={styles.arrow} onClick={() => setCurrentWeekOffset(prev => prev + 1)} style={{ cursor: 'pointer' }}>{'>'}</span>

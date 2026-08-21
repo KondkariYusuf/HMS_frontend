@@ -404,6 +404,7 @@ export default function RestaurantOrderModal({
               onClick={() => {
                 if (typeof window !== 'undefined') {
                   window.alert(`KOT Saved & Printed for Table ${tableNumber}!`);
+                  window.print();
                 }
                 onClose();
               }}
