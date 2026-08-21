@@ -27,7 +27,7 @@ export const orgTypeService = {
    * GET /api/organization-type?page=1&limit=10&search=
    */
   getAll: async (params = {}) => {
-    const query = new URLSearchParams(params).toString();
+    const query = new window.URLSearchParams(params).toString();
     const baseUrl = getApiBaseUrl();
     const url = query ? `${baseUrl}?${query}` : baseUrl;
     const res = await fetch(url, {

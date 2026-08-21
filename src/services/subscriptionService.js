@@ -27,7 +27,7 @@ export const subscriptionService = {
    * GET /api/subscription-plan?status=active
    */
   getAll: async (params = {}) => {
-    const query = new URLSearchParams(params).toString();
+    const query = new window.URLSearchParams(params).toString();
     const baseUrl = getApiBaseUrl();
     const url = query ? `${baseUrl}?${query}` : baseUrl;
     const res = await fetch(url, {

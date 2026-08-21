@@ -8,6 +8,7 @@ import Button from '@components/Button/Button';
 import { useAuth } from '@hooks/useAuth';
 import { lookupService } from '@services/lookupService';
 import styles from './Index.module.css';
+import branchService from '@services/branchService';
 
 const emptyForm = {
   name: '',
@@ -254,8 +255,8 @@ export default function AdminBranchesPage() {
 
               <span
                 className={`${styles.status} ${branch.status === 'Active'
-                    ? styles.statusActive
-                    : styles.statusInactive
+                  ? styles.statusActive
+                  : styles.statusInactive
                   }`}
               >
                 <i />
