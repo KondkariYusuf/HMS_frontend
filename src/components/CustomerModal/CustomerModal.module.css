@@ -1,3 +1,5 @@
+/* ── Customer Modal Form ─────────────────────────────────── */
+
 .formContainer {
   display: flex;
   flex-direction: column;
@@ -27,24 +29,43 @@
   color: #d52e2e;
 }
 
+/* ── Inputs & Select ─────────────────────────────────────── */
+
 .input,
 .select {
   width: 100%;
+  min-height: 42px;
+  box-sizing: border-box;
   padding: 10px 14px;
   font-size: 14px;
+  font-family: var(--font-family);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--color-background);
   color: var(--color-text-primary);
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
 }
 
 .input:focus,
 .select:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.1);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.12);
 }
+
+/* Make select text consistent */
+.select {
+  cursor: pointer;
+}
+
+/* ── Validation ──────────────────────────────────────────── */
 
 .inputError {
   border-color: #f05f66;
@@ -60,6 +81,8 @@
   color: #d52e2e;
 }
 
+/* ── Actions ─────────────────────────────────────────────── */
+
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -71,12 +94,17 @@
 
 .cancelButton,
 .saveButton {
+  min-height: 40px;
   padding: 10px 20px;
   font-size: 14px;
+  font-family: var(--font-family);
   font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .cancelButton {
@@ -86,7 +114,7 @@
 }
 
 .cancelButton:hover {
-  background: #f8fafc;
+  background: var(--color-hover);
   color: var(--color-text-primary);
 }
 
@@ -97,6 +125,69 @@
 }
 
 .saveButton:hover {
-  background: #0b555a;
-  border-color: #0b555a;
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+/* ── Dark Mode ───────────────────────────────────────────── */
+
+[data-theme="dark"] .input,
+[data-theme="dark"] .select {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .input::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .input:focus,
+[data-theme="dark"] .select:focus {
+  background: var(--color-background);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.18);
+}
+
+/* Native dropdown options */
+[data-theme="dark"] .select option {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .label {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .cancelButton {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .cancelButton:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .actions {
+  border-color: var(--color-border);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+  }
+
+  .cancelButton,
+  .saveButton {
+    flex: 1;
+  }
 }

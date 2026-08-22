@@ -1,5 +1,6 @@
 /**
- * Billing/Reports/Index.module.css
+ * Customers/Directory/Index.module.css
+ * Unified Customer Directory
  */
 
 /* ── Page Layout ─────────────────────────────────────────── */
@@ -34,134 +35,366 @@
   color: var(--color-text-secondary);
 }
 
-/* ── Export Dropdown ─────────────────────────────────────── */
+/* ── Add Customer Button ─────────────────────────────────── */
 
-.exportWrapper {
-  position: relative;
+.addBtn {
   flex-shrink: 0;
+  min-height: 40px;
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
-.exportMenu {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  min-width: 200px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
-  z-index: 100;
-  overflow: hidden;
+.addBtn:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
-.exportMenuItem {
+/* ── Toolbar ─────────────────────────────────────────────── */
+
+.toolbar {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  width: 100%;
-  padding: var(--space-md) var(--space-lg);
-  background: none;
-  border: none;
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-  font-family: var(--font-family);
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-  transition: background-color 0.15s ease;
-}
-
-.exportMenuItem:hover {
-  background-color: var(--color-primary-tint);
-  color: var(--color-primary);
-}
-
-.exportMenuIcon {
-  font-size: var(--font-size-md);
-  flex-shrink: 0;
-}
-
-/* ── KPI Grid ────────────────────────────────────────────── */
-
-.kpiGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
-}
-
-/* ── Filters ─────────────────────────────────────────────── */
-
-.controlsGrid {
-  display: flex;
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-md);
-  margin-bottom: var(--space-xl);
-  align-items: flex-end;
-  background: var(--color-surface);
   padding: var(--space-md);
-  border-radius: var(--radius-lg);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
 }
 
-.filterGroup {
+.searchBox {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  min-width: 160px;
-  flex: 1;
-}
-
-.filterLabel {
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.filterSelect,
-.filterInput {
+  align-items: center;
+  flex: 1 1 320px;
+  min-width: 260px;
   height: 40px;
-  padding: 0 var(--space-sm);
+  padding: 0 var(--space-md);
+  gap: var(--space-sm);
+  background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-background);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  width: 100%;
 }
 
-.filterSelect:focus,
-.filterInput:focus {
+.searchIcon {
+  flex-shrink: 0;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.searchInput {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchBox:focus-within {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(0, 163, 148, 0.15);
 }
 
-.clearFilterBtn {
-  height: 40px;
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.filterPill {
+  min-height: 36px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.filterPill:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+.activeFilter {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* ── Customer Table Card ─────────────────────────────────── */
+
+.tableCard {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: auto;
+  text-align: left;
+}
+
+/* ── Table Header ────────────────────────────────────────── */
+
+.table thead {
+  background: var(--color-table-header);
+}
+
+.table th {
+  padding: var(--space-md) var(--space-lg);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: left;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Table Body ──────────────────────────────────────────── */
+
+.table td {
+  padding: var(--space-lg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableRow {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.tableRow:hover {
+  background-color: var(--color-table-row-hover);
+}
+
+.tableRow:last-child td {
+  border-bottom: none;
+}
+
+/* ── Guest Column ────────────────────────────────────────── */
+
+.guestCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 190px;
+}
+
+.guestInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.guestName {
+  display: block;
+  max-width: 220px;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guestType {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ── Customer Type Colors ────────────────────────────────── */
+
+.VIP {
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+.Regular {
+  color: var(--color-text-secondary);
+  background: var(--color-hover);
+}
+
+.Corporate {
+  color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+.Walk-in {
+  color: var(--color-text-secondary);
+  background: var(--color-hover);
+}
+
+/* ── Contact Column ──────────────────────────────────────── */
+
+.contactCell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 190px;
+}
+
+.contactCell > span:first-child {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* ── Metrics Column ──────────────────────────────────────── */
+
+.metricsCell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  min-width: 170px;
+}
+
+.metricsCell > span:first-child {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.secondaryText {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* ── Last Visit ──────────────────────────────────────────── */
+
+.table td:nth-child(4) {
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+/* ── Status ──────────────────────────────────────────────── */
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72px;
+  padding: 4px 9px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* ── Actions ─────────────────────────────────────────────── */
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
   padding: 0 var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: transparent;
+  color: var(--color-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.viewBtn:hover {
+  background: var(--color-primary-tint);
+  border-color: var(--color-primary);
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+
+.emptyState {
+  padding: var(--space-xl);
+  text-align: center !important;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
-  font-family: var(--font-family);
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
-  white-space: nowrap;
 }
 
-.clearFilterBtn:hover {
-  border-color: var(--color-error);
-  color: var(--color-error);
-  background-color: var(--color-hover);
-}
-
-/* ── Analytics Row (Chart + Category Breakdown) ──────────── */
+/* ── Analytics / Category Section ────────────────────────── */
 
 .analyticsRow {
   display: grid;
@@ -174,8 +407,6 @@
 .chartCell {
   min-width: 0;
 }
-
-/* ── Category Breakdown Panel ────────────────────────────── */
 
 .categoryBreakdown {
   background: var(--color-surface);
@@ -249,7 +480,7 @@
   white-space: nowrap;
 }
 
-/* ── Table Section ───────────────────────────────────────── */
+/* ── Generic Table Section ───────────────────────────────── */
 
 .tableSection {
   background: var(--color-surface);
@@ -288,11 +519,87 @@
   border-radius: var(--radius-full);
 }
 
-.emptyState {
-  padding: var(--space-xl) 0;
-  text-align: center;
+/* ── Dark Mode ───────────────────────────────────────────── */
+
+[data-theme="dark"] .tableCard,
+[data-theme="dark"] .table {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .table th {
+  background: var(--color-table-header);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .table td {
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .tableRow:hover {
+  background-color: var(--color-table-row-hover);
+}
+
+[data-theme="dark"] .guestName {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .secondaryText {
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+}
+
+[data-theme="dark"] .Regular,
+[data-theme="dark"] .Walk-in {
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .VIP,
+[data-theme="dark"] .Corporate {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .viewBtn {
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .viewBtn:hover {
+  background: var(--color-primary-tint);
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .filterPill {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .filterPill:hover {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .activeFilter {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .searchBox {
+  background: var(--color-background);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .searchInput {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .filterBorder {
+  border-color: var(--color-border) !important;
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
@@ -324,8 +631,21 @@
     align-items: stretch;
   }
 
-  .exportWrapper {
+  .addBtn {
     align-self: flex-start;
+  }
+
+  .toolbar {
+    align-items: stretch;
+  }
+
+  .searchBox {
+    flex-basis: 100%;
+    min-width: 100%;
+  }
+
+  .filters {
+    width: 100%;
   }
 
   .filterGroup {
@@ -339,6 +659,15 @@
   .breakdownRow {
     grid-template-columns: 60px 1fr 70px;
   }
+
+  .table {
+    min-width: 850px;
+  }
+
+  .table th,
+  .table td {
+    padding: var(--space-md);
+  }
 }
 
 @media (max-width: 480px) {
@@ -349,14 +678,36 @@
   .kpiGrid {
     grid-template-columns: 1fr;
   }
+
+  .table {
+    min-width: 820px;
+  }
+
+  .table th,
+  .table td {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .guestCell {
+    min-width: 180px;
+  }
+
+  .contactCell {
+    min-width: 180px;
+  }
+
+  .metricsCell {
+    min-width: 160px;
+  }
 }
 
 /* ── Print Styles ────────────────────────────────────────── */
 
 @media print {
-
-  .exportWrapper,
-  .controlsGrid .clearFilterBtn {
+  .toolbar,
+  .addBtn,
+  .filterPill,
+  .viewBtn {
     display: none;
   }
 
@@ -364,15 +715,11 @@
     gap: 16px;
   }
 
+  .tableCard,
   .tableSection,
   .categoryBreakdown,
   .analyticsRow {
     box-shadow: none;
     border: 1px solid var(--color-border);
   }
-}
-
-/* === Dark Mode Final === */
-[data-theme="dark"] .filterBorder {
-  border-color: var(--color-border) !important;
 }

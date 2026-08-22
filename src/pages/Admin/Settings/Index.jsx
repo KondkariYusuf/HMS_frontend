@@ -40,7 +40,9 @@ const INITIAL_ROOMS = [
 function RoomMappingCard({ room, onChange }) {
   return (
     <article className={styles.roomCard}>
-      <strong className={styles.roomNumber}>Room {room.room}</strong>
+      <strong className={styles.roomNumber}>
+        Room {room.room}
+      </strong>
 
       <select
         className={styles.roomTypeSelect}
@@ -62,10 +64,14 @@ export default function AdminSettingsPage() {
   const getStoredSettings = () => {
     try {
       const stored = localStorage.getItem('syncstays_admin_settings');
-      if (stored) return JSON.parse(stored);
+
+      if (stored) {
+        return JSON.parse(stored);
+      }
     } catch (e) {
       console.warn('Failed to load settings:', e);
     }
+
     return null;
   };
 
@@ -90,48 +96,93 @@ export default function AdminSettingsPage() {
     { code: 'GBP', symbol: '£' },
     { code: 'INR', symbol: '₹' },
   ]);
+
   const [orgTypes, setOrgTypes] = useState([
-    { id: 1, typeName: 'Hotel', description: 'Lodging properties' },
-    { id: 2, typeName: 'Restaurant', description: 'Standalone F&B' },
-    { id: 3, typeName: 'Hotel + Restaurant', description: 'Combined property' },
+    {
+      id: 1,
+      typeName: 'Hotel',
+      description: 'Lodging properties',
+    },
+    {
+      id: 2,
+      typeName: 'Restaurant',
+      description: 'Standalone F&B',
+    },
+    {
+      id: 3,
+      typeName: 'Hotel + Restaurant',
+      description: 'Combined property',
+    },
   ]);
+
   const [newTypeName, setNewTypeName] = useState('');
   const [newTypeDesc, setNewTypeDesc] = useState('');
   const [showOrgTypeModal, setShowOrgTypeModal] = useState(false);
+
   const [rooms, setRooms] = useState(() => {
     const settings = getStoredSettings();
     return settings?.rooms || INITIAL_ROOMS;
   });
+
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     async function loadData() {
       try {
         const res = await lookupService.getCurrencies();
-        const curList = res?.data?.responses || res?.data?.rows || res?.data?.data || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+
+        const curList =
+          res?.data?.responses ||
+          res?.data?.rows ||
+          res?.data?.data ||
+          (Array.isArray(res?.data)
+            ? res.data
+            : Array.isArray(res)
+              ? res
+              : []);
+
         if (Array.isArray(curList) && curList.length > 0) {
           setCurrencyList(curList);
         }
       } catch (err) {
-        console.warn('Currency lookup API offline, using defaults.', err);
+        console.warn(
+          'Currency lookup API offline, using defaults.',
+          err,
+        );
       }
 
       try {
         const resOrg = await orgTypeService.getAll();
-        const otList = resOrg?.data?.responses || resOrg?.data?.rows || resOrg?.data?.data || (Array.isArray(resOrg?.data) ? resOrg.data : (Array.isArray(resOrg) ? resOrg : []));
+
+        const otList =
+          resOrg?.data?.responses ||
+          resOrg?.data?.rows ||
+          resOrg?.data?.data ||
+          (Array.isArray(resOrg?.data)
+            ? resOrg.data
+            : Array.isArray(resOrg)
+              ? resOrg
+              : []);
+
         if (Array.isArray(otList) && otList.length > 0) {
           setOrgTypes(otList);
         }
       } catch (err) {
-        console.warn('Org types API offline, using defaults.', err);
+        console.warn(
+          'Org types API offline, using defaults.',
+          err,
+        );
       }
     }
+
     loadData();
   }, []);
 
   const roomTypeCounts = useMemo(() => {
     return rooms.reduce((accumulator, room) => {
-      accumulator[room.type] = (accumulator[room.type] || 0) + 1;
+      accumulator[room.type] =
+        (accumulator[room.type] || 0) + 1;
+
       return accumulator;
     }, {});
   }, [rooms]);
@@ -160,11 +211,22 @@ export default function AdminSettingsPage() {
     };
 
     try {
-      localStorage.setItem('syncstays_admin_settings', JSON.stringify(configuration));
-      console.log('Hotel configuration saved:', configuration);
+      localStorage.setItem(
+        'syncstays_admin_settings',
+        JSON.stringify(configuration),
+      );
+
+      console.log(
+        'Hotel configuration saved:',
+        configuration,
+      );
+
       setSaved(true);
     } catch (e) {
-      console.error('Failed to save settings:', e);
+      console.error(
+        'Failed to save settings:',
+        e,
+      );
     }
   };
 
@@ -193,8 +255,87 @@ export default function AdminSettingsPage() {
     globalThis.URL.revokeObjectURL(url);
   };
 
+  const handleDeleteOrgType = async (orgType) => {
+    if (
+      !window.confirm(
+        'Delete this organization type?',
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await orgTypeService.delete(orgType.id);
+    } catch (e) {
+      console.warn(
+        'Org type delete fallback:',
+        e,
+      );
+    }
+
+    setOrgTypes((prev) =>
+      prev.filter(
+        (item) => item.id !== orgType.id,
+      ),
+    );
+  };
+
+  const handleCreateOrgType = async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      typeName: newTypeName.trim(),
+      description: newTypeDesc.trim(),
+    };
+
+    if (!payload.typeName) {
+      return;
+    }
+
+    try {
+      const res = await orgTypeService.create(
+        payload,
+      );
+
+      if (res && res.data) {
+        setOrgTypes((prev) => [
+          ...prev,
+          res.data,
+        ]);
+      } else {
+        setOrgTypes((prev) => [
+          ...prev,
+          {
+            ...payload,
+            id: Date.now(),
+          },
+        ]);
+      }
+    } catch (err) {
+      console.warn(
+        'Org type create API offline, using fallback:',
+        err,
+      );
+
+      setOrgTypes((prev) => [
+        ...prev,
+        {
+          ...payload,
+          id: Date.now(),
+        },
+      ]);
+    }
+
+    setShowOrgTypeModal(false);
+    setNewTypeName('');
+    setNewTypeDesc('');
+  };
+
   return (
-    <div className={styles.page} data-testid="admin-settings-page">
+    <div
+      className={styles.page}
+      data-testid="admin-settings-page"
+    >
       <div className={styles.breadcrumb}>
         <span>Settings</span>
         <span>/</span>
@@ -203,38 +344,58 @@ export default function AdminSettingsPage() {
 
       <header className={styles.pageHeader}>
         <div>
-          <h1 className={styles.title}>Hotel Configuration</h1>
+          <h1 className={styles.title}>
+            Hotel Configuration
+          </h1>
+
           <p className={styles.subtitle}>
-            Adjust global settings and room architectural mappings.
+            Adjust global settings and room architectural
+            mappings.
           </p>
         </div>
 
         <div className={styles.headerActions}>
-          <Button variant="secondary" onClick={handleExport}>
+          <Button
+            variant="secondary"
+            onClick={handleExport}
+          >
             Export
           </Button>
 
-          <Button variant="primary" onClick={handleSave}>
+          <Button
+            variant="primary"
+            onClick={handleSave}
+          >
             Save Changes
           </Button>
         </div>
       </header>
 
       <section className={styles.configurationCard}>
+        {/* =========================
+            GENERAL INFORMATION
+        ========================= */}
+
         <div className={styles.section}>
           <div className={styles.sectionHeading}>
             <span className={styles.sectionAccent} />
+
             <h2>General Information</h2>
           </div>
 
           <div className={styles.generalGrid}>
             <div className={styles.fieldGroup}>
-              <label htmlFor="hotel-name" className={styles.label}>
+              <label
+                htmlFor="hotel-name"
+                className={styles.label}
+              >
                 Hotel Name
               </label>
 
               <div className={styles.inputWrapper}>
-                <span className={styles.inputIcon}>▧</span>
+                <span className={styles.inputIcon}>
+                  ▧
+                </span>
 
                 <input
                   id="hotel-name"
@@ -242,7 +403,9 @@ export default function AdminSettingsPage() {
                   className={styles.input}
                   value={hotelName}
                   onChange={(event) => {
-                    setHotelName(event.target.value);
+                    setHotelName(
+                      event.target.value,
+                    );
                     setSaved(false);
                   }}
                 />
@@ -250,12 +413,17 @@ export default function AdminSettingsPage() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="tax-rate" className={styles.label}>
+              <label
+                htmlFor="tax-rate"
+                className={styles.label}
+              >
                 Default Tax Rate (%)
               </label>
 
               <div className={styles.inputWrapper}>
-                <span className={styles.inputIcon}>%</span>
+                <span className={styles.inputIcon}>
+                  %
+                </span>
 
                 <input
                   id="tax-rate"
@@ -265,7 +433,9 @@ export default function AdminSettingsPage() {
                   className={styles.input}
                   value={taxRate}
                   onChange={(event) => {
-                    setTaxRate(event.target.value);
+                    setTaxRate(
+                      event.target.value,
+                    );
                     setSaved(false);
                   }}
                 />
@@ -273,25 +443,43 @@ export default function AdminSettingsPage() {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label htmlFor="currency-locale" className={styles.label}>
+              <label
+                htmlFor="currency-locale"
+                className={styles.label}
+              >
                 Currency Locale
               </label>
 
               <div className={styles.inputWrapper}>
-                <span className={styles.inputIcon}>▣</span>
+                <span className={styles.inputIcon}>
+                  ▣
+                </span>
 
                 <select
                   id="currency-locale"
                   className={styles.select}
                   value={currency}
                   onChange={(event) => {
-                    setCurrency(event.target.value);
+                    setCurrency(
+                      event.target.value,
+                    );
                     setSaved(false);
                   }}
                 >
                   {currencyList.map((cur) => (
-                    <option key={cur.code || cur.id || cur} value={cur.code || cur}>
-                      {cur.code || cur} ({cur.symbol || cur})
+                    <option
+                      key={
+                        cur.code ||
+                        cur.id ||
+                        cur
+                      }
+                      value={
+                        cur.code ||
+                        cur
+                      }
+                    >
+                      {cur.code || cur} (
+                      {cur.symbol || cur})
                     </option>
                   ))}
                 </select>
@@ -302,124 +490,174 @@ export default function AdminSettingsPage() {
 
         <div className={styles.divider} />
 
+        {/* =========================
+            ORGANIZATION TYPES
+        ========================= */}
+
         <div className={styles.section}>
           <div className={styles.mappingHeader}>
             <div className={styles.sectionHeading}>
-              <span className={styles.sectionAccent} />
+              <span
+                className={styles.sectionAccent}
+              />
+
               <h2>Organization Types</h2>
             </div>
-            <Button variant="secondary" onClick={() => setShowOrgTypeModal(true)}>
+
+            <Button
+              variant="secondary"
+              onClick={() =>
+                setShowOrgTypeModal(true)
+              }
+            >
               + Add Org Type
             </Button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-            {orgTypes.map((ot) => (
-              <div
-                key={ot.id || ot.typeName}
-                style={{
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  padding: '1rem',
-                  backgroundColor: '#f8fafc',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
-                }}
+          <div className={styles.orgTypeGrid}>
+            {orgTypes.map((orgType) => (
+              <article
+                key={
+                  orgType.id ||
+                  orgType.typeName
+                }
+                className={styles.orgTypeCard}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '1rem', color: '#1e293b' }}>{ot.typeName || ot.name}</strong>
+                <div
+                  className={
+                    styles.orgTypeHeader
+                  }
+                >
+                  <strong
+                    className={
+                      styles.orgTypeName
+                    }
+                  >
+                    {orgType.typeName ||
+                      orgType.name}
+                  </strong>
+
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (window.confirm('Delete this organization type?')) {
-                        try {
-                          await orgTypeService.delete(ot.id);
-                        } catch (e) {
-                          console.warn('Org type delete fallback:', e);
-                        }
-                        setOrgTypes((prev) => prev.filter((item) => item.id !== ot.id));
-                      }
-                    }}
-                    style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.85rem' }}
+                    className={
+                      styles.orgTypeDelete
+                    }
+                    onClick={() =>
+                      handleDeleteOrgType(
+                        orgType,
+                      )
+                    }
                   >
                     Delete
                   </button>
                 </div>
-                <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>{ot.description || 'Property type'}</p>
-              </div>
+
+                <p
+                  className={
+                    styles.orgTypeDescription
+                  }
+                >
+                  {orgType.description ||
+                    'Property type'}
+                </p>
+              </article>
             ))}
           </div>
 
           {showOrgTypeModal && (
             <div
-              style={{
-                position: 'fixed',
-                inset: 0,
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000,
-              }}
-              onClick={() => setShowOrgTypeModal(false)}
+              className={
+                styles.orgTypeModalOverlay
+              }
+              onClick={() =>
+                setShowOrgTypeModal(false)
+              }
             >
               <form
-                style={{
-                  backgroundColor: '#fff',
-                  borderRadius: '12px',
-                  padding: '2rem',
-                  width: '100%',
-                  maxWidth: '440px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1rem',
-                }}
-                onClick={(e) => e.stopPropagation()}
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const payload = { typeName: newTypeName.trim(), description: newTypeDesc.trim() };
-                  try {
-                    const res = await orgTypeService.create(payload);
-                    if (res && res.data) {
-                      setOrgTypes((prev) => [...prev, res.data]);
-                    } else {
-                      setOrgTypes((prev) => [...prev, { ...payload, id: Date.now() }]);
-                    }
-                  } catch (err) {
-                    console.warn('Org type create API offline, using fallback:', err);
-                    setOrgTypes((prev) => [...prev, { ...payload, id: Date.now() }]);
-                  }
-                  setShowOrgTypeModal(false);
-                  setNewTypeName('');
-                  setNewTypeDesc('');
-                }}
+                className={
+                  styles.orgTypeModal
+                }
+                onClick={(event) =>
+                  event.stopPropagation()
+                }
+                onSubmit={
+                  handleCreateOrgType
+                }
               >
-                <h3 style={{ margin: 0 }}>Add Organization Type</h3>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.85rem' }}>
+                <h3
+                  className={
+                    styles.orgTypeModalTitle
+                  }
+                >
+                  Add Organization Type
+                </h3>
+
+                <label
+                  className={
+                    styles.orgTypeModalLabel
+                  }
+                >
                   Type Name
+
                   <input
                     required
                     type="text"
                     value={newTypeName}
-                    onChange={(e) => setNewTypeName(e.target.value)}
+                    onChange={(event) =>
+                      setNewTypeName(
+                        event.target.value,
+                      )
+                    }
                     placeholder="e.g. Resort, Boutique Hotel"
-                    style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                    className={
+                      styles.orgTypeModalInput
+                    }
                   />
                 </label>
-                <label style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.85rem' }}>
+
+                <label
+                  className={
+                    styles.orgTypeModalLabel
+                  }
+                >
                   Description
+
                   <input
                     type="text"
                     value={newTypeDesc}
-                    onChange={(e) => setNewTypeDesc(e.target.value)}
+                    onChange={(event) =>
+                      setNewTypeDesc(
+                        event.target.value,
+                      )
+                    }
                     placeholder="Short description"
-                    style={{ padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}
+                    className={
+                      styles.orgTypeModalInput
+                    }
                   />
                 </label>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
-                  <Button type="button" variant="secondary" onClick={() => setShowOrgTypeModal(false)}>Cancel</Button>
-                  <Button type="submit" variant="primary">Create Type</Button>
+
+                <div
+                  className={
+                    styles.orgTypeModalActions
+                  }
+                >
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() =>
+                      setShowOrgTypeModal(false)
+                    }
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    variant="primary"
+                  >
+                    Create Type
+                  </Button>
                 </div>
               </form>
             </div>
@@ -428,23 +666,38 @@ export default function AdminSettingsPage() {
 
         <div className={styles.divider} />
 
+        {/* =========================
+            ARCHITECTURAL ROOM MAPPING
+        ========================= */}
+
         <div className={styles.section}>
           <div className={styles.mappingHeader}>
             <div className={styles.sectionHeading}>
-              <span className={styles.sectionAccent} />
-              <h2>Architectural Room Mapping</h2>
+              <span
+                className={styles.sectionAccent}
+              />
+
+              <h2>
+                Architectural Room Mapping
+              </h2>
             </div>
 
             <div className={styles.legend}>
-              <span className={styles.legendItem}>
+              <span
+                className={styles.legendItem}
+              >
                 <span
                   className={`${styles.legendDot} ${styles.standardDot}`}
                 />
                 2B Standard
               </span>
 
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.deluxeDot}`} />
+              <span
+                className={styles.legendItem}
+              >
+                <span
+                  className={`${styles.legendDot} ${styles.deluxeDot}`}
+                />
                 3B Deluxe
               </span>
             </div>
@@ -460,59 +713,116 @@ export default function AdminSettingsPage() {
             ))}
           </div>
 
-          <div className={styles.overlayPreview}>
-            <div className={styles.overlayHeader}>
-              <span>Architecture Overlay Preview</span>
+          <div
+            className={
+              styles.overlayPreview
+            }
+          >
+            <div
+              className={
+                styles.overlayHeader
+              }
+            >
+              <span>
+                Architecture Overlay Preview
+              </span>
+
               <button
                 type="button"
-                className={styles.expandButton}
+                className={
+                  styles.expandButton
+                }
                 aria-label="Expand architecture preview"
               >
                 ⤢
               </button>
             </div>
 
-            <div className={styles.overlayCanvas}>
-              <div className={styles.previewContent}>
-                <span className={styles.previewLabel}>Current Mapping</span>
+            <div
+              className={
+                styles.overlayCanvas
+              }
+            >
+              <div
+                className={
+                  styles.previewContent
+                }
+              >
+                <span
+                  className={
+                    styles.previewLabel
+                  }
+                >
+                  Current Mapping
+                </span>
 
-                <strong>{rooms.length} Rooms Configured</strong>
+                <strong>
+                  {rooms.length} Rooms
+                  Configured
+                </strong>
 
-                <div className={styles.previewStats}>
-                  {Object.entries(roomTypeCounts).map(([type, count]) => (
-                    <span key={type}>
-                      {type}: {count}
-                    </span>
-                  ))}
+                <div
+                  className={
+                    styles.previewStats
+                  }
+                >
+                  {Object.entries(
+                    roomTypeCounts,
+                  ).map(
+                    ([type, count]) => (
+                      <span key={type}>
+                        {type}: {count}
+                      </span>
+                    ),
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
           <div className={styles.saveArea}>
-            <p className={styles.editNote}>
-              Last edited by AT. Changes to tax rates will apply to all future
-              reservations immediately.
+            <p
+              className={styles.editNote}
+            >
+              Last edited by AT. Changes
+              to tax rates will apply to
+              all future reservations
+              immediately.
             </p>
 
-            <Button variant="primary" onClick={handleSave}>
-              {saved ? 'Configuration Saved' : 'Save Configuration'}
+            <Button
+              variant="primary"
+              onClick={handleSave}
+            >
+              {saved
+                ? 'Configuration Saved'
+                : 'Save Configuration'}
             </Button>
           </div>
         </div>
       </section>
 
       <aside className={styles.adminNote}>
-        <div className={styles.noteIcon}>i</div>
+        <div className={styles.noteIcon}>
+          i
+        </div>
 
         <div>
-          <span className={styles.noteTitle}>Administrator Note</span>
+          <span
+            className={styles.noteTitle}
+          >
+            Administrator Note
+          </span>
 
           <p>
-            The room mapping grid is synced with the hotel&apos;s physical
-            blueprint. Changing a room type here will affect pricing tiers and
-            housekeeping assignment protocols across the platform. Use caution
-            when reclassifying occupied rooms.
+            The room mapping grid is
+            synced with the hotel&apos;s
+            physical blueprint. Changing
+            a room type here will affect
+            pricing tiers and housekeeping
+            assignment protocols across
+            the platform. Use caution when
+            reclassifying occupied rooms.
           </p>
         </div>
       </aside>

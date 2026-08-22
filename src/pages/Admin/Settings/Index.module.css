@@ -174,6 +174,176 @@
 }
 
 /* =========================
+   ORGANIZATION TYPES
+========================= */
+
+.orgTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,
+      minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.orgTypeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: 16px;
+
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.orgTypeCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.orgTypeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.orgTypeName {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.orgTypeDelete {
+  flex-shrink: 0;
+
+  padding: 0;
+
+  background: transparent;
+  border: none;
+
+  color: var(--color-error);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.orgTypeDelete:hover {
+  text-decoration: underline;
+}
+
+.orgTypeDescription {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================
+   ADD ORGANIZATION TYPE MODAL
+========================= */
+
+.orgTypeModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.orgTypeModal {
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 32px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow-card);
+}
+
+.orgTypeModalTitle {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.orgTypeModalLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.orgTypeModalInput {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.orgTypeModalInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.orgTypeModalInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.12);
+}
+
+.orgTypeModalActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 8px;
+}
+
+/* =========================
    ROOM MAPPING
 ========================= */
 
@@ -195,6 +365,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+
   font-size: 9px;
   color: var(--color-text-muted);
 }
@@ -215,12 +386,14 @@
 
 .roomGrid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7,
+      minmax(0, 1fr));
   gap: 14px;
 }
 
 .roomCard {
   min-height: 86px;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -271,19 +444,25 @@
 
 .overlayPreview {
   overflow: hidden;
+
   border: 1px solid var(--color-border);
   border-radius: 12px;
+
   background: var(--color-surface);
 }
 
 .overlayHeader {
   min-height: 42px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 16px;
+
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
+
   color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 500;
@@ -313,6 +492,7 @@
 
 .overlayCanvas {
   min-height: 290px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -325,6 +505,7 @@
 
 .previewContent {
   min-width: 240px;
+
   padding: 20px 22px;
 
   display: flex;
@@ -336,6 +517,7 @@
   border-radius: 12px;
 
   text-align: center;
+
   backdrop-filter: blur(5px);
 }
 
@@ -360,9 +542,12 @@
 
 .previewStats span {
   padding: 4px 7px;
+
   border-radius: 999px;
+
   background: var(--color-highlight-bg);
   color: #147a7e;
+
   font-size: 9px;
   font-weight: 600;
 }
@@ -378,6 +563,7 @@
   gap: 18px;
 
   padding-top: 20px;
+
   border-top: 1px solid var(--color-border);
 }
 
@@ -387,6 +573,7 @@
 
   font-size: 10px;
   line-height: 1.45;
+
   text-align: right;
 
   color: var(--color-text-muted);
@@ -445,12 +632,116 @@
 }
 
 /* =========================
+   DARK MODE
+========================= */
+
+[data-theme="dark"] .expandButton:hover {
+  background: var(--color-hover);
+}
+
+[data-theme="dark"] .previewStats span {
+  background: rgba(20, 122, 126, 0.2);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .adminNote {
+  background: rgba(20, 122, 126, 0.12);
+  border-color: rgba(20, 122, 126, 0.3);
+  color: #5eead4;
+}
+
+[data-theme="dark"] .noteIcon {
+  border-color: rgba(20, 122, 126, 0.5);
+}
+
+[data-theme="dark"] .roomCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .saveArea {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .overlayCanvas {
+  background:
+    linear-gradient(135deg,
+      rgba(15, 23, 42, 0.9),
+      rgba(30, 41, 59, 0.9));
+}
+
+[data-theme="dark"] .previewContent {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .roomNumber {
+  color: var(--color-primary);
+}
+
+/* =========================
+   DARK MODE - ORGANIZATION TYPES
+========================= */
+
+[data-theme="dark"] .orgTypeCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .orgTypeCard:hover {
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .orgTypeName {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .orgTypeDescription {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .orgTypeDelete {
+  color: var(--color-error);
+}
+
+[data-theme="dark"] .orgTypeDelete:hover {
+  color: #f87171;
+}
+
+[data-theme="dark"] .orgTypeModalOverlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .orgTypeModal {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .orgTypeModalTitle {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .orgTypeModalLabel {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .orgTypeModalInput {
+  background: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .orgTypeModalInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
 @media (max-width: 1200px) {
   .roomGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4,
+        minmax(0, 1fr));
   }
 }
 
@@ -460,7 +751,8 @@
   }
 
   .roomGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3,
+        minmax(0, 1fr));
   }
 
   .pageHeader,
@@ -486,7 +778,8 @@
   }
 
   .roomGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2,
+        minmax(0, 1fr));
   }
 
   .headerActions {
@@ -496,20 +789,16 @@
   .overlayCanvas {
     min-height: 220px;
   }
+
+  .orgTypeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .orgTypeModal {
+    padding: 24px;
+  }
+
+  .orgTypeModalActions {
+    flex-wrap: wrap;
+  }
 }
-
-/* === Dark Mode Overrides === */
-[data-theme="dark"] .expandButton:hover { background: var(--color-hover); }
-[data-theme="dark"] .previewStats span { background: rgba(20,122,126,0.2); color: var(--color-primary); }
-[data-theme="dark"] .adminNote { background: rgba(20,122,126,0.15); border-color: rgba(20,122,126,0.3); color: #5eead4; }
-[data-theme="dark"] .noteIcon { border-color: rgba(20,122,126,0.5); }
-[data-theme="dark"] .roomCard { border-color: var(--color-border) !important; background: var(--color-surface) !important; }
-[data-theme="dark"] .saveArea { border-color: var(--color-border); }
-[data-theme="dark"] .overlayCanvas { background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,41,59,0.9)) !important; }
-[data-theme="dark"] .previewContent { border-color: rgba(255,255,255,0.1); }
-[data-theme="dark"] .roomNumber { color: var(--color-primary) !important; }
-
-/* === Dark Mode Final === */
-[data-theme="dark"] .previewStats span { background: rgba(20,122,126,0.2) !important; color: var(--color-primary) !important; }
-[data-theme="dark"] .adminNote { background: rgba(20,122,126,0.12) !important; border-color: rgba(20,122,126,0.3) !important; color: #5eead4 !important; }
-[data-theme="dark"] .roomCard { background: var(--color-surface) !important; border-color: var(--color-border) !important; }
