@@ -9,6 +9,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Button from '@components/Button/Button';
 import { lookupService } from '@services/lookupService';
 import { orgTypeService } from '@services/orgTypeService';
+import { userService } from '@services/userService';
 import styles from './Index.module.css';
 
 const ROOM_TYPE_OPTIONS = ['2B', '3B', '4B', '5B'];
@@ -125,6 +126,46 @@ export default function AdminSettingsPage() {
   });
 
   const [saved, setSaved] = useState(false);
+
+  // Security / Change Password State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleChangePassword = async (event) => {
+    event.preventDefault();
+    setPasswordSuccess('');
+    setPasswordError('');
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New password and confirm password do not match.');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const res = await userService.changePassword(currentPassword, newPassword);
+      setPasswordLoading(false);
+      if (res.success || res.status === 200) {
+        setPasswordSuccess(res.message || 'Password changed successfully!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setPasswordError(res.message || 'Failed to change password. Please verify current password.');
+      }
+    } catch (err) {
+      setPasswordLoading(false);
+      setPasswordError(err.message || 'Error changing password.');
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -799,6 +840,119 @@ export default function AdminSettingsPage() {
                 : 'Save Configuration'}
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* =========================
+          SECURITY & CHANGE PASSWORD
+      ========================= */}
+      <section className={styles.configurationCard} style={{ marginTop: 'var(--space-xl)' }}>
+        <div className={styles.section}>
+          <div className={styles.sectionHeading}>
+            <span className={styles.sectionAccent} />
+            <h2>Security & Password Change</h2>
+          </div>
+
+          {passwordSuccess && (
+            <div style={{ color: 'var(--color-primary)', background: 'var(--color-primary-tint)', padding: '12px', borderRadius: '6px', marginBottom: '16px', fontSize: 'var(--font-size-sm)' }}>
+              {passwordSuccess}
+            </div>
+          )}
+
+          {passwordError && (
+            <div style={{ color: 'var(--color-error)', background: 'rgba(239, 68, 68, 0.1)', padding: '12px', borderRadius: '6px', marginBottom: '16px', fontSize: 'var(--font-size-sm)' }}>
+              {passwordError}
+            </div>
+          )}
+
+          <form onSubmit={handleChangePassword} className={styles.generalGrid}>
+            <div className={styles.fieldGroup}>
+              <label htmlFor="current-password" className={styles.label}>
+                Current Password
+              </label>
+              <div className={styles.inputWrapper} style={{ position: 'relative' }}>
+                <span className={styles.inputIcon}>🔒</span>
+                <input
+                  id="current-password"
+                  type={showCurrentPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={styles.input}
+                  style={{ paddingRight: '40px' }}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  style={{ position: 'absolute', right: '10px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                  title={showCurrentPassword ? 'Hide Password' : 'Show Password'}
+                >
+                  {showCurrentPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label htmlFor="new-password" className={styles.label}>
+                New Password
+              </label>
+              <div className={styles.inputWrapper} style={{ position: 'relative' }}>
+                <span className={styles.inputIcon}>🔑</span>
+                <input
+                  id="new-password"
+                  type={showNewPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={styles.input}
+                  style={{ paddingRight: '40px' }}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  style={{ position: 'absolute', right: '10px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                  title={showNewPassword ? 'Hide Password' : 'Show Password'}
+                >
+                  {showNewPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label htmlFor="confirm-password" className={styles.label}>
+                Confirm New Password
+              </label>
+              <div className={styles.inputWrapper} style={{ position: 'relative' }}>
+                <span className={styles.inputIcon}>🔑</span>
+                <input
+                  id="confirm-password"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={styles.input}
+                  style={{ paddingRight: '40px' }}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={{ position: 'absolute', right: '10px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+                  title={showConfirmPassword ? 'Hide Password' : 'Show Password'}
+                >
+                  {showConfirmPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.saveArea} style={{ gridColumn: '1 / -1', marginTop: 'var(--space-md)' }}>
+              <Button variant="primary" type="submit" disabled={passwordLoading}>
+                {passwordLoading ? 'Updating Password...' : 'Update Password'}
+              </Button>
+            </div>
+          </form>
         </div>
       </section>
 

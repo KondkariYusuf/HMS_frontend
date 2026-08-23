@@ -95,11 +95,11 @@ const persistString = (key, value) => {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() =>
-    readStorage(USER_STORAGE_KEY, DEFAULT_USER)
+    readStorage(USER_STORAGE_KEY, null)
   );
 
   const [token, setToken] = useState(() =>
-    readStringStorage(TOKEN_STORAGE_KEY, 'demo_token')
+    readStringStorage(TOKEN_STORAGE_KEY, null)
   );
 
   const [branches, setBranches] = useState(() =>
