@@ -8,6 +8,9 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
+  server: {
+    open: '/login',
+  },
   plugins: [react()],
 
   resolve: {
