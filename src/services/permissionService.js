@@ -22,10 +22,22 @@ export const permissionService = {
   /**
    * Get all permissions
    * GET /api/permission
+   * @param {Object} [params={}] - Optional query params e.g. { fetchAll: 'true' }
    */
-  getPermissions: async () => {
+  getPermissions: async (params = {}) => {
     try {
-      const res = await fetch(getApiUrl('permission'), {
+      const cleanParams = {};
+      if (params && typeof params === 'object') {
+        Object.keys(params).forEach((key) => {
+          if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+            cleanParams[key] = params[key];
+          }
+        });
+      }
+      const query = new window.URLSearchParams(cleanParams).toString();
+      const baseUrl = getApiUrl('permission');
+      const url = query ? `${baseUrl}?${query}` : baseUrl;
+      const res = await fetch(url, {
         method: 'GET',
         headers: getAuthHeaders(),
       });

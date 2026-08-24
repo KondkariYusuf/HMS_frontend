@@ -317,6 +317,18 @@ const navigationGroups = [
         label: 'RBAC Roles',
       },
       {
+        path: '/admin/modules',
+        label: 'Modules',
+      },
+      {
+        path: '/admin/sub-modules',
+        label: 'Sub-Modules',
+      },
+      {
+        path: '/admin/module-permissions',
+        label: 'Module Permissions',
+      },
+      {
         path: '/admin/branches',
         label: 'Branches',
       },

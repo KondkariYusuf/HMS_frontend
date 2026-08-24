@@ -15,3 +15,6 @@ export { default as roomService, ROOM_ENDPOINTS } from './roomService';
 export { default as roomTypeService, ROOM_TYPE_ENDPOINTS } from './roomTypeService';
 export { default as amenityService, AMENITY_ENDPOINTS } from './amenityService';
 export { default as extraServiceService, EXTRA_SERVICE_ENDPOINTS } from './extraServiceService';
+export { default as moduleService } from './moduleService';
+export { default as subModuleService } from './subModuleService';
+export { default as modulePermissionService } from './modulePermissionService';

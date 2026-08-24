@@ -66,6 +66,9 @@ import AuditLogsPage from '@pages/AuditLogs/Index';
 /* Administration */
 import AdminUsersPage from '@pages/Admin/Users/Index';
 import AdminRBACPage from '@pages/Admin/RBAC/Index';
+import AdminModulesPage from '@pages/Admin/Modules/Index';
+import AdminSubModulesPage from '@pages/Admin/SubModules/Index';
+import AdminModulePermissionsPage from '@pages/Admin/ModulePermissions/Index';
 import AdminBranchesPage from '@pages/Admin/Branches/Index';
 import AdminSubscriptionPage from '@pages/Admin/Subscription/Index';
 import AdminSettingsPage from '@pages/Admin/Settings/Index';
@@ -313,6 +316,21 @@ export const router = createBrowserRouter([
       {
         path: 'admin/rbac',
         element: <AdminRBACPage />,
+      },
+
+      {
+        path: 'admin/modules',
+        element: <AdminModulesPage />,
+      },
+
+      {
+        path: 'admin/sub-modules',
+        element: <AdminSubModulesPage />,
+      },
+
+      {
+        path: 'admin/module-permissions',
+        element: <AdminModulePermissionsPage />,
       },
 
       {
