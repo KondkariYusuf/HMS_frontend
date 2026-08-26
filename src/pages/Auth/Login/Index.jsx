@@ -13,17 +13,51 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Clear any stale demo tokens on mount so auth guard works correctly
+  // Role-based destination resolver helper
+  const getRoleDestination = (user) => {
+    if (!user || typeof user !== 'object') {
+      return null;
+    }
+    // Case A: Super Admin -> /admin/users
+    if (user.role === 'super-admin') {
+      return '/admin/users';
+    }
+    // Case B: Hotel / Organization User -> /hotel/dashboard
+    if (user.role !== 'super-admin' && user.organizationId) {
+      return '/hotel/dashboard';
+    }
+    // Case C: Invalid or unassigned user -> null (stay on /login)
+    return null;
+  };
+
+  // Mount effect: Clear stale demo tokens OR redirect if already authenticated with valid role scope
   useEffect(() => {
-    const storedToken = localStorage.getItem('syncstays_token');
+    const storedToken =
+      localStorage.getItem('syncstays_token') ||
+      localStorage.getItem('authToken');
+    const storedUserRaw = localStorage.getItem('syncstays_user');
+
     if (storedToken === 'demo_token' || storedToken === '') {
       localStorage.removeItem('syncstays_token');
       localStorage.removeItem('syncstays_user');
       localStorage.removeItem('syncstays_branches');
       localStorage.removeItem('syncstays_branch_id');
       localStorage.removeItem('authToken');
+      return;
     }
-  }, []);
+
+    if (storedToken && storedUserRaw) {
+      try {
+        const storedUser = JSON.parse(storedUserRaw);
+        const destination = getRoleDestination(storedUser);
+        if (destination) {
+          navigate(destination, { replace: true });
+        }
+      } catch {
+        // Ignore JSON parse failure
+      }
+    }
+  }, [navigate]);
 
   // Mode: 'login' | 'verify_otp' | 'forgot_password' | 'reset_password'
   const [mode, setMode] = useState('login');
@@ -46,7 +80,7 @@ export default function LoginPage() {
     if (typeof res === 'string') return res;
     if (res?.message) return res.message;
     if (res?.errors && Array.isArray(res.errors)) {
-      return res.errors.map(e => e.msg || e.message).join('. ');
+      return res.errors.map((e) => e.msg || e.message).join('. ');
     }
     return 'Operation failed. Please check input values.';
   };
@@ -62,16 +96,32 @@ export default function LoginPage() {
       const res = await authService.login(email, password);
       setLoading(false);
 
-      if (res.statusCode === 200 || res.success || res.data?.token || res.token) {
+      if (
+        res.statusCode === 200 ||
+        res.success ||
+        res.data?.token ||
+        res.token
+      ) {
         if (res.data?.token || res.token || res.accessToken) {
           const token = res.data?.token || res.token || res.accessToken;
           const user = res.data?.user || res.user || { email };
+
+          const destination = getRoleDestination(user);
+          if (!destination) {
+            setError(
+              'Invalid account scope or unassigned organization. Please contact system administrator.'
+            );
+            return;
+          }
+
           login(user, token);
           setMessage('Login successful!');
-          setTimeout(() => navigate('/'), 400);
+          setTimeout(() => navigate(destination), 300);
         } else {
           // Requires OTP
-          setMessage(res.message || 'An OTP has been sent to your email address.');
+          setMessage(
+            res.message || 'An OTP has been sent to your email address.'
+          );
           setMode('verify_otp');
         }
       } else {
@@ -91,15 +141,33 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await authService.verifyOtp(email, otp, mode === 'reset_password' ? 'FORGOT_PASSWORD' : 'LOGIN');
+      const res = await authService.verifyOtp(
+        email,
+        otp,
+        mode === 'reset_password' ? 'FORGOT_PASSWORD' : 'LOGIN'
+      );
       setLoading(false);
 
-      if (res.statusCode === 200 || res.success || res.data?.token || res.token) {
+      if (
+        res.statusCode === 200 ||
+        res.success ||
+        res.data?.token ||
+        res.token
+      ) {
         const token = res.data?.token || res.token || res.accessToken;
         const user = res.data?.user || res.user || { email };
+
+        const destination = getRoleDestination(user);
+        if (!destination) {
+          setError(
+            'Invalid account scope or unassigned organization. Please contact system administrator.'
+          );
+          return;
+        }
+
         if (token) login(user, token);
         setMessage('OTP Verified! Logging in...');
-        setTimeout(() => navigate('/'), 500);
+        setTimeout(() => navigate(destination), 300);
       } else {
         setError(parseErrorMessage(res));
       }

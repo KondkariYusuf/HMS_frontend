@@ -6,13 +6,16 @@
 import React, {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
 import {
   NavLink,
   useLocation,
+  useNavigate,
 } from 'react-router-dom';
+import { useAuth } from '@app/AuthContext';
 
 import styles from './SideNavBar.module.css';
 
@@ -169,6 +172,18 @@ const navigationGroups = [
         label: 'Rooms & Floors',
       },
       {
+        path: '/hotel/room-types',
+        label: 'Room Types',
+      },
+      {
+        path: '/hotel/amenities',
+        label: 'Amenities',
+      },
+      {
+        path: '/hotel/extra-services',
+        label: 'Extra Services',
+      },
+      {
         path: '/hotel/guests',
         label: 'Guest Directory',
       },
@@ -181,23 +196,23 @@ const navigationGroups = [
     icon: 'restaurant',
     items: [
       {
-        path: '/restaurant/pos',
+        path: '/hotel/restaurant/pos',
         label: 'POS Terminal',
       },
       {
-        path: '/restaurant/orders',
+        path: '/hotel/restaurant/orders',
         label: 'Orders',
       },
       {
-        path: '/restaurant/menu',
+        path: '/hotel/restaurant/menu',
         label: 'Menu Catalog',
       },
       {
-        path: '/restaurant/kds',
+        path: '/hotel/restaurant/kds',
         label: 'Kitchen (KDS)',
       },
       {
-        path: '/restaurant/tables',
+        path: '/hotel/restaurant/tables',
         label: 'Tables & Areas',
       },
       {
@@ -213,11 +228,11 @@ const navigationGroups = [
     icon: 'inventory',
     items: [
       {
-        path: '/inventory/products',
+        path: '/hotel/inventory/products',
         label: 'Products',
       },
       {
-        path: '/inventory/stock',
+        path: '/hotel/inventory/stock',
         label: 'Stock',
       },
       {
@@ -237,7 +252,7 @@ const navigationGroups = [
     icon: 'customers',
     items: [
       {
-        path: '/customers/directory',
+        path: '/hotel/customers/directory',
         label: 'Customer CRM',
       },
       {
@@ -245,7 +260,7 @@ const navigationGroups = [
         label: 'Customer Loyalty',
       },
       {
-        path: '/billing/invoices',
+        path: '/hotel/billing/invoices',
         label: 'Invoices & Billing',
       },
       {
@@ -289,7 +304,7 @@ const navigationGroups = [
         label: 'Staff & Salary',
       },
       {
-        path: '/staff/attendance',
+        path: '/hotel/staff/attendance',
         label: 'Attendance',
       },
       {
@@ -297,7 +312,7 @@ const navigationGroups = [
         label: 'Advances',
       },
       {
-        path: '/staff/housekeeping',
+        path: '/hotel/staff/housekeeping',
         label: 'Housekeeping',
       },
     ],
@@ -367,24 +382,54 @@ const findGroupForPath = (pathname) =>
 
 export default function SideNavBar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    navigate('/login', { replace: true });
+  };
+
+  const isSuperAdmin = user?.role === 'super-admin';
+  const isHotelUser = user?.role !== 'super-admin' && Boolean(user?.organizationId);
+
+  // Role-based sidebar isolation with safe fallback:
+  // Super Admin -> Show Administration group
+  // Valid Hotel User -> Show Hotel operational groups
+  // Unknown / uninitialized / malformed user -> Safe fallback (show zero role-specific groups)
+  const visibleGroups = useMemo(() => {
+    if (isSuperAdmin) {
+      return navigationGroups.filter((group) => group.id === 'administration');
+    }
+    if (isHotelUser) {
+      return navigationGroups.filter((group) => group.id !== 'administration');
+    }
+    return [];
+  }, [isSuperAdmin, isHotelUser]);
 
   const activeGroup = useMemo(
     () => findGroupForPath(location.pathname),
     [location.pathname]
   );
 
-  const [openGroups, setOpenGroups] = useState(
+  const [openGroups, setOpenGroups] = useState(() =>
     activeGroup ? [activeGroup] : []
   );
 
+  const prevPathRef = useRef(location.pathname);
+
+  // Auto-expand matching group only when the user navigates to a new route
   useEffect(() => {
-    if (
-      activeGroup &&
-      !openGroups.includes(activeGroup)
-    ) {
-      setOpenGroups([activeGroup]);
+    if (prevPathRef.current !== location.pathname) {
+      prevPathRef.current = location.pathname;
+      if (activeGroup) {
+        setOpenGroups((current) =>
+          current.includes(activeGroup) ? current : [...current, activeGroup]
+        );
+      }
     }
-  }, [activeGroup, openGroups]);
+  }, [location.pathname, activeGroup]);
 
   const toggleGroup = (groupId) => {
     setOpenGroups((current) =>
@@ -455,12 +500,14 @@ export default function SideNavBar() {
           Analytics
         </NavLink>
 
-        <div className={styles.sectionLabel}>
-          Operations
-        </div>
+        {visibleGroups.length > 0 && (
+          <div className={styles.sectionLabel}>
+            {isSuperAdmin ? 'Administration' : 'Operations'}
+          </div>
+        )}
 
         <div className={styles.groups}>
-          {navigationGroups.map((group) => {
+          {visibleGroups.map((group) => {
             const open = openGroups.includes(group.id);
             const groupActive = group.id === activeGroup;
 
@@ -530,13 +577,22 @@ export default function SideNavBar() {
           Notifications
         </NavLink>
 
-        <NavLink
-          to="/login"
+        <button
+          type="button"
+          onClick={handleLogout}
           className={styles.footerLink}
+          style={{
+            background: 'none',
+            border: 'none',
+            width: '100%',
+            cursor: 'pointer',
+            textAlign: 'left',
+            font: 'inherit',
+          }}
         >
           <Icon name="logout" />
           Logout
-        </NavLink>
+        </button>
       </div>
     </aside>
   );

@@ -9,8 +9,10 @@ import {
   Navigate,
 } from 'react-router-dom';
 
-/* Layout Shell */
+/* Layout Shell & Guards */
 import MainLayout from '@layouts/MainLayout/MainLayout';
+import HotelGuard from '@components/guards/HotelGuard';
+import PermissionGuard from '@components/guards/PermissionGuard';
 
 /* Public Auth Pages */
 import LoginPage from '@pages/Auth/Login/Index';
@@ -130,68 +132,174 @@ export const router = createBrowserRouter([
       },
 
       /* =========================
-         HOTEL
+         HOTEL (PROTECTED BY HOTELGUARD)
          ========================= */
 
       {
-        path: 'hotel/rooms',
-        element: <HotelRoomsPage />,
-      },
+        element: <HotelGuard />,
+        children: [
+          {
+            path: 'hotel/dashboard',
+            element: <DashboardPage />,
+          },
 
-      {
-        path: 'hotel/room-types',
-        element: <HotelRoomTypesPage />,
-      },
-      {
-        path: 'hotel/amenities',
-        element: <HotelAmenitiesPage />,
-      },
-      {
-        path: 'hotel/extra-services',
-        element: <HotelExtraServicesPage />,
-      },
-      {
-        path: 'hotel/rooms/occupancy-timeline',
-        element: <RoomOccupancyTimelinePage />,
-      },
+          {
+            path: 'hotel/analytics',
+            element: <AnalyticsPage />,
+          },
 
-      {
-        path: 'hotel/guests',
-        element: <HotelGuestsPage />,
-      },
+          {
+            path: 'hotel/rooms',
+            element: (
+              <PermissionGuard code="ROOM_READALL">
+                <HotelRoomsPage />
+              </PermissionGuard>
+            ),
+          },
 
-      {
-        path: 'hotel/guests/:guestId',
-        element: <GuestDetailsPage />,
-      },
+          {
+            path: 'hotel/room-types',
+            element: (
+              <PermissionGuard code="ROOM_TYPE_READALL">
+                <HotelRoomTypesPage />
+              </PermissionGuard>
+            ),
+          },
+          {
+            path: 'hotel/amenities',
+            element: (
+              <PermissionGuard code="AMENITY_READALL">
+                <HotelAmenitiesPage />
+              </PermissionGuard>
+            ),
+          },
+          {
+            path: 'hotel/extra-services',
+            element: (
+              <PermissionGuard code="EXTRA_SERVICE_FOR_HOTEL_READALL">
+                <HotelExtraServicesPage />
+              </PermissionGuard>
+            ),
+          },
+          {
+            path: 'hotel/rooms/occupancy-timeline',
+            element: <RoomOccupancyTimelinePage />,
+          },
 
-      {
-        path: 'hotel/reservations',
-        element: <HotelReservationsPage />,
-      },
+          {
+            path: 'hotel/guests',
+            element: <HotelGuestsPage />,
+          },
 
-      {
-        path: 'hotel/check-in',
-        element: <HotelCheckInPage />,
+          {
+            path: 'hotel/guests/:guestId',
+            element: <GuestDetailsPage />,
+          },
+
+          {
+            path: 'hotel/reservations',
+            element: <HotelReservationsPage />,
+          },
+
+          {
+            path: 'hotel/check-in',
+            element: <HotelCheckInPage />,
+          },
+
+          /* Hotel-prefixed Restaurant Routes */
+          {
+            path: 'hotel/restaurant/pos',
+            element: <RestaurantPOSPage />,
+          },
+
+          {
+            path: 'hotel/restaurant/orders',
+            element: <RestaurantOrdersPage />,
+          },
+
+          {
+            path: 'hotel/restaurant/menu',
+            element: <RestaurantMenuPage />,
+          },
+
+          {
+            path: 'hotel/restaurant/kds',
+            element: <RestaurantKDSPage />,
+          },
+
+          {
+            path: 'hotel/restaurant/tables',
+            element: <RestaurantTablesPage />,
+          },
+
+          /* Hotel-prefixed Inventory Routes */
+          {
+            path: 'hotel/inventory/products',
+            element: <InventoryProductsPage />,
+          },
+
+          {
+            path: 'hotel/inventory/stock',
+            element: <InventoryStockPage />,
+          },
+
+          /* Hotel-prefixed Customers Routes */
+          {
+            path: 'hotel/customers/directory',
+            element: <CustomersDirectoryPage />,
+          },
+
+          /* Hotel-prefixed Billing Routes */
+          {
+            path: 'hotel/billing/invoices',
+            element: <BillingInvoicesPage />,
+          },
+
+          /* Hotel-prefixed Staff Routes */
+          {
+            path: 'hotel/staff/attendance',
+            element: <StaffAttendancePage />,
+          },
+
+          {
+            path: 'hotel/staff/housekeeping',
+            element: <HousekeepingPage />,
+          },
+        ],
       },
 
       /* =========================
-         RESTAURANT
+         RESTAURANT (LEGACY REDIRECTS)
          ========================= */
 
       {
         path: 'restaurant/pos',
-        element: <RestaurantPOSPage />,
+        element: (
+          <Navigate
+            to="/hotel/restaurant/pos"
+            replace
+          />
+        ),
       },
 
       {
         path: 'restaurant/orders',
-        element: <RestaurantOrdersPage />,
+        element: (
+          <Navigate
+            to="/hotel/restaurant/orders"
+            replace
+          />
+        ),
       },
 
       {
         path: 'restaurant/menu',
-        element: <RestaurantMenuPage />,
+        element: (
+          <Navigate
+            to="/hotel/restaurant/menu"
+            replace
+          />
+        ),
       },
 
       {
@@ -201,12 +309,22 @@ export const router = createBrowserRouter([
 
       {
         path: 'restaurant/kds',
-        element: <RestaurantKDSPage />,
+        element: (
+          <Navigate
+            to="/hotel/restaurant/kds"
+            replace
+          />
+        ),
       },
 
       {
         path: 'restaurant/tables',
-        element: <RestaurantTablesPage />,
+        element: (
+          <Navigate
+            to="/hotel/restaurant/tables"
+            replace
+          />
+        ),
       },
 
       {
@@ -215,17 +333,27 @@ export const router = createBrowserRouter([
       },
 
       /* =========================
-         INVENTORY & SUPPLY
+         INVENTORY & SUPPLY (LEGACY REDIRECTS)
          ========================= */
 
       {
         path: 'inventory/products',
-        element: <InventoryProductsPage />,
+        element: (
+          <Navigate
+            to="/hotel/inventory/products"
+            replace
+          />
+        ),
       },
 
       {
         path: 'inventory/stock',
-        element: <InventoryStockPage />,
+        element: (
+          <Navigate
+            to="/hotel/inventory/stock"
+            replace
+          />
+        ),
       },
 
       {
@@ -239,12 +367,17 @@ export const router = createBrowserRouter([
       },
 
       /* =========================
-         CUSTOMERS
+         CUSTOMERS (LEGACY REDIRECTS)
          ========================= */
 
       {
         path: 'customers/directory',
-        element: <CustomersDirectoryPage />,
+        element: (
+          <Navigate
+            to="/hotel/customers/directory"
+            replace
+          />
+        ),
       },
 
       {
@@ -253,12 +386,17 @@ export const router = createBrowserRouter([
       },
 
       /* =========================
-         BILLING
+         BILLING (LEGACY REDIRECTS)
          ========================= */
 
       {
         path: 'billing/invoices',
-        element: <BillingInvoicesPage />,
+        element: (
+          <Navigate
+            to="/hotel/billing/invoices"
+            replace
+          />
+        ),
       },
 
       {
@@ -363,7 +501,7 @@ export const router = createBrowserRouter([
       },
 
       /* =========================
-         STAFF
+         STAFF (LEGACY REDIRECTS)
          ========================= */
 
       {
@@ -373,7 +511,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'staff/attendance',
-        element: <StaffAttendancePage />,
+        element: (
+          <Navigate
+            to="/hotel/staff/attendance"
+            replace
+          />
+        ),
       },
 
       {
@@ -383,7 +526,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'staff/housekeeping',
-        element: <HousekeepingPage />,
+        element: (
+          <Navigate
+            to="/hotel/staff/housekeeping"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -443,7 +591,7 @@ export const router = createBrowserRouter([
         path: 'staff',
         element: (
           <Navigate
-            to="/staff/attendance"
+            to="/hotel/staff/attendance"
             replace
           />
         ),
@@ -453,7 +601,7 @@ export const router = createBrowserRouter([
         path: 'staff/Attendence',
         element: (
           <Navigate
-            to="/staff/attendance"
+            to="/hotel/staff/attendance"
             replace
           />
         ),
@@ -463,7 +611,7 @@ export const router = createBrowserRouter([
         path: 'staff/Attendance',
         element: (
           <Navigate
-            to="/staff/attendance"
+            to="/hotel/staff/attendance"
             replace
           />
         ),

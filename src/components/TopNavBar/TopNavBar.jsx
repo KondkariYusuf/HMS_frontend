@@ -417,6 +417,17 @@ export default function TopNavBar({
      NORMAL HEADER
      ========================= */
 
+  const displayName = (() => {
+    if (!user) return 'User';
+    if (user.name) return user.name;
+    const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    if (fullName) return fullName;
+    if (user.email) return user.email;
+    return 'User';
+  })();
+
+  const displayRole = user?.role || '';
+
   return (
     <header
       className={styles.header}
@@ -500,18 +511,20 @@ export default function TopNavBar({
 
         <div className={styles.profileBlock}>
           <Avatar
-            name={user?.name || 'Sarah Connor'}
+            name={displayName}
             size="sm"
           />
 
           <div className={styles.userInfo}>
             <span className={styles.userName}>
-              {user?.name || 'Sarah Connor'}
+              {displayName}
             </span>
 
-            <span className={styles.userRole}>
-              {user?.role || 'Front Desk Supervisor'}
-            </span>
+            {displayRole && (
+              <span className={styles.userRole}>
+                {displayRole}
+              </span>
+            )}
           </div>
         </div>
       </div>

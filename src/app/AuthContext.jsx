@@ -294,15 +294,18 @@ export function AuthProvider({ children }) {
     setUser(null);
     setToken(null);
 
-    persistString(
-      USER_STORAGE_KEY,
-      null
-    );
+    persistString(USER_STORAGE_KEY, null);
+    persistString(TOKEN_STORAGE_KEY, null);
 
-    persistString(
-      TOKEN_STORAGE_KEY,
-      null
-    );
+    try {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem(BRANCHES_STORAGE_KEY);
+      localStorage.removeItem(ACTIVE_BRANCH_STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
   };
 
   return (
