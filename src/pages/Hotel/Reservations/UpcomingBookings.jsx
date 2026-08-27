@@ -523,18 +523,18 @@ export default function UpcomingBookings() {
           </div>
         </div>
 
-        {/* Card 4: VACANT / AVAILABLE ROOMS */}
+        {/* Card 4: PENDING ALLOTMENT */}
         <div className={styles.summaryCard}>
           <div className={styles.cardInfo}>
-            <span className={styles.cardLabel}>VACANT / AVAILABLE ROOMS</span>
-            <div className={styles.cardValue}>{vacantRoomsCount}</div>
-            {vacantRoomsCount > 0 ? (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#16a34a', fontSize: '12px', fontWeight: 600 }}>
-                <CheckCircle2 size={14} /> {vacantRoomsCount} Rooms Ready for Allotment
+            <span className={styles.cardLabel}>PENDING ALLOTMENT</span>
+            <div className={styles.cardValue}>{upcomingSummary.pendingCount || 0}</div>
+            {upcomingSummary.pendingCount > 0 ? (
+              <span className={styles.cardAlertText} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#d97706', fontSize: '12px', fontWeight: 600 }}>
+                <AlertTriangle size={14} /> {upcomingSummary.pendingCount} Pending Allotment(s)
               </span>
             ) : (
-              <span className={styles.cardAlertText} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#d97706', fontSize: '12px', fontWeight: 600 }}>
-                <AlertTriangle size={14} /> 100% Fully Booked
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#16a34a', fontSize: '12px', fontWeight: 600 }}>
+                <CheckCircle2 size={14} /> All Clear (All Rooms Allotted)
               </span>
             )}
           </div>
@@ -546,11 +546,11 @@ export default function UpcomingBookings() {
               width: '44px',
               height: '44px',
               borderRadius: '50%',
-              background: vacantRoomsCount > 0 ? 'rgba(22, 163, 74, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-              color: vacantRoomsCount > 0 ? '#16a34a' : '#d97706',
+              background: upcomingSummary.pendingCount > 0 ? 'rgba(245, 158, 11, 0.15)' : 'rgba(22, 163, 74, 0.15)',
+              color: upcomingSummary.pendingCount > 0 ? '#d97706' : '#16a34a',
             }}
           >
-            {vacantRoomsCount > 0 ? <CheckCircle2 size={22} /> : <AlertTriangle size={22} />}
+            {upcomingSummary.pendingCount > 0 ? <AlertTriangle size={22} /> : <CheckCircle2 size={22} />}
           </div>
         </div>
       </div>
