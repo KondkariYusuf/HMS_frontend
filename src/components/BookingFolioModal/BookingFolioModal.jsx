@@ -2,7 +2,7 @@
  * @file BookingFolioModal.jsx
  * @description Comprehensive Folio & Financial Ledger modal for hotel reservations.
  * Supports viewing running balances, itemized charges/payments, posting new transactions,
- * locking the folio to seal financial ledger, and opening existing Cloudinary PDF invoices for locked folios.
+ * locking the folio to seal financial ledger, opening existing Cloudinary PDF invoices, and regenerating PDF invoices.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -18,10 +18,13 @@ import {
   Receipt,
   User,
   Calendar,
+  RefreshCw,
 } from 'lucide-react';
 
 import bookingService from '@services/bookingService';
 import { invoiceService } from '@services/invoiceService';
+import { backendApi } from '@utils/backendApiClient';
+import { getPermissionHeaders } from '@utils/permissionHeaders';
 import Button from '@components/Button/Button';
 import styles from './BookingFolioModal.module.css';
 
@@ -31,8 +34,9 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Lock & Transaction submitting states
+  // Lock, Regenerate & Transaction submitting states
   const [isLocking, setIsLocking] = useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const [isAddingTxn, setIsAddingTxn] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -145,6 +149,61 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       if (onToast) onToast(serverErr, 'error');
     } finally {
       setIsLocking(false);
+    }
+  };
+
+  // Regenerate PDF Invoice Action with ?regenerate=true
+  const handleRegeneratePdf = async () => {
+    if (!booking?.id) return;
+    setIsRegenerating(true);
+    setErrorMsg('');
+
+    try {
+      const permHeaders = getPermissionHeaders(['BOOKING_CREATE_FOLIO/LOCK', 'BOOKING_READ_FOLIO', 'FOLIO_LOCK', 'INVOICE_READALL']);
+      let newPdfUrl = null;
+
+      try {
+        const res = await backendApi.post(
+          `/api/booking/${booking.id}/folio/lock?regenerate=true`,
+          { regenerate: true },
+          { headers: permHeaders }
+        );
+        newPdfUrl = res?.data?.data?.pdfUrl || res?.data?.data?.file?.url || res?.data?.pdfUrl || res?.data?.file?.url;
+      } catch (err1) {
+        try {
+          const res2 = await backendApi.get(
+            `/api/booking/${booking.id}/folio?regenerate=true`,
+            { headers: permHeaders }
+          );
+          newPdfUrl = res2?.data?.data?.pdfUrl || res2?.data?.data?.file?.url;
+        } catch {}
+      }
+
+      if (!newPdfUrl) {
+        const invRes = await invoiceService.getAll({ regenerate: 'true' });
+        const invList = invRes?.data?.data?.responses || invRes?.data?.responses || invRes?.data?.data || [];
+        if (Array.isArray(invList)) {
+          const match = invList.find((i) => String(i.bookingId) === String(booking.id) || String(i.sourceId) === String(booking.id));
+          if (match?.file?.url || match?.pdfUrl) {
+            newPdfUrl = match.file?.url || match.pdfUrl;
+          }
+        }
+      }
+
+      if (newPdfUrl) {
+        setPdfUrl(newPdfUrl);
+      }
+
+      if (onToast) onToast(`PDF Invoice for ${booking.bookingRef} regenerated successfully!`, 'success');
+      if (newPdfUrl) {
+        window.open(newPdfUrl, '_blank', 'noopener,noreferrer');
+      }
+    } catch (err) {
+      const serverErr = err?.response?.data?.message || err?.message || 'Failed to regenerate PDF.';
+      setErrorMsg(serverErr);
+      if (onToast) onToast(serverErr, 'error');
+    } finally {
+      setIsRegenerating(false);
     }
   };
 
@@ -420,7 +479,7 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
 
         {/* Modal Footer Bar */}
         <div className={styles.modalFooter}>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {!isFolioLocked && (
               <Button
                 variant="primary"
@@ -432,21 +491,49 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
               </Button>
             )}
 
-            {/* Render View PDF Invoice button for LOCKED / CLOSED folios */}
+            {/* Render Regenerate PDF & View PDF Invoice buttons for LOCKED / CLOSED folios */}
             {isFolioLocked && (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  if (pdfUrl) {
-                    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
-                  } else {
-                    window.print();
-                  }
-                }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#e0f2fe', color: '#0284c7', borderColor: '#7dd3fc' }}
-              >
-                <Printer size={15} /> View PDF Invoice
-              </Button>
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={handleRegeneratePdf}
+                  disabled={isRegenerating}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: '#fef3c7',
+                    color: '#d97706',
+                    borderColor: '#fde68a',
+                    fontWeight: 600,
+                  }}
+                >
+                  <RefreshCw size={15} className={isRegenerating ? styles.spinIcon : ''} />
+                  {isRegenerating ? 'Regenerating...' : 'Regenerate PDF'}
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    if (pdfUrl) {
+                      window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+                    } else {
+                      window.print();
+                    }
+                  }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    background: '#e0f2fe',
+                    color: '#0284c7',
+                    borderColor: '#7dd3fc',
+                    fontWeight: 600,
+                  }}
+                >
+                  <Printer size={15} /> View PDF Invoice
+                </Button>
+              </>
             )}
           </div>
 

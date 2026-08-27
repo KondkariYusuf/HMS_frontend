@@ -123,6 +123,10 @@
   margin: 0 auto 12px auto;
 }
 
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
