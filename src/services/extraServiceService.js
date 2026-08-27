@@ -9,6 +9,7 @@
  * - DELETE /api/extra-service-for-hotel/:id
  */
 import { backendApi } from '@utils/backendApiClient';
+import { getPermissionHeaders } from '@utils/permissionHeaders';
 
 export const EXTRA_SERVICE_ENDPOINTS = {
   GET_ALL: '/api/extra-service-for-hotel',
@@ -31,8 +32,20 @@ const buildQueryString = (params = {}) => {
 
 export const extraServiceService = {
   endpoints: EXTRA_SERVICE_ENDPOINTS,
-  getAll: (params = {}, options) =>
-    backendApi.get(`${EXTRA_SERVICE_ENDPOINTS.GET_ALL}${buildQueryString(params)}`, options),
+  getAll: (params = {}, options = {}) => {
+    const permHeaders = getPermissionHeaders('EXTRA_SERVICE_FOR_HOTEL_READALL');
+    const mergedOptions = {
+      ...options,
+      headers: {
+        ...permHeaders,
+        ...options?.headers,
+      },
+    };
+    return backendApi.get(
+      `${EXTRA_SERVICE_ENDPOINTS.GET_ALL}${buildQueryString(params)}`,
+      mergedOptions
+    );
+  },
   getById: (id, options) =>
     backendApi.get(EXTRA_SERVICE_ENDPOINTS.GET_BY_ID(id), options),
   create: (data, options) =>

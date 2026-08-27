@@ -16,6 +16,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { useAuth } from '@app/AuthContext';
+import { hasPermission } from '@components/guards/PermissionGuard';
 
 import styles from './SideNavBar.module.css';
 
@@ -170,18 +171,22 @@ const navigationGroups = [
       {
         path: '/hotel/rooms',
         label: 'Rooms & Floors',
+        permission: 'ROOM_READALL',
       },
       {
         path: '/hotel/room-types',
         label: 'Room Types',
+        permission: 'ROOM_TYPE_READALL',
       },
       {
         path: '/hotel/amenities',
         label: 'Amenities',
+        permission: 'AMENITY_READALL',
       },
       {
         path: '/hotel/extra-services',
         label: 'Extra Services',
+        permission: 'EXTRA_SERVICE_FOR_HOTEL_READALL',
       },
       {
         path: '/hotel/guests',
@@ -216,7 +221,7 @@ const navigationGroups = [
         label: 'Tables & Areas',
       },
       {
-        path: '/restaurant/analytics',
+        path: '/hotel/restaurant/analytics',
         label: 'Restaurant Analytics',
       },
     ],
@@ -236,11 +241,11 @@ const navigationGroups = [
         label: 'Stock',
       },
       {
-        path: '/inventory/suppliers',
+        path: '/hotel/inventory/suppliers',
         label: 'Suppliers',
       },
       {
-        path: '/inventory/purchase-orders',
+        path: '/hotel/inventory/purchase-orders',
         label: 'Purchase Orders',
       },
     ],
@@ -256,7 +261,7 @@ const navigationGroups = [
         label: 'Customer CRM',
       },
       {
-        path: '/customers/loyalty',
+        path: '/hotel/customers/loyalty',
         label: 'Customer Loyalty',
       },
       {
@@ -264,11 +269,11 @@ const navigationGroups = [
         label: 'Invoices & Billing',
       },
       {
-        path: '/billing/payments',
+        path: '/hotel/billing/payments',
         label: 'Payment Processing',
       },
       {
-        path: '/billing/reports',
+        path: '/hotel/billing/reports',
         label: 'Revenue Reports',
       },
       {
@@ -284,11 +289,11 @@ const navigationGroups = [
     icon: 'finance',
     items: [
       {
-        path: '/finance/monthly-salary',
+        path: '/hotel/finance/monthly-salary',
         label: 'Yearly Salary Summary',
       },
       {
-        path: '/finance/cash-register',
+        path: '/hotel/finance/cash-register',
         label: 'Cash Register',
       },
     ],
@@ -300,7 +305,7 @@ const navigationGroups = [
     icon: 'staff',
     items: [
       {
-        path: '/staff/salary',
+        path: '/hotel/staff/salary',
         label: 'Staff & Salary',
       },
       {
@@ -308,7 +313,7 @@ const navigationGroups = [
         label: 'Attendance',
       },
       {
-        path: '/staff/advances',
+        path: '/hotel/staff/advances',
         label: 'Advances',
       },
       {
@@ -364,7 +369,7 @@ const navigationGroups = [
     icon: 'maintenance',
     items: [
       {
-        path: '/maintenance',
+        path: '/hotel/maintenance',
         label: 'Maintenance Dashboard',
       },
     ],
@@ -385,14 +390,26 @@ export default function SideNavBar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  let activeUser = user;
+  if (!activeUser) {
+    try {
+      const storedUser = localStorage.getItem('syncstays_user');
+      if (storedUser) {
+        activeUser = JSON.parse(storedUser);
+      }
+    } catch {
+      activeUser = null;
+    }
+  }
+
   const handleLogout = (e) => {
     e.preventDefault();
     logout();
     navigate('/login', { replace: true });
   };
 
-  const isSuperAdmin = user?.role === 'super-admin';
-  const isHotelUser = user?.role !== 'super-admin' && Boolean(user?.organizationId);
+  const isSuperAdmin = activeUser?.role === 'super-admin';
+  const isHotelUser = activeUser?.role !== 'super-admin' && Boolean(activeUser?.organizationId);
 
   // Role-based sidebar isolation with safe fallback:
   // Super Admin -> Show Administration group
@@ -487,7 +504,7 @@ export default function SideNavBar() {
         </NavLink>
 
         <NavLink
-          to="/analytics"
+          to="/hotel/analytics"
           className={({ isActive }) =>
             `${styles.topLevelLink} ${isActive ? styles.active : ''
             }`
@@ -543,19 +560,25 @@ export default function SideNavBar() {
 
                 {open && (
                   <div className={styles.submenu}>
-                    {group.items.map((item) => (
-                      <NavLink
-                        key={item.path}
-                        to={item.path}
-                        className={`${styles.submenuLink} ${isActive(item.path)
-                            ? styles.submenuActive
-                            : ''
-                          }`}
-                      >
-                        <span className={styles.submenuDot} />
-                        {item.label}
-                      </NavLink>
-                    ))}
+                    {group.items
+                      .filter(
+                        (item) =>
+                          !item.permission ||
+                          hasPermission(activeUser, item.permission)
+                      )
+                      .map((item) => (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          className={`${styles.submenuLink} ${isActive(item.path)
+                              ? styles.submenuActive
+                              : ''
+                            }`}
+                        >
+                          <span className={styles.submenuDot} />
+                          {item.label}
+                        </NavLink>
+                      ))}
                   </div>
                 )}
               </div>

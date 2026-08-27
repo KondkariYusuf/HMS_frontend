@@ -128,7 +128,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'analytics',
-        element: <AnalyticsPage />,
+        element: (
+          <Navigate
+            to="/hotel/analytics"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -265,6 +270,61 @@ export const router = createBrowserRouter([
             path: 'hotel/staff/housekeeping',
             element: <HousekeepingPage />,
           },
+
+          {
+            path: 'hotel/restaurant/analytics',
+            element: <RestaurantAnalyticsPage />,
+          },
+
+          {
+            path: 'hotel/inventory/suppliers',
+            element: <InventorySuppliersPage />,
+          },
+
+          {
+            path: 'hotel/inventory/purchase-orders',
+            element: <InventoryPurchaseOrdersPage />,
+          },
+
+          {
+            path: 'hotel/customers/loyalty',
+            element: <CustomersLoyaltyPage />,
+          },
+
+          {
+            path: 'hotel/billing/payments',
+            element: <BillingPaymentsPage />,
+          },
+
+          {
+            path: 'hotel/billing/reports',
+            element: <BillingReportsPage />,
+          },
+
+          {
+            path: 'hotel/staff/salary',
+            element: <StaffSalaryPage />,
+          },
+
+          {
+            path: 'hotel/staff/advances',
+            element: <StaffAdvancesPage />,
+          },
+
+          {
+            path: 'hotel/finance/monthly-salary',
+            element: <MonthlySalaryPage />,
+          },
+
+          {
+            path: 'hotel/finance/cash-register',
+            element: <CashRegisterPage />,
+          },
+
+          {
+            path: 'hotel/maintenance',
+            element: <MaintenanceDashboardPage />,
+          },
         ],
       },
 
@@ -329,7 +389,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'restaurant/analytics',
-        element: <RestaurantAnalyticsPage />,
+        element: (
+          <Navigate
+            to="/hotel/restaurant/analytics"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -358,12 +423,22 @@ export const router = createBrowserRouter([
 
       {
         path: 'inventory/suppliers',
-        element: <InventorySuppliersPage />,
+        element: (
+          <Navigate
+            to="/hotel/inventory/suppliers"
+            replace
+          />
+        ),
       },
 
       {
         path: 'inventory/purchase-orders',
-        element: <InventoryPurchaseOrdersPage />,
+        element: (
+          <Navigate
+            to="/hotel/inventory/purchase-orders"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -382,7 +457,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'customers/loyalty',
-        element: <CustomersLoyaltyPage />,
+        element: (
+          <Navigate
+            to="/hotel/customers/loyalty"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -401,12 +481,22 @@ export const router = createBrowserRouter([
 
       {
         path: 'billing/payments',
-        element: <BillingPaymentsPage />,
+        element: (
+          <Navigate
+            to="/hotel/billing/payments"
+            replace
+          />
+        ),
       },
 
       {
         path: 'billing/reports',
-        element: <BillingReportsPage />,
+        element: (
+          <Navigate
+            to="/hotel/billing/reports"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -492,12 +582,22 @@ export const router = createBrowserRouter([
 
       {
         path: 'finance/monthly-salary',
-        element: <MonthlySalaryPage />,
+        element: (
+          <Navigate
+            to="/hotel/finance/monthly-salary"
+            replace
+          />
+        ),
       },
 
       {
         path: 'finance/cash-register',
-        element: <CashRegisterPage />,
+        element: (
+          <Navigate
+            to="/hotel/finance/cash-register"
+            replace
+          />
+        ),
       },
 
       /* =========================
@@ -506,7 +606,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'staff/salary',
-        element: <StaffSalaryPage />,
+        element: (
+          <Navigate
+            to="/hotel/staff/salary"
+            replace
+          />
+        ),
       },
 
       {
@@ -521,7 +626,12 @@ export const router = createBrowserRouter([
 
       {
         path: 'staff/advances',
-        element: <StaffAdvancesPage />,
+        element: (
+          <Navigate
+            to="/hotel/staff/advances"
+            replace
+          />
+        ),
       },
 
       {
@@ -540,14 +650,19 @@ export const router = createBrowserRouter([
 
       {
         path: 'maintenance',
-        element: <MaintenanceDashboardPage />,
+        element: (
+          <Navigate
+            to="/hotel/maintenance"
+            replace
+          />
+        ),
       },
 
       {
         path: 'maintenance/dashboard',
         element: (
           <Navigate
-            to="/maintenance"
+            to="/hotel/maintenance"
             replace
           />
         ),

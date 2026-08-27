@@ -9,6 +9,7 @@
  * - DELETE /api/room/:id
  */
 import { backendApi } from '@utils/backendApiClient';
+import { getPermissionHeaders } from '@utils/permissionHeaders';
 
 export const ROOM_ENDPOINTS = {
   GET_ALL: '/api/room',
@@ -31,8 +32,20 @@ const buildQueryString = (params = {}) => {
 
 export const roomService = {
   endpoints: ROOM_ENDPOINTS,
-  getAll: (params = {}, options) =>
-    backendApi.get(`${ROOM_ENDPOINTS.GET_ALL}${buildQueryString(params)}`, options),
+  getAll: (params = {}, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_READALL');
+    const mergedOptions = {
+      ...options,
+      headers: {
+        ...permHeaders,
+        ...options?.headers,
+      },
+    };
+    return backendApi.get(
+      `${ROOM_ENDPOINTS.GET_ALL}${buildQueryString(params)}`,
+      mergedOptions
+    );
+  },
   getById: (id, options) =>
     backendApi.get(ROOM_ENDPOINTS.GET_BY_ID(id), options),
   create: (data, options) =>
