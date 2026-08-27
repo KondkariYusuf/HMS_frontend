@@ -133,6 +133,42 @@ export default function UpcomingBookings() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Financial Guard: Prevent Check-Out if guest has an outstanding folio balance
+  const handleCheckOutWithGuard = async (booking) => {
+    if (!booking) return;
+    try {
+      const res = await bookingService.getFolio(booking.id);
+      const folio = res?.data?.data || res?.data?.response || res?.data || {};
+
+      const totalCharges = Number(folio.totalCharges || booking.amount?.replace('₹', '') || 0);
+      const totalPayments = Number(folio.totalPayments || 0);
+      const netBalance = Number(folio.balance !== undefined ? folio.balance : totalCharges - totalPayments);
+
+      if (netBalance > 0) {
+        const formattedBalance = netBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        showToast(
+          `Cannot Check-Out: Guest ${booking.guest?.name || ''} has an outstanding balance of ₹${formattedBalance}. Please record payment in Folio first.`,
+          'error'
+        );
+        setSelectedBooking(null);
+        setSelectedFolioBooking(booking);
+        return;
+      }
+
+      // If balance is zero, lock folio & complete check-out
+      try {
+        await bookingService.lockFolio(booking.id);
+      } catch (lockErr) {}
+
+      await handleUpdateStatusWithToast(booking.id, 'CHECKED_OUT', 'Checked-Out');
+      setSelectedBooking(null);
+    } catch (err) {
+      console.warn('Check-out folio balance check failed:', err);
+      await handleUpdateStatusWithToast(booking.id, 'CHECKED_OUT', 'Checked-Out');
+      setSelectedBooking(null);
+    }
+  };
+
   // Helper to check if a booking folio is locked
   const isBookingFolioLocked = (b) => {
     if (!b) return false;
@@ -871,10 +907,7 @@ export default function UpcomingBookings() {
               {selectedBooking.status === 'CHECKED_IN' && (
                 <Button
                   variant="primary"
-                  onClick={() => {
-                    handleUpdateStatusWithToast(selectedBooking.id, 'CHECKED_OUT', 'Checked-Out');
-                    setSelectedBooking(null);
-                  }}
+                  onClick={() => handleCheckOutWithGuard(selectedBooking)}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
                   <Clock size={15} /> Check-Out

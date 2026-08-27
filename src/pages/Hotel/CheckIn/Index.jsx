@@ -10,6 +10,7 @@ import Button from '@components/Button/Button';
 import Badge from '@components/Badge/Badge';
 import Toast from '@components/Toast/Toast';
 import useBookings from '@hooks/useBookings';
+import bookingService from '@services/bookingService';
 
 import styles from './Index.module.css';
 
@@ -26,6 +27,38 @@ export default function HotelCheckInPage() {
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
+  };
+
+  // Financial Guard: Prevent Check-Out if guest has an outstanding balance
+  const handleCheckOutWithGuard = async (b) => {
+    if (!b) return;
+    try {
+      const res = await bookingService.getFolio(b.id);
+      const folio = res?.data?.data || res?.data?.response || res?.data || {};
+
+      const totalCharges = Number(folio.totalCharges || 0);
+      const totalPayments = Number(folio.totalPayments || 0);
+      const netBalance = Number(folio.balance !== undefined ? folio.balance : totalCharges - totalPayments);
+
+      if (netBalance > 0) {
+        const formattedBalance = netBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        showToast(
+          `Cannot Check-Out: Guest ${b.primaryGuest?.name || 'Guest'} has an outstanding balance of ₹${formattedBalance}. Please record payment in Folio first.`,
+          'error'
+        );
+        return;
+      }
+
+      try {
+        await bookingService.lockFolio(b.id);
+      } catch (e) {}
+
+      await updateBookingStatus(b.id, 'CHECKED_OUT');
+      setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_OUT' } : null));
+      showToast(`Check-Out completed successfully for ${b.primaryGuest?.name || 'Guest'}! Folio sealed.`, 'success');
+    } catch (err) {
+      showToast('Failed to complete check-out.', 'error');
+    }
   };
 
   const arrivingBookings = useMemo(() => {
@@ -251,15 +284,7 @@ export default function HotelCheckInPage() {
                 {selectedBooking.status === 'CHECKED_IN' && (
                   <Button
                     variant="primary"
-                    onClick={async () => {
-                      try {
-                        await updateBookingStatus(selectedBooking.id, 'CHECKED_OUT');
-                        setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_OUT' } : null));
-                        showToast(`Check-Out completed successfully for ${selectedBooking.primaryGuest?.name || 'Guest'}!`, 'success');
-                      } catch (err) {
-                        showToast('Failed to complete check-out.', 'error');
-                      }
-                    }}
+                    onClick={() => handleCheckOutWithGuard(selectedBooking)}
                   >
                     Complete Check-Out
                   </Button>
