@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 
 import bookingService from '@services/bookingService';
+import { invoiceService } from '@services/invoiceService';
 import Button from '@components/Button/Button';
 import styles from './BookingFolioModal.module.css';
 
@@ -57,7 +58,7 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Fetch Folio Data
+  // Fetch Folio Data & Match Existing Cloudinary PDF Invoice
   const loadFolio = async () => {
     if (!booking?.id) return;
     setLoading(true);
@@ -67,10 +68,28 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       const data = res?.data?.data || res?.data?.response || res?.data || {};
       setFolioData(data);
 
-      // Extract existing Cloudinary PDF URL if present
-      const existingPdf = data.file?.url || data.pdfUrl || data.booking?.file?.url || booking.rawRecord?.file?.url || booking.rawRecord?.pdfUrl;
-      if (existingPdf) {
-        setPdfUrl(existingPdf);
+      let foundPdf = data.file?.url || data.pdfUrl || data.booking?.file?.url || booking.rawRecord?.file?.url || booking.rawRecord?.pdfUrl;
+
+      // Query /api/invoice to locate exact matching Cloudinary PDF invoice for this booking
+      if (!foundPdf) {
+        try {
+          const invRes = await invoiceService.getAll();
+          const invList = invRes?.data?.data?.responses || invRes?.data?.responses || invRes?.data?.data || [];
+          if (Array.isArray(invList)) {
+            const matchingInv = invList.find(
+              (inv) => String(inv.bookingId) === String(booking.id) || String(inv.sourceId) === String(booking.id)
+            );
+            if (matchingInv?.file?.url || matchingInv?.pdfUrl) {
+              foundPdf = matchingInv.file?.url || matchingInv.pdfUrl;
+            }
+          }
+        } catch (invErr) {
+          console.warn('Invoice lookup warning:', invErr);
+        }
+      }
+
+      if (foundPdf) {
+        setPdfUrl(foundPdf);
       }
     } catch (err) {
       console.warn('Failed to load folio details:', err);
@@ -413,16 +432,21 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
               </Button>
             )}
 
-            {/* ONLY render View PDF Invoice button for LOCKED folios that have an existing Cloudinary PDF link */}
-            {isFolioLocked && pdfUrl && (
-              <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                <Button
-                  variant="secondary"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#e0f2fe', color: '#0284c7', borderColor: '#7dd3fc' }}
-                >
-                  <Printer size={15} /> View PDF Invoice
-                </Button>
-              </a>
+            {/* Render View PDF Invoice button for LOCKED / CLOSED folios */}
+            {isFolioLocked && (
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (pdfUrl) {
+                    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+                  } else {
+                    window.print();
+                  }
+                }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#e0f2fe', color: '#0284c7', borderColor: '#7dd3fc' }}
+              >
+                <Printer size={15} /> View PDF Invoice
+              </Button>
             )}
           </div>
 
