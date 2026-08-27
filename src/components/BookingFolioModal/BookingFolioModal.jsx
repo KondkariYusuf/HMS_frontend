@@ -2,7 +2,7 @@
  * @file BookingFolioModal.jsx
  * @description Comprehensive Folio & Financial Ledger modal for hotel reservations.
  * Supports viewing running balances, itemized charges/payments, posting new transactions,
- * locking the folio to seal financial ledger, and opening/printing official PDF invoices.
+ * locking the folio to seal financial ledger, and opening existing Cloudinary PDF invoices for locked folios.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -16,7 +16,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   Receipt,
-  DollarSign,
   User,
   Calendar,
 } from 'lucide-react';
@@ -67,8 +66,11 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       const res = await bookingService.getFolio(booking.id);
       const data = res?.data?.data || res?.data?.response || res?.data || {};
       setFolioData(data);
-      if (data.file?.url || data.pdfUrl) {
-        setPdfUrl(data.file?.url || data.pdfUrl);
+
+      // Extract existing Cloudinary PDF URL if present
+      const existingPdf = data.file?.url || data.pdfUrl || data.booking?.file?.url || booking.rawRecord?.file?.url || booking.rawRecord?.pdfUrl;
+      if (existingPdf) {
+        setPdfUrl(existingPdf);
       }
     } catch (err) {
       console.warn('Failed to load folio details:', err);
@@ -111,11 +113,12 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       const res = await bookingService.lockFolio(booking.id);
       const resData = res?.data?.data || res?.data || {};
 
-      if (resData.pdfUrl) {
-        setPdfUrl(resData.pdfUrl);
+      const generatedPdf = resData.pdfUrl || resData.file?.url;
+      if (generatedPdf) {
+        setPdfUrl(generatedPdf);
       }
 
-      if (onToast) onToast(`Folio for ${booking.bookingRef} locked successfully! PDF Invoice generated.`, 'success');
+      if (onToast) onToast(`Folio for ${booking.bookingRef} locked successfully!`, 'success');
       loadFolio();
     } catch (err) {
       const serverErr = err?.response?.data?.message || err?.message || 'Failed to lock folio.';
@@ -158,15 +161,6 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       if (onToast) onToast(serverErr, 'error');
     } finally {
       setIsAddingTxn(false);
-    }
-  };
-
-  // Handle PDF Print / Open
-  const handlePrintPdfInvoice = () => {
-    if (pdfUrl) {
-      window.open(pdfUrl, '_blank', 'noopener,noreferrer');
-    } else {
-      window.print();
     }
   };
 
@@ -419,13 +413,17 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
               </Button>
             )}
 
-            <Button
-              variant="secondary"
-              onClick={handlePrintPdfInvoice}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}
-            >
-              <Printer size={15} /> View PDF Invoice
-            </Button>
+            {/* ONLY render View PDF Invoice button for LOCKED folios that have an existing Cloudinary PDF link */}
+            {isFolioLocked && pdfUrl && (
+              <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <Button
+                  variant="secondary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#e0f2fe', color: '#0284c7', borderColor: '#7dd3fc' }}
+                >
+                  <Printer size={15} /> View PDF Invoice
+                </Button>
+              </a>
+            )}
           </div>
 
           <Button variant="secondary" onClick={onClose}>
