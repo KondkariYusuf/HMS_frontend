@@ -1,6 +1,6 @@
 /**
  * @file Hotel/CheckIn/Index.jsx
- * @description Express guest check-in / check-out desk.
+ * @description Express guest check-in / check-out desk with Toast notifications.
  */
 
 import React, { useMemo, useState } from 'react';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from '@components/Button/Button';
 import Badge from '@components/Badge/Badge';
+import Toast from '@components/Toast/Toast';
 import useBookings from '@hooks/useBookings';
 
 import styles from './Index.module.css';
@@ -18,6 +19,14 @@ export default function HotelCheckInPage() {
 
   const [search, setSearch] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
+
+  // Toast feedback state
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
 
   const arrivingBookings = useMemo(() => {
     const searchValue = search.trim().toLowerCase();
@@ -39,25 +48,21 @@ export default function HotelCheckInPage() {
     });
   }, [bookings, search]);
 
-  const handleSelectGuest = (guest) => {
-    setSelectedGuest(guest);
-  };
-
-  const handleBackToGuest = () => {
-    if (selectedGuest) {
-      navigate(`/hotel/guests/${selectedGuest.id}`);
-    }
-  };
-
   return (
     <div
       className={styles.page}
       data-testid="hotel-check-in-page"
     >
-      {/* =========================
-          HEADER
-      ========================= */}
+      {/* Toast Feedback Banner */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
 
+      {/* HEADER */}
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>
@@ -65,8 +70,7 @@ export default function HotelCheckInPage() {
           </h1>
 
           <p className={styles.subtitle}>
-            Quickly verify guests, complete check-in, and manage
-            room access.
+            Quickly verify guests, complete check-in, and manage room access.
           </p>
         </div>
 
@@ -78,18 +82,12 @@ export default function HotelCheckInPage() {
         </Button>
       </header>
 
-      {/* =========================
-          SEARCH
-      ========================= */}
-
+      {/* SEARCH */}
       <section className={styles.searchCard}>
         <div className={styles.searchHeader}>
           <div>
             <h2>Find Guest</h2>
-
-            <p>
-              Search using guest name, phone, email, or ID.
-            </p>
+            <p>Search using guest name, phone, email, or ID.</p>
           </div>
 
           <span className={styles.stepBadge}>
@@ -104,24 +102,18 @@ export default function HotelCheckInPage() {
           value={search}
           onChange={(event) => {
             setSearch(event.target.value);
-            setSelectedGuest(null);
+            setSelectedBooking(null);
           }}
         />
       </section>
 
-      {/* =========================
-          GUEST RESULTS
-      ========================= */}
-
+      {/* GUEST RESULTS */}
       <section className={styles.contentGrid}>
         <div className={styles.guestCard}>
           <div className={styles.cardHeader}>
             <div>
               <h2>Available Guests</h2>
-
-              <p>
-                Select a guest to continue the check-in process.
-              </p>
+              <p>Select a guest to continue the check-in process.</p>
             </div>
 
             <span className={styles.count}>
@@ -176,18 +168,12 @@ export default function HotelCheckInPage() {
           </div>
         </div>
 
-        {/* =========================
-            CHECK-IN / CHECK-OUT PANEL
-        ========================= */}
-
+        {/* CHECK-IN / CHECK-OUT PANEL */}
         <div className={styles.actionCard}>
           <div className={styles.cardHeader}>
             <div>
               <h2>Check-In / Check-Out Details</h2>
-
-              <p>
-                Review guest information and manage stay status.
-              </p>
+              <p>Review guest information and manage stay status.</p>
             </div>
 
             <span className={styles.count}>
@@ -202,10 +188,7 @@ export default function HotelCheckInPage() {
               </div>
 
               <strong>Select a booking / guest</strong>
-
-              <p>
-                Choose a booking from the list to manage check-in or check-out.
-              </p>
+              <p>Choose a booking from the list to manage check-in or check-out.</p>
             </div>
           ) : (
             <div className={styles.selectedPanel}>
@@ -252,8 +235,13 @@ export default function HotelCheckInPage() {
                   <Button
                     variant="primary"
                     onClick={async () => {
-                      await updateBookingStatus(selectedBooking.id, 'CHECKED_IN');
-                      setSelectedBooking((prev) => prev ? { ...prev, status: 'CHECKED_IN' } : null);
+                      try {
+                        await updateBookingStatus(selectedBooking.id, 'CHECKED_IN');
+                        setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_IN' } : null));
+                        showToast(`Check-In completed successfully for ${selectedBooking.primaryGuest?.name || 'Guest'}!`, 'success');
+                      } catch (err) {
+                        showToast('Failed to complete check-in.', 'error');
+                      }
                     }}
                   >
                     Complete Check-In
@@ -264,8 +252,13 @@ export default function HotelCheckInPage() {
                   <Button
                     variant="primary"
                     onClick={async () => {
-                      await updateBookingStatus(selectedBooking.id, 'CHECKED_OUT');
-                      setSelectedBooking((prev) => prev ? { ...prev, status: 'CHECKED_OUT' } : null);
+                      try {
+                        await updateBookingStatus(selectedBooking.id, 'CHECKED_OUT');
+                        setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_OUT' } : null));
+                        showToast(`Check-Out completed successfully for ${selectedBooking.primaryGuest?.name || 'Guest'}!`, 'success');
+                      } catch (err) {
+                        showToast('Failed to complete check-out.', 'error');
+                      }
                     }}
                   >
                     Complete Check-Out
@@ -276,8 +269,13 @@ export default function HotelCheckInPage() {
                   <Button
                     variant="secondary"
                     onClick={async () => {
-                      await updateBookingStatus(selectedBooking.id, 'CANCELLED');
-                      setSelectedBooking((prev) => prev ? { ...prev, status: 'CANCELLED' } : null);
+                      try {
+                        await updateBookingStatus(selectedBooking.id, 'CANCELLED');
+                        setSelectedBooking((prev) => (prev ? { ...prev, status: 'CANCELLED' } : null));
+                        showToast(`Booking ${selectedBooking.bookingRef} cancelled.`, 'info');
+                      } catch (err) {
+                        showToast('Failed to cancel booking.', 'error');
+                      }
                     }}
                   >
                     Cancel Booking
@@ -289,14 +287,10 @@ export default function HotelCheckInPage() {
         </div>
       </section>
 
-      {/* =========================
-          WORKFLOW
-      ========================= */}
-
+      {/* WORKFLOW */}
       <section className={styles.workflowCard}>
         <div className={styles.workflowStep}>
           <span className={styles.workflowNumber}>1</span>
-
           <div>
             <strong>Find Guest</strong>
             <p>Search and select the guest.</p>
@@ -307,7 +301,6 @@ export default function HotelCheckInPage() {
 
         <div className={styles.workflowStep}>
           <span className={styles.workflowNumber}>2</span>
-
           <div>
             <strong>Verify Details</strong>
             <p>Confirm identity and booking.</p>
@@ -318,7 +311,6 @@ export default function HotelCheckInPage() {
 
         <div className={styles.workflowStep}>
           <span className={styles.workflowNumber}>3</span>
-
           <div>
             <strong>Complete Check-In</strong>
             <p>Issue room access and finish.</p>
