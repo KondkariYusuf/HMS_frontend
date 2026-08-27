@@ -36,7 +36,7 @@ const ITEMS_PER_PAGE = 10;
 
 export default function HotelGuestsPage() {
   const navigate = useNavigate();
-  const { guests, refetch, registerGuest } = useHotelGuests();
+  const { guests, refetch, registerGuest, updateGuestStatus } = useHotelGuests();
   const { bookings } = useBookings();
 
   const [search, setSearch] = useState('');
@@ -184,9 +184,8 @@ export default function HotelGuestsPage() {
     };
 
     try {
-      await hotelGuestService.update(guest.id, payload);
+      await updateGuestStatus(guest.id, newStatus, payload);
       showToast(`Guest ${guest.name || guest.firstName || 'profile'} set to ${newStatus}!`, 'success');
-      if (refetch) refetch();
     } catch (err) {
       console.warn('Failed to toggle guest status:', err);
       showToast(`Failed to set guest status to ${newStatus}.`, 'error');

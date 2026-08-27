@@ -1,16 +1,39 @@
 /**
  * @file useHotelGuests.js
  * @description Hook managing hotel guest state, backend synchronization with hotelGuestService,
- * and fallback demo guest data.
+ * persistent guest status overrides, and fallback demo guest data.
  */
 import { useState, useEffect, useCallback } from 'react';
 import hotelGuestService from '@services/hotelGuestService';
 import initialGuestData from '../data/guestData.json';
 
+// Local storage key to persist status overrides across reloads
+const GUEST_STATUS_STORAGE_KEY = 'syncstays_guest_status_overrides';
+
+const getSavedStatusOverrides = () => {
+  try {
+    const raw = localStorage.getItem(GUEST_STATUS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+};
+
+const saveStatusOverride = (guestId, newStatus) => {
+  try {
+    const existing = getSavedStatusOverrides();
+    existing[guestId] = newStatus;
+    localStorage.setItem(GUEST_STATUS_STORAGE_KEY, JSON.stringify(existing));
+  } catch (e) {
+    console.warn('Failed saving guest status override:', e);
+  }
+};
+
 export default function useHotelGuests() {
   const [guests, setGuests] = useState(initialGuestData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusOverrides, setStatusOverrides] = useState(getSavedStatusOverrides);
 
   const fetchGuests = useCallback(async () => {
     setLoading(true);
@@ -27,6 +50,9 @@ export default function useHotelGuests() {
         : Array.isArray(resData?.data)
         ? resData.data
         : [];
+
+      const currentOverrides = getSavedStatusOverrides();
+
       if (rawData.length > 0) {
         const normalized = rawData.map((g) => ({
           id: g.id || 'guest-000',
@@ -37,16 +63,27 @@ export default function useHotelGuests() {
           phone: g.phone || g.phoneNumber || '',
           idType: g.idProofType || g.idType || 'OTHER',
           idNumber: g.idProofNumber || g.idNumber || '',
-          status: g.status || 'ACTIVE',
+          status: currentOverrides[g.id] || g.status || 'ACTIVE',
           totalStays: g.totalStays || 0,
         }));
         setGuests(normalized);
       } else {
-        setGuests(initialGuestData);
+        setGuests(
+          initialGuestData.map((g) => ({
+            ...g,
+            status: currentOverrides[g.id] || g.status || 'ACTIVE',
+          }))
+        );
       }
     } catch (err) {
       console.warn('Hotel Guest API unavailable. Using fallback data.', err);
-      setGuests(initialGuestData);
+      const currentOverrides = getSavedStatusOverrides();
+      setGuests(
+        initialGuestData.map((g) => ({
+          ...g,
+          status: currentOverrides[g.id] || g.status || 'ACTIVE',
+        }))
+      );
       setError(null);
     } finally {
       setLoading(false);
@@ -56,6 +93,23 @@ export default function useHotelGuests() {
   useEffect(() => {
     fetchGuests();
   }, [fetchGuests]);
+
+  // Dedicated guest status update handler
+  const updateGuestStatus = async (guestId, newStatus, fullPayload) => {
+    saveStatusOverride(guestId, newStatus);
+    setStatusOverrides((prev) => ({ ...prev, [guestId]: newStatus }));
+
+    // Optimistically update local state immediately
+    setGuests((prevGuests) =>
+      prevGuests.map((g) => (String(g.id) === String(guestId) ? { ...g, status: newStatus } : g))
+    );
+
+    try {
+      await hotelGuestService.update(guestId, fullPayload);
+    } catch (err) {
+      console.warn('Backend guest status update warning:', err);
+    }
+  };
 
   const registerGuest = async (guestData) => {
     try {
@@ -135,5 +189,6 @@ export default function useHotelGuests() {
     error,
     refetch: fetchGuests,
     registerGuest,
+    updateGuestStatus,
   };
 }
