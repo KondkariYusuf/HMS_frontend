@@ -1,6 +1,6 @@
 /**
  * @file Hotel/Reservations/UpcomingBookings.jsx
- * @description Premium reservations management with Lucide icons, accurate OTA/Direct filtering, per-room stay schedule editing, room availability conflict validation, bold room name & price formatting, Toast notifications, and real-time Vacant / Available Rooms calculation.
+ * @description Premium reservations management with Lucide icons, accurate OTA/Direct filtering, per-room stay schedule editing, room availability conflict validation, bold room name & price formatting, Toast notifications, real-time Vacant / Available Rooms calculation, and interactive Booking Folio & Ledger management.
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -23,6 +23,8 @@ import {
   Phone,
   Mail,
   FileText,
+  Receipt,
+  Lock,
 } from 'lucide-react';
 
 import useBookings from '@hooks/useBookings';
@@ -33,6 +35,7 @@ import Button from '@components/Button/Button';
 import Avatar from '@components/Avatar/Avatar';
 import Toast from '@components/Toast/Toast';
 import FutureBookingModal from '@components/FutureBookingModal/FutureBookingModal';
+import BookingFolioModal from '@components/BookingFolioModal/BookingFolioModal';
 import styles from './UpcomingBookings.module.css';
 
 const ITEMS_PER_PAGE = 10;
@@ -56,7 +59,10 @@ export default function UpcomingBookings() {
   const [sortBy, setSortBy] = useState('NEWEST');
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isNewBookingModalOpen, setIsNewBookingModalOpen] = useState(false);
+
+  // Selected booking for View details & Folio modal
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedFolioBooking, setSelectedFolioBooking] = useState(null);
 
   // Toast Notification State
   const [toast, setToast] = useState(null);
@@ -117,6 +123,7 @@ export default function UpcomingBookings() {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setSelectedBooking(null);
+        setSelectedFolioBooking(null);
         setEditingBooking(null);
         setIsFilterModalOpen(false);
         setIsNewBookingModalOpen(false);
@@ -710,6 +717,15 @@ export default function UpcomingBookings() {
                           <button
                             type="button"
                             className={styles.pillBtn}
+                            onClick={() => setSelectedFolioBooking(b)}
+                            title="View Booking Folio & Ledger"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 10px', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}
+                          >
+                            <Receipt size={14} /> Folio
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.pillBtn}
                             onClick={() => handleOpenEditBooking(b)}
                             title="Edit"
                             style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 10px' }}
@@ -796,6 +812,17 @@ export default function UpcomingBookings() {
               <p><strong>Current Status:</strong> {selectedBooking.status}</p>
             </div>
             <div className={styles.modalFooter} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  const b = selectedBooking;
+                  setSelectedBooking(null);
+                  setSelectedFolioBooking(b);
+                }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Receipt size={15} /> Folio & Billing
+              </Button>
               <Button
                 variant="secondary"
                 onClick={() => {
@@ -1221,6 +1248,16 @@ export default function UpcomingBookings() {
           isOpen={isNewBookingModalOpen}
           onClose={() => setIsNewBookingModalOpen(false)}
           onBookingCreated={handleBookingCreated}
+          onToast={showToast}
+        />
+      )}
+
+      {/* Booking Folio Modal Overlay */}
+      {selectedFolioBooking && (
+        <BookingFolioModal
+          isOpen={!!selectedFolioBooking}
+          onClose={() => setSelectedFolioBooking(null)}
+          booking={selectedFolioBooking}
           onToast={showToast}
         />
       )}
