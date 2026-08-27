@@ -18,3 +18,8 @@ export { default as extraServiceService, EXTRA_SERVICE_ENDPOINTS } from './extra
 export { default as moduleService } from './moduleService';
 export { default as subModuleService } from './subModuleService';
 export { default as modulePermissionService } from './modulePermissionService';
+export { default as bookingService, BOOKING_ENDPOINTS } from './bookingService';
+export { default as paymentService, PAYMENT_ENDPOINTS } from './paymentService';
+export { default as invoiceService, INVOICE_ENDPOINTS } from './invoiceService';
+export { default as hotelGuestService, HOTEL_GUEST_ENDPOINTS } from './hotelGuestService';
+

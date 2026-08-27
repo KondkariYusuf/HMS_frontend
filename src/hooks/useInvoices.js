@@ -1,10 +1,10 @@
 /**
  * @file useInvoices.js
- * @description Hook managing local state for Invoices & Billing Ledger.
- * Provides dummy data conforming to the backend billing schema (backendMD/19-billing.md),
- * along with search and category filtering logic.
+ * @description Hook managing state for Invoices & Billing Ledger.
+ * Integrates invoiceService API calls with fallback demo data.
  */
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import invoiceService from '@services/invoiceService';
 
 const INITIAL_INVOICES = [
   {
@@ -86,18 +86,67 @@ const INITIAL_INVOICES = [
 
 export default function useInvoices() {
   const [invoices, setInvoices] = useState(INITIAL_INVOICES);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
 
+  const fetchInvoices = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await invoiceService.getAll();
+      const resData = response?.data;
+      const rawData = Array.isArray(resData)
+        ? resData
+        : Array.isArray(resData?.responses)
+        ? resData.responses
+        : Array.isArray(resData?.rows)
+        ? resData.rows
+        : Array.isArray(resData?.data)
+        ? resData.data
+        : [];
+      if (rawData.length > 0) {
+        const normalized = rawData.map((inv) => ({
+          id: inv.id || inv.invoiceNumber || 'INV-000',
+          type: inv.type || 'HOTEL_FOLIO',
+          guestName: inv.guestName || inv.customerName || 'Guest',
+          guestId: inv.guestId || inv.customerId || '',
+          status: inv.invoiceStatus || inv.status || 'DRAFT',
+          subTotal: inv.subTotal || 0,
+          taxTotal: inv.taxTotal || 0,
+          grandTotal: inv.grandTotal || 0,
+          amountPaid: inv.amountPaid || 0,
+          amountDue: inv.amountDue || 0,
+          currency: inv.currency || 'INR',
+          issueDate: inv.issueDate || inv.createdAt || '',
+          dueDate: inv.dueDate || '',
+          items: inv.items || [],
+        }));
+        setInvoices(normalized);
+      } else {
+        setInvoices(INITIAL_INVOICES);
+      }
+    } catch (err) {
+      console.warn('Invoice API unavailable. Using fallback data.', err);
+      setInvoices(INITIAL_INVOICES);
+      setError(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [fetchInvoices]);
+
   const filteredInvoices = useMemo(() => {
     return invoices.filter((inv) => {
-      // Search logic
       const query = searchQuery.toLowerCase();
       const matchesSearch =
         inv.id.toLowerCase().includes(query) ||
         inv.guestName.toLowerCase().includes(query);
 
-      // Category logic
       let matchesCategory = true;
       if (categoryFilter === 'Hotel Stays') {
         matchesCategory = inv.type === 'HOTEL_FOLIO';
@@ -111,19 +160,30 @@ export default function useInvoices() {
     });
   }, [invoices, searchQuery, categoryFilter]);
 
-  const updateInvoiceStatus = (id, newStatus) => {
-    setInvoices((prev) =>
-      prev.map((inv) => (inv.id === id ? { ...inv, status: newStatus } : inv))
-    );
+  const updateInvoiceStatus = async (id, newStatus) => {
+    try {
+      await invoiceService.update(id, { invoiceStatus: newStatus });
+      setInvoices((prev) =>
+        prev.map((inv) => (inv.id === id ? { ...inv, status: newStatus } : inv))
+      );
+    } catch (err) {
+      console.warn('Updating invoice status via API failed, updating locally.', err);
+      setInvoices((prev) =>
+        prev.map((inv) => (inv.id === id ? { ...inv, status: newStatus } : inv))
+      );
+    }
   };
 
   return {
     invoices: filteredInvoices,
+    loading,
+    error,
     searchQuery,
     setSearchQuery,
     categoryFilter,
     setCategoryFilter,
     updateInvoiceStatus,
+    refetch: fetchInvoices,
     totalInvoices: invoices.length,
   };
 }

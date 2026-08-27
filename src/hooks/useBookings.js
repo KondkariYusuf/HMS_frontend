@@ -11,6 +11,8 @@ import {
   useMemo,
 } from 'react';
 import api from '@utils/apiClient';
+import bookingService from '@services/bookingService';
+
 
 /**
  * Demo/fallback bookings.
@@ -180,13 +182,51 @@ export function useBookings() {
     setError(null);
 
     try {
-      const response = await api.get('/hotel/bookings');
+      const response = await bookingService.getAll();
 
-      const data = Array.isArray(response?.data)
-        ? response.data
+      const resData = response?.data;
+      const rawData = Array.isArray(resData)
+        ? resData
+        : Array.isArray(resData?.responses)
+        ? resData.responses
+        : Array.isArray(resData?.rows)
+        ? resData.rows
+        : Array.isArray(resData?.data)
+        ? resData.data
         : [];
 
-      setBookings(data);
+      const normalizedData = rawData.map((b) => {
+        const primaryGuest = b.primaryGuest || {};
+        const guestName = primaryGuest.name ||
+          (primaryGuest.firstName ? `${primaryGuest.firstName} ${primaryGuest.lastName || ''}`.trim() : 'Guest');
+
+        const rawStatus = (b.bookingStatus || b.status || 'CONFIRMED').toUpperCase();
+        const rawSource = (b.bookingSource || b.source || 'WALK_IN').toUpperCase();
+
+        const bookingRooms = b.bookingRooms || b.rooms || [];
+        const firstRoom = bookingRooms[0] || {};
+        const roomTitle = firstRoom.room?.title || firstRoom.room?.roomNumber || b.assignedRoom || 'Unassigned';
+
+        return {
+          ...b,
+          bookingRef: b.bookingNumber || b.bookingRef || `#BK-${b.id?.slice(0, 6)}`,
+          status: rawStatus,
+          source: rawSource,
+          primaryGuest: {
+            ...primaryGuest,
+            name: guestName,
+            email: primaryGuest.email || '',
+            phone: primaryGuest.phone || primaryGuest.phoneNumber || '',
+            tag: primaryGuest.tag || 'STANDARD',
+          },
+          checkIn: b.checkIn || firstRoom.checkInDateTime?.split('T')[0] || b.bookingDate?.split('T')[0] || '',
+          checkOut: b.checkOut || firstRoom.checkOutDateTime?.split('T')[0] || '',
+          assignedRoom: roomTitle,
+          totalAmount: b.grandTotal || b.totalAmount || b.subtotal || 0,
+        };
+      });
+
+      setBookings(normalizedData.length > 0 ? normalizedData : DEMO_BOOKINGS);
     } catch (requestError) {
       console.warn(
         'Bookings API unavailable. Using demo bookings instead.',
@@ -285,52 +325,45 @@ export function useBookings() {
    * Upcoming bookings summary.
    */
   const upcomingSummary = useMemo(() => {
-    const upcoming = bookings.filter(
+    const activeBookings = bookings.filter(
       (booking) =>
         booking.status === 'CONFIRMED' ||
+        booking.status === 'CHECKED_IN' ||
         booking.status === 'PENDING_ALLOTMENT' ||
-        booking.status === 'CHECKED_IN'
+        booking.status === 'DRAFT'
     );
 
-    const otaCount = upcoming.filter(
-      (booking) =>
-        booking.source === 'OTA'
-    ).length;
+    const todayStr = new Date().toISOString().split('T')[0];
+    const arrivalsToday = activeBookings.filter((b) => {
+      const checkInDate = b.checkIn || (b.rawRecord?.bookingRooms?.[0]?.checkInDateTime || '').split('T')[0];
+      return checkInDate === todayStr || b.status === 'CONFIRMED' || b.status === 'CHECKED_IN';
+    }).length;
 
-    const pendingCount = upcoming.filter(
-      (booking) =>
-        booking.status === 'PENDING_ALLOTMENT'
-    ).length;
+    const totalRoomsCount = activeBookings.reduce((sum, b) => sum + (b.rawRecord?.totalRooms || b.roomCount || 1), 0);
 
-    const roomsReserved = upcoming.reduce(
-      (total, booking) =>
-        total + Number(booking.roomCount || 0),
-      0
-    );
+    const otaCount = activeBookings.filter((b) => {
+      const src = (b.source || b.bookingSource || b.sourceType || b.channel || '').toUpperCase();
+      return src === 'OTHER' || src === 'OTA' || src === 'EXPEDIA' || src === 'BOOKING.COM' || src === 'AGODA';
+    }).length;
+
+    const unassignedCount = activeBookings.filter((b) => {
+      const roomAssigned = b.assignedRoom;
+      const status = (b.status || b.bookingStatus || '').toUpperCase();
+      return !roomAssigned || roomAssigned === 'Unassigned' || roomAssigned === 'Undefined' || status === 'PENDING_ALLOTMENT' || status === 'DRAFT';
+    }).length;
 
     return {
-      upcomingCount:
-        upcoming.length.toLocaleString('en-US'),
+      totalArrivals: arrivalsToday,
+      checkInWindow: arrivalsToday > 0 ? `${arrivalsToday} Arrivals Scheduled` : '0 Arrivals Scheduled',
 
-      upcomingDelta: null,
+      roomsReserved: totalRoomsCount,
+      occupancyPercent: `${activeBookings.length} Active Bookings`,
 
-      roomsReserved:
-        roomsReserved.toLocaleString('en-US'),
+      otaCount: otaCount,
+      otaChannels: otaCount > 0 ? `${otaCount} OTA Bookings` : 'Direct Only',
 
-      occupancyPercent: null,
-
-      otaCount:
-        otaCount.toLocaleString('en-US'),
-
-      otaChannels: null,
-
-      pendingCount:
-        pendingCount.toLocaleString('en-US'),
-
-      pendingAlert:
-        pendingCount > 0
-          ? 'Requires attention'
-          : 'All clear',
+      pendingCount: unassignedCount,
+      pendingAlert: unassignedCount > 0 ? `${unassignedCount} Rooms Unassigned` : 'All Rooms Assigned',
     };
   }, [bookings]);
 
@@ -396,13 +429,9 @@ export function useBookings() {
       };
 
       try {
-        const response = await api.post(
-          '/hotel/bookings',
-          payload
-        );
+        const response = await bookingService.create(payload);
 
-        const createdRecord =
-          response?.data;
+        const createdRecord = response?.data;
 
         if (createdRecord) {
           setBookings((previous) => [
@@ -476,15 +505,18 @@ export function useBookings() {
   const updateBookingStatus = useCallback(
     async (id, newStatus) => {
       try {
-        const response = await api.patch(
-          `/hotel/bookings/${id}`,
-          {
-            status: newStatus,
-          }
-        );
+        let response;
+        if (newStatus === 'CHECKED_IN') {
+          response = await bookingService.checkIn(id);
+        } else if (newStatus === 'CHECKED_OUT') {
+          response = await bookingService.checkOut(id);
+        } else if (newStatus === 'CANCELLED') {
+          response = await bookingService.cancel(id);
+        } else {
+          response = await bookingService.update(id, { bookingStatus: newStatus });
+        }
 
-        const updatedBooking =
-          response?.data;
+        const updatedBooking = response?.data;
 
         setBookings((previous) =>
           previous.map((booking) =>
@@ -516,10 +548,42 @@ export function useBookings() {
           )
         );
 
-        setError(null);
       }
     },
     []
+  );
+
+  const updateBooking = useCallback(
+    async (id, updateData) => {
+      try {
+        const response = await bookingService.update(id, updateData);
+        const updated = response?.data;
+        setBookings((previous) =>
+          previous.map((b) =>
+            b.id === id
+              ? {
+                ...b,
+                ...(updated || {}),
+                ...updateData,
+                status: updateData.bookingStatus ? updateData.bookingStatus.toUpperCase() : b.status,
+              }
+              : b
+          )
+        );
+        fetchBookings();
+        return updated;
+      } catch (err) {
+        console.warn('Update booking API error, updating state locally.', err);
+        setBookings((previous) =>
+          previous.map((b) =>
+            b.id === id
+              ? { ...b, ...updateData, status: updateData.bookingStatus ? updateData.bookingStatus.toUpperCase() : b.status }
+              : b
+          )
+        );
+      }
+    },
+    [fetchBookings]
   );
 
   /**
@@ -720,6 +784,8 @@ export function useBookings() {
     createBooking,
 
     updateBookingStatus,
+
+    updateBooking,
   };
 }
 
