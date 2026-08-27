@@ -516,21 +516,22 @@ export function useBookings() {
           response = await bookingService.update(id, { bookingStatus: newStatus });
         }
 
-        const updatedBooking = response?.data;
+        const rawUpdated = response?.data?.data || response?.data?.response || response?.data;
 
         setBookings((previous) =>
           previous.map((booking) =>
             booking.id === id
               ? {
-                ...booking,
-                ...(updatedBooking || {}),
-                status: newStatus,
-              }
+                  ...booking,
+                  rawRecord: rawUpdated || booking.rawRecord,
+                  status: newStatus,
+                }
               : booking
           )
         );
 
         setError(null);
+        fetchBookings();
       } catch (requestError) {
         console.warn(
           'Booking status API unavailable. Updating status locally.',
@@ -541,37 +542,35 @@ export function useBookings() {
           previous.map((booking) =>
             booking.id === id
               ? {
-                ...booking,
-                status: newStatus,
-              }
+                  ...booking,
+                  status: newStatus,
+                }
               : booking
           )
         );
-
       }
     },
-    []
+    [fetchBookings]
   );
 
   const updateBooking = useCallback(
     async (id, updateData) => {
       try {
         const response = await bookingService.update(id, updateData);
-        const updated = response?.data;
+        const rawUpdated = response?.data?.data || response?.data?.response || response?.data;
         setBookings((previous) =>
           previous.map((b) =>
             b.id === id
               ? {
-                ...b,
-                ...(updated || {}),
-                ...updateData,
-                status: updateData.bookingStatus ? updateData.bookingStatus.toUpperCase() : b.status,
-              }
+                  ...b,
+                  rawRecord: rawUpdated || b.rawRecord,
+                  status: updateData.bookingStatus ? updateData.bookingStatus.toUpperCase() : b.status,
+                }
               : b
           )
         );
         fetchBookings();
-        return updated;
+        return rawUpdated;
       } catch (err) {
         console.warn('Update booking API error, updating state locally.', err);
         setBookings((previous) =>
@@ -631,63 +630,57 @@ export function useBookings() {
           booking.status === 'PENDING_ALLOTMENT' ||
           booking.status === 'CHECKED_IN'
       )
-      .map((booking) => ({
-        id: booking.id,
+      .map((booking) => {
+        const rawG = booking.primaryGuest || booking.guest || {};
+        const computedName = rawG.name || (rawG.firstName ? `${rawG.firstName} ${rawG.lastName || ''}`.trim() : (booking.guestName || 'Guest'));
+        const rawAmt = booking.grandTotal || booking.totalAmount || booking.subtotal || 0;
+        const formattedAmount = `₹${Number(rawAmt).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
 
-        bookingRef:
-          booking.bookingRef ||
-          `#${booking.id}`,
+        return {
+          id: booking.id,
 
-        guest: {
-          name:
-            booking.primaryGuest?.name ||
-            'Guest',
+          bookingRef:
+            booking.bookingRef ||
+            `#${booking.id}`,
 
-          email:
-            booking.primaryGuest?.email ||
-            '',
+          guest: {
+            name: computedName,
 
-          phone:
-            booking.primaryGuest?.phone ||
-            '',
-        },
+            email:
+              rawG.email ||
+              '',
 
-        checkIn: booking.checkIn,
+            phone:
+              rawG.phone || rawG.phoneNumber ||
+              '',
+          },
 
-        checkOut: booking.checkOut,
+          checkIn: booking.checkIn,
 
-        roomType:
-          booking.assignedRoom ||
-          'Unassigned',
+          checkOut: booking.checkOut,
 
-        channel:
-          booking.channelName ||
-          booking.source ||
-          'Direct',
+          roomType:
+            booking.assignedRoom ||
+            'Unassigned',
 
-        channelIcon:
-          booking.channelIcon || '',
+          channel:
+            booking.channelName ||
+            booking.source ||
+            'Direct',
 
-        sourceType:
-          booking.source || '',
+          channelIcon:
+            booking.channelIcon || '',
 
-        amount:
-          booking.totalAmount != null
-            ? Number(
-              booking.totalAmount
-            ).toLocaleString('en-US', {
-              style: 'currency',
-              currency:
-                booking.currencyCode ||
-                'USD',
-              minimumFractionDigits: 2,
-            })
-            : '',
+          sourceType:
+            booking.source || '',
 
-        status: booking.status,
+          amount: formattedAmount,
 
-        rawRecord: booking,
-      }));
+          status: booking.status,
+
+          rawRecord: booking,
+        };
+      });
   }, [bookings]);
 
   /**
@@ -701,63 +694,57 @@ export function useBookings() {
           booking.status === 'CANCELLED' ||
           booking.status === 'NO_SHOW'
       )
-      .map((booking) => ({
-        id: booking.id,
+      .map((booking) => {
+        const rawG = booking.primaryGuest || booking.guest || {};
+        const computedName = rawG.name || (rawG.firstName ? `${rawG.firstName} ${rawG.lastName || ''}`.trim() : (booking.guestName || 'Guest'));
+        const rawAmt = booking.grandTotal || booking.totalAmount || booking.subtotal || 0;
+        const formattedAmount = `₹${Number(rawAmt).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
 
-        bookingRef:
-          booking.bookingRef ||
-          `#${booking.id}`,
+        return {
+          id: booking.id,
 
-        roomNumber:
-          booking.assignedRoom ||
-          'Unassigned',
+          bookingRef:
+            booking.bookingRef ||
+            `#${booking.id}`,
 
-        guest: {
-          name:
-            booking.primaryGuest?.name ||
-            'Guest',
+          roomNumber:
+            booking.assignedRoom ||
+            'Unassigned',
 
-          email:
-            booking.primaryGuest?.email ||
-            '',
+          guest: {
+            name: computedName,
 
-          phone:
-            booking.primaryGuest?.phone ||
-            '',
-        },
+            email:
+              rawG.email ||
+              '',
 
-        stayDates:
-          `${booking.checkIn || ''} ➔ ${booking.checkOut || ''}`,
+            phone:
+              rawG.phone || rawG.phoneNumber ||
+              '',
+          },
 
-        nightsText:
-          booking.nights != null
-            ? `${booking.nights} Nights`
-            : '',
+          stayDates:
+            `${booking.checkIn || ''} ➔ ${booking.checkOut || ''}`,
 
-        roomType:
-          booking.assignedRoom ||
-          'Unassigned',
+          nightsText:
+            booking.nights != null
+              ? `${booking.nights} Nights`
+              : '',
 
-        roomTypeBadge:
-          booking.roomTypeBadge || '',
+          roomType:
+            booking.assignedRoom ||
+            'Unassigned',
 
-        totalPaid:
-          booking.totalAmount != null
-            ? Number(
-              booking.totalAmount
-            ).toLocaleString('en-US', {
-              style: 'currency',
-              currency:
-                booking.currencyCode ||
-                'USD',
-              minimumFractionDigits: 2,
-            })
-            : '',
+          roomTypeBadge:
+            booking.roomTypeBadge || '',
 
-        status: booking.status,
+          totalPaid: formattedAmount,
 
-        rawRecord: booking,
-      }));
+          status: booking.status,
+
+          rawRecord: booking,
+        };
+      });
   }, [bookings]);
 
   return {
