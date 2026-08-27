@@ -3,7 +3,7 @@
  * @description Hotel guest directory with search, filters,
  * pagination, direct guest activate/deactivate status toggle,
  * calculated total stays from bookings, row-click navigation, Eye/Pencil icons,
- * guest registration modal, guest edit modal, and Toast notifications.
+ * modern form inputs, guest registration modal, guest edit modal, and Toast notifications.
  */
 
 import React, { useMemo, useState, useEffect } from 'react';
@@ -167,14 +167,24 @@ export default function HotelGuestsPage() {
     navigate(`/hotel/guests/${guestId}`);
   };
 
-  // Direct Activate / Deactivate Toggle
+  // Direct Activate / Deactivate Toggle (Passes full required fields to satisfy backend PUT validation)
   const handleToggleStatus = async (guest, e) => {
     if (e) e.stopPropagation();
     const currentStatus = (guest.status || 'ACTIVE').toUpperCase();
     const newStatus = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
 
+    const payload = {
+      firstName: guest.firstName || guest.name?.split(' ')[0] || 'Guest',
+      lastName: guest.lastName || guest.name?.split(' ').slice(1).join(' ') || '',
+      email: guest.email || '',
+      phoneNumber: guest.phone || guest.phoneNumber || '',
+      idProofType: (guest.idType || guest.idProofType || 'passport').toLowerCase(),
+      idNumber: guest.idNumber || guest.idProofNumber || '',
+      status: newStatus,
+    };
+
     try {
-      await hotelGuestService.update(guest.id, { status: newStatus });
+      await hotelGuestService.update(guest.id, payload);
       showToast(`Guest ${guest.name || guest.firstName || 'profile'} set to ${newStatus}!`, 'success');
       if (refetch) refetch();
     } catch (err) {
@@ -207,6 +217,7 @@ export default function HotelGuestsPage() {
         phoneNumber: editForm.phone?.trim(),
         idProofType: editForm.idProofType,
         idNumber: editForm.idNumber?.trim(),
+        status: editingGuest.status || 'ACTIVE',
       };
       await hotelGuestService.update(editingGuest.id, payload);
       showToast(`Guest profile for ${editForm.firstName} updated successfully!`, 'success');
@@ -413,7 +424,7 @@ export default function HotelGuestsPage() {
                       </span>
                     </td>
 
-                    {/* Status Badge & Toggle */}
+                    {/* Status Badge & Icon Toggle */}
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Badge variant={getBadgeVariant(guest.status || 'ACTIVE')}>
@@ -427,17 +438,15 @@ export default function HotelGuestsPage() {
                             border: 'none',
                             background: isActive ? '#fee2e2' : '#dcfce7',
                             color: isActive ? '#dc2626' : '#15803d',
-                            borderRadius: '4px',
-                            padding: '4px 8px',
-                            fontSize: '11px',
-                            fontWeight: 700,
+                            borderRadius: '6px',
+                            padding: '6px',
                             cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '4px',
+                            justifyContent: 'center',
                           }}
                         >
-                          <Power size={12} /> {isActive ? 'Deactivate' : 'Activate'}
+                          <Power size={14} />
                         </button>
                       </div>
                     </td>
