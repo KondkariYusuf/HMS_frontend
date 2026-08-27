@@ -161,6 +161,15 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
     }
   };
 
+  // Handle PDF Print / Open
+  const handlePrintPdfInvoice = () => {
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      window.print();
+    }
+  };
+
   if (!isOpen || !booking) return null;
 
   const isFolioLocked = (folioData?.status || '').toLowerCase() === 'locked' || (folioData?.status || '').toLowerCase() === 'closed';
@@ -171,7 +180,13 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
         {/* Modal Header */}
         <div className={styles.modalHeader}>
           <div className={styles.headerTitleGroup}>
-            <div className={styles.iconCircle}>
+            <div
+              className={styles.iconCircle}
+              style={{
+                background: isFolioLocked ? '#e0f2fe' : '#dcfce7',
+                color: isFolioLocked ? '#0284c7' : '#15803d',
+              }}
+            >
               <Receipt size={22} />
             </div>
             <div>
@@ -180,9 +195,9 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
                 <span
                   className={styles.statusBadge}
                   style={{
-                    background: isFolioLocked ? '#fee2e2' : '#dcfce7',
-                    color: isFolioLocked ? '#b91c1c' : '#15803d',
-                    border: isFolioLocked ? '1px solid #f87171' : '1px solid #86efac',
+                    background: isFolioLocked ? '#e0f2fe' : '#dcfce7',
+                    color: isFolioLocked ? '#0284c7' : '#15803d',
+                    border: isFolioLocked ? '1px solid #7dd3fc' : '1px solid #86efac',
                   }}
                 >
                   {isFolioLocked ? <Lock size={12} /> : <Unlock size={12} />}
@@ -404,13 +419,13 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
               </Button>
             )}
 
-            {pdfUrl && (
-              <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-                <Button variant="secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                  <Printer size={15} /> View PDF Invoice
-                </Button>
-              </a>
-            )}
+            <Button
+              variant="secondary"
+              onClick={handlePrintPdfInvoice}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}
+            >
+              <Printer size={15} /> View PDF Invoice
+            </Button>
           </div>
 
           <Button variant="secondary" onClick={onClose}>

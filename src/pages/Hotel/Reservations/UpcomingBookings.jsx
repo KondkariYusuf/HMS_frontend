@@ -133,6 +133,14 @@ export default function UpcomingBookings() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Helper to check if a booking folio is locked
+  const isBookingFolioLocked = (b) => {
+    if (!b) return false;
+    const st = (b.status || b.rawRecord?.bookingStatus || '').toUpperCase();
+    const folioSt = (b.rawRecord?.bookingFolio?.status || b.folioStatus || '').toLowerCase();
+    return st === 'CHECKED_OUT' || folioSt === 'locked' || folioSt === 'closed';
+  };
+
   // Robust helper to get active reservation for a room
   const getActiveBookingForRoom = (room, currentBookingId = null) => {
     if (!room) return null;
@@ -718,8 +726,17 @@ export default function UpcomingBookings() {
                             type="button"
                             className={styles.pillBtn}
                             onClick={() => setSelectedFolioBooking(b)}
-                            title="View Booking Folio & Ledger"
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 10px', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}
+                            title={isBookingFolioLocked(b) ? 'View Folio (Locked)' : 'View Folio (Open)'}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              padding: '6px 10px',
+                              background: isBookingFolioLocked(b) ? '#e0f2fe' : '#dcfce7',
+                              color: isBookingFolioLocked(b) ? '#0284c7' : '#15803d',
+                              borderColor: isBookingFolioLocked(b) ? '#7dd3fc' : '#86efac',
+                              fontWeight: 600,
+                            }}
                           >
                             <Receipt size={14} /> Folio
                           </button>
@@ -819,9 +836,16 @@ export default function UpcomingBookings() {
                   setSelectedBooking(null);
                   setSelectedFolioBooking(b);
                 }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: isBookingFolioLocked(selectedBooking) ? '#0284c7' : '#16a34a',
+                  borderColor: isBookingFolioLocked(selectedBooking) ? '#0284c7' : '#16a34a',
+                  color: '#fff',
+                }}
               >
-                <Receipt size={15} /> Folio & Billing
+                <Receipt size={15} /> Folio
               </Button>
               <Button
                 variant="secondary"
