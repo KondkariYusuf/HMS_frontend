@@ -1,6 +1,6 @@
 /**
  * @file Hotel/Reservations/UpcomingBookings.jsx
- * @description Premium reservations management with Lucide icons, accurate OTA/Direct filtering, per-room stay schedule editing, room availability conflict validation, bold room name & price formatting, and Toast notifications.
+ * @description Premium reservations management with Lucide icons, accurate OTA/Direct filtering, per-room stay schedule editing, room availability conflict validation, bold room name & price formatting, Toast notifications, and real-time Vacant / Available Rooms calculation.
  */
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -86,6 +86,31 @@ export default function UpcomingBookings() {
     }
     loadRooms();
   }, []);
+
+  // Calculate Vacant / Available Rooms count for Card 4
+  const vacantRoomsCount = useMemo(() => {
+    if (!availableRooms || availableRooms.length === 0) return 0;
+    const reservedRoomIds = new Set();
+    upcomingBookings.forEach((b) => {
+      const st = (b.status || b.rawRecord?.bookingStatus || '').toUpperCase();
+      if (st === 'CANCELLED' || st === 'CHECKED_OUT') return;
+      const rList = b.rawRecord?.bookingRooms || b.rooms || [];
+      rList.forEach((r) => {
+        if (r.roomId) reservedRoomIds.add(String(r.roomId));
+        if (r.room?.id) reservedRoomIds.add(String(r.room.id));
+      });
+      if (b.assignedRoom) {
+        availableRooms.forEach((ar) => {
+          if (ar.roomNumber && String(b.assignedRoom).includes(String(ar.roomNumber))) {
+            reservedRoomIds.add(String(ar.id));
+          }
+        });
+      }
+    });
+
+    const vacantList = availableRooms.filter((ar) => !reservedRoomIds.has(String(ar.id)));
+    return vacantList.length;
+  }, [availableRooms, upcomingBookings]);
 
   // Global ESC Key dismiss listener for all modals
   useEffect(() => {
@@ -498,18 +523,18 @@ export default function UpcomingBookings() {
           </div>
         </div>
 
-        {/* Card 4: PENDING ALLOTMENT / UNASSIGNED ROOMS */}
+        {/* Card 4: VACANT / AVAILABLE ROOMS */}
         <div className={styles.summaryCard}>
           <div className={styles.cardInfo}>
-            <span className={styles.cardLabel}>PENDING ALLOTMENT</span>
-            <div className={styles.cardValue}>{upcomingSummary.pendingCount || 0}</div>
-            {upcomingSummary.pendingCount > 0 ? (
-              <span className={styles.cardAlertText} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#d97706', fontSize: '12px', fontWeight: 600 }}>
-                <AlertTriangle size={14} /> {upcomingSummary.pendingAlert}
+            <span className={styles.cardLabel}>VACANT / AVAILABLE ROOMS</span>
+            <div className={styles.cardValue}>{vacantRoomsCount}</div>
+            {vacantRoomsCount > 0 ? (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#16a34a', fontSize: '12px', fontWeight: 600 }}>
+                <CheckCircle2 size={14} /> {vacantRoomsCount} Rooms Ready for Allotment
               </span>
             ) : (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#16a34a', fontSize: '12px', fontWeight: 600 }}>
-                <CheckCircle2 size={14} /> {upcomingSummary.pendingAlert}
+              <span className={styles.cardAlertText} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#d97706', fontSize: '12px', fontWeight: 600 }}>
+                <AlertTriangle size={14} /> 100% Fully Booked
               </span>
             )}
           </div>
@@ -521,11 +546,11 @@ export default function UpcomingBookings() {
               width: '44px',
               height: '44px',
               borderRadius: '50%',
-              background: upcomingSummary.pendingCount > 0 ? 'rgba(245, 158, 11, 0.15)' : 'rgba(22, 163, 74, 0.15)',
-              color: upcomingSummary.pendingCount > 0 ? '#d97706' : '#16a34a',
+              background: vacantRoomsCount > 0 ? 'rgba(22, 163, 74, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+              color: vacantRoomsCount > 0 ? '#16a34a' : '#d97706',
             }}
           >
-            {upcomingSummary.pendingCount > 0 ? <AlertTriangle size={22} /> : <CheckCircle2 size={22} />}
+            {vacantRoomsCount > 0 ? <CheckCircle2 size={22} /> : <AlertTriangle size={22} />}
           </div>
         </div>
       </div>
