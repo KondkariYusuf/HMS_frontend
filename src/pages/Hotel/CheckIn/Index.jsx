@@ -18,7 +18,7 @@ import styles from './Index.module.css';
 
 export default function HotelCheckInPage() {
   const navigate = useNavigate();
-  const { bookings, updateBookingStatus } = useBookings();
+  const { bookings, loading, updateBookingStatus } = useBookings();
 
   const [search, setSearch] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -239,7 +239,13 @@ export default function HotelCheckInPage() {
               );
             })}
 
-            {arrivingBookings.length === 0 && (
+            {loading && (
+              <div className={styles.emptyState} style={{ padding: '24px 16px', color: 'var(--color-text-secondary)' }}>
+                ⏳ Loading available guests...
+              </div>
+            )}
+
+            {!loading && arrivingBookings.length === 0 && (
               <div className={styles.emptyState}>
                 No booking or guest found matching your search.
               </div>

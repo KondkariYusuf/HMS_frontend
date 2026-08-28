@@ -182,7 +182,7 @@ export function useBookings() {
     setError(null);
 
     try {
-      const response = await bookingService.getAll();
+      const response = await bookingService.getAll({ limit: 1000, pageSize: 1000, size: 1000 });
 
       const resData = response?.data;
       const rawData = Array.isArray(resData)

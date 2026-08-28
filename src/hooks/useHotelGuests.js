@@ -5,7 +5,6 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import hotelGuestService from '@services/hotelGuestService';
-import initialGuestData from '../data/guestData.json';
 
 // Local storage key to persist status overrides across reloads
 const GUEST_STATUS_STORAGE_KEY = 'syncstays_guest_status_overrides';
@@ -30,7 +29,7 @@ const saveStatusOverride = (guestId, newStatus) => {
 };
 
 export default function useHotelGuests() {
-  const [guests, setGuests] = useState(initialGuestData);
+  const [guests, setGuests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusOverrides, setStatusOverrides] = useState(getSavedStatusOverrides);
@@ -39,7 +38,7 @@ export default function useHotelGuests() {
     setLoading(true);
     setError(null);
     try {
-      const response = await hotelGuestService.getAll();
+      const response = await hotelGuestService.getAll({ limit: 1000, pageSize: 1000, size: 1000 });
       const resData = response?.data;
       const rawData = Array.isArray(resData)
         ? resData
@@ -68,22 +67,11 @@ export default function useHotelGuests() {
         }));
         setGuests(normalized);
       } else {
-        setGuests(
-          initialGuestData.map((g) => ({
-            ...g,
-            status: currentOverrides[g.id] || g.status || 'ACTIVE',
-          }))
-        );
+        setGuests([]);
       }
     } catch (err) {
-      console.warn('Hotel Guest API unavailable. Using fallback data.', err);
-      const currentOverrides = getSavedStatusOverrides();
-      setGuests(
-        initialGuestData.map((g) => ({
-          ...g,
-          status: currentOverrides[g.id] || g.status || 'ACTIVE',
-        }))
-      );
+      console.warn('Hotel Guest API error:', err);
+      setGuests([]);
       setError(null);
     } finally {
       setLoading(false);

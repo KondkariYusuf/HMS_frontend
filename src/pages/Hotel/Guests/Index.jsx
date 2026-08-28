@@ -36,7 +36,7 @@ const ITEMS_PER_PAGE = 10;
 
 export default function HotelGuestsPage() {
   const navigate = useNavigate();
-  const { guests, refetch, registerGuest, updateGuestStatus } = useHotelGuests();
+  const { guests, loading, refetch, registerGuest, updateGuestStatus } = useHotelGuests();
   const { bookings } = useBookings();
 
   const [search, setSearch] = useState('');
@@ -143,6 +143,12 @@ export default function HotelGuestsPage() {
   // Paginated Guests
   const totalItems = filteredGuests.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
 
   const paginatedGuests = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -502,8 +508,16 @@ export default function HotelGuestsPage() {
             </tbody>
           </table>
 
+          {/* Loading State */}
+          {loading && (
+            <div className={styles.emptyState} style={{ padding: '36px 20px', color: 'var(--color-text-secondary)' }}>
+              <span style={{ fontSize: '18px', display: 'inline-block', marginBottom: '6px' }}>⏳</span>
+              <div>Loading guests from server...</div>
+            </div>
+          )}
+
           {/* Empty State */}
-          {filteredGuests.length === 0 && (
+          {!loading && filteredGuests.length === 0 && (
             <div className={styles.emptyState}>
               No guests found matching your search or filters.
             </div>
