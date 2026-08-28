@@ -193,7 +193,11 @@ export const router = createBrowserRouter([
 
           {
             path: 'hotel/guests',
-            element: <HotelGuestsPage />,
+            element: (
+              <PermissionGuard code="HOTEL_GUEST_READALL">
+                <HotelGuestsPage />
+              </PermissionGuard>
+            ),
           },
 
           {
@@ -203,12 +207,20 @@ export const router = createBrowserRouter([
 
           {
             path: 'hotel/reservations',
-            element: <HotelReservationsPage />,
+            element: (
+              <PermissionGuard code="BOOKING_READALL">
+                <HotelReservationsPage />
+              </PermissionGuard>
+            ),
           },
 
           {
             path: 'hotel/check-in',
-            element: <HotelCheckInPage />,
+            element: (
+              <PermissionGuard code="BOOKING_CREATE_CHECK_IN">
+                <HotelCheckInPage />
+              </PermissionGuard>
+            ),
           },
 
           /* Hotel-prefixed Restaurant Routes */
@@ -257,7 +269,11 @@ export const router = createBrowserRouter([
           /* Hotel-prefixed Billing Routes */
           {
             path: 'hotel/billing/invoices',
-            element: <BillingInvoicesPage />,
+            element: (
+              <PermissionGuard code="INVOICE_READALL">
+                <BillingInvoicesPage />
+              </PermissionGuard>
+            ),
           },
 
           /* Hotel-prefixed Staff Routes */
@@ -293,7 +309,11 @@ export const router = createBrowserRouter([
 
           {
             path: 'hotel/billing/payments',
-            element: <BillingPaymentsPage />,
+            element: (
+              <PermissionGuard code="PAYMENT_READALL">
+                <BillingPaymentsPage />
+              </PermissionGuard>
+            ),
           },
 
           {

@@ -163,10 +163,12 @@ const navigationGroups = [
       {
         path: '/hotel/reservations',
         label: 'Reservations',
+        permission: 'BOOKING_READALL',
       },
       {
         path: '/hotel/check-in',
         label: 'Express Check-In',
+        permission: 'BOOKING_CREATE_CHECK_IN',
       },
       {
         path: '/hotel/rooms',
@@ -191,6 +193,7 @@ const navigationGroups = [
       {
         path: '/hotel/guests',
         label: 'Guest Directory',
+        permission: 'HOTEL_GUEST_READALL',
       },
     ],
   },
@@ -267,10 +270,12 @@ const navigationGroups = [
       {
         path: '/hotel/billing/invoices',
         label: 'Invoices & Billing',
+        permission: 'INVOICE_READALL',
       },
       {
         path: '/hotel/billing/payments',
         label: 'Payment Processing',
+        permission: 'PAYMENT_READALL',
       },
       {
         path: '/hotel/billing/reports',
