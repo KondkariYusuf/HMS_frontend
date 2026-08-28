@@ -110,7 +110,7 @@ export const bookingService = {
   },
 
   getFolio: (id, options = {}) => {
-    const permHeaders = getPermissionHeaders(['BOOKING_READ_FOLIO', 'FOLIO_READ']);
+    const permHeaders = getPermissionHeaders(['BOOKING_CREATE_FOLIO/LOCK', 'FOLIO_LOCK', 'BOOKING_READ_FOLIO', 'INVOICE_READALL']);
     return backendApi.get(BOOKING_ENDPOINTS.GET_FOLIO(id), {
       ...options,
       headers: { ...permHeaders, ...options?.headers },

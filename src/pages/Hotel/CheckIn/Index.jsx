@@ -11,6 +11,7 @@ import Badge from '@components/Badge/Badge';
 import Toast from '@components/Toast/Toast';
 import useBookings from '@hooks/useBookings';
 import bookingService from '@services/bookingService';
+import BookingFolioModal from '@components/BookingFolioModal/BookingFolioModal';
 
 import styles from './Index.module.css';
 
@@ -20,6 +21,7 @@ export default function HotelCheckInPage() {
 
   const [search, setSearch] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [selectedFolioBooking, setSelectedFolioBooking] = useState(null);
 
   // Toast feedback state
   const [toast, setToast] = useState(null);
@@ -29,36 +31,58 @@ export default function HotelCheckInPage() {
     setTimeout(() => setToast(null), 4000);
   };
 
+  // Helper to extract numeric amount safely without producing NaN
+  const extractNumericAmount = (val) => {
+    if (val == null) return 0;
+    if (typeof val === 'number') return isNaN(val) ? 0 : val;
+    const cleaned = String(val).replace(/[^0-9.]/g, '');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  };
+
   // Financial Guard: Prevent Check-Out if guest has an outstanding balance
   const handleCheckOutWithGuard = async (b) => {
     if (!b) return;
+    let folio = {};
     try {
       const res = await bookingService.getFolio(b.id);
-      const folio = res?.data?.data || res?.data?.response || res?.data || {};
-
-      const totalCharges = Number(folio.totalCharges || 0);
-      const totalPayments = Number(folio.totalPayments || 0);
-      const netBalance = Number(folio.balance !== undefined ? folio.balance : totalCharges - totalPayments);
-
-      if (netBalance > 0) {
-        const formattedBalance = netBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-        showToast(
-          `Cannot Check-Out: Guest ${b.primaryGuest?.name || 'Guest'} has an outstanding balance of ₹${formattedBalance}. Please record payment in Folio first.`,
-          'error'
-        );
-        return;
-      }
-
-      try {
-        await bookingService.lockFolio(b.id);
-      } catch (e) {}
-
-      await updateBookingStatus(b.id, 'CHECKED_OUT');
-      setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_OUT' } : null));
-      showToast(`Check-Out completed successfully for ${b.primaryGuest?.name || 'Guest'}! Folio sealed.`, 'success');
+      folio = res?.data?.data || res?.data?.response || res?.data || {};
     } catch (err) {
-      showToast('Failed to complete check-out.', 'error');
+      console.warn('Check-out getFolio response note:', err);
+      folio = b.rawRecord?.bookingFolio || {};
     }
+
+    const totalCharges = extractNumericAmount(folio.totalCharges) ||
+      extractNumericAmount(b.grandTotal) ||
+      extractNumericAmount(b.subtotal) ||
+      extractNumericAmount(b.totalAmount);
+
+    const totalPayments = extractNumericAmount(folio.totalPayments);
+    const netBalance = folio.balance !== undefined ? extractNumericAmount(folio.balance) : Math.max(0, totalCharges - totalPayments);
+
+    const isLockedOrClosed = (folio.status || '').toLowerCase() === 'locked' || (folio.status || '').toLowerCase() === 'closed';
+    const isUnpaid = !isLockedOrClosed && (netBalance > 0 || (totalCharges > 0 && totalPayments === 0));
+
+    if (isUnpaid) {
+      const dueAmount = netBalance > 0 ? netBalance : totalCharges;
+      const formattedBalance = dueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      showToast(
+        `Cannot Check-Out: Outstanding balance of ₹${formattedBalance} remaining. Please settle payment in Folio.`,
+        'error'
+      );
+      setSelectedFolioBooking(b);
+      return;
+    }
+
+    try {
+      if (!isLockedOrClosed) {
+        await bookingService.lockFolio(b.id);
+      }
+    } catch (e) {}
+
+    await updateBookingStatus(b.id, 'CHECKED_OUT');
+    setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_OUT' } : null));
+    showToast(`Check-Out completed successfully for ${b.primaryGuest?.name || 'Guest'}! Folio sealed.`, 'success');
   };
 
   const arrivingBookings = useMemo(() => {
@@ -342,6 +366,16 @@ export default function HotelCheckInPage() {
           </div>
         </div>
       </section>
+
+      {/* Booking Folio Modal */}
+      {selectedFolioBooking && (
+        <BookingFolioModal
+          isOpen={!!selectedFolioBooking}
+          onClose={() => setSelectedFolioBooking(null)}
+          booking={selectedFolioBooking}
+          onToast={showToast}
+        />
+      )}
     </div>
   );
 }

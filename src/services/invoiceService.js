@@ -59,6 +59,14 @@ export const invoiceService = {
     });
   },
 
+  regeneratePdf: (id, options = {}) => {
+    const permHeaders = getPermissionHeaders(['INVOICE_READ_PDF', 'INVOICE_READ', 'INVOICE_READALL']);
+    return backendApi.get(`${INVOICE_ENDPOINTS.GET_PDF(id)}?regenerate=true`, {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+
   create: (data, options = {}) => {
     const permHeaders = getPermissionHeaders('INVOICE_CREATE');
     return backendApi.post(INVOICE_ENDPOINTS.CREATE, data, {

@@ -32,6 +32,7 @@ import hotelGuestService from '@services/hotelGuestService';
 import { backendApi } from '@utils/backendApiClient';
 import { getPermissionHeaders } from '@utils/permissionHeaders';
 import Button from '@components/Button/Button';
+import Badge from '@components/Badge/Badge';
 import Avatar from '@components/Avatar/Avatar';
 import Toast from '@components/Toast/Toast';
 import FutureBookingModal from '@components/FutureBookingModal/FutureBookingModal';
@@ -135,38 +136,55 @@ export default function UpcomingBookings() {
 
   // Financial Guard: Prevent Check-Out if guest has an outstanding folio balance
   const handleCheckOutWithGuard = async (booking) => {
-    if (!booking) return;
+    if (!booking) return false;
+    let folio = {};
     try {
       const res = await bookingService.getFolio(booking.id);
-      const folio = res?.data?.data || res?.data?.response || res?.data || {};
-
-      const totalCharges = Number(folio.totalCharges || booking.amount?.replace('₹', '') || 0);
-      const totalPayments = Number(folio.totalPayments || 0);
-      const netBalance = Number(folio.balance !== undefined ? folio.balance : totalCharges - totalPayments);
-
-      if (netBalance > 0) {
-        const formattedBalance = netBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-        showToast(
-          `Cannot Check-Out: Guest ${booking.guest?.name || ''} has an outstanding balance of ₹${formattedBalance}. Please record payment in Folio first.`,
-          'error'
-        );
-        setSelectedBooking(null);
-        setSelectedFolioBooking(booking);
-        return;
-      }
-
-      // If balance is zero, lock folio & complete check-out
-      try {
-        await bookingService.lockFolio(booking.id);
-      } catch (lockErr) {}
-
-      await handleUpdateStatusWithToast(booking.id, 'CHECKED_OUT', 'Checked-Out');
-      setSelectedBooking(null);
+      folio = res?.data?.data || res?.data?.response || res?.data || {};
     } catch (err) {
-      console.warn('Check-out folio balance check failed:', err);
-      await handleUpdateStatusWithToast(booking.id, 'CHECKED_OUT', 'Checked-Out');
-      setSelectedBooking(null);
+      console.warn('Check-out getFolio response note:', err);
+      folio = booking.rawRecord?.bookingFolio || {};
     }
+
+    const totalCharges = extractNumericAmount(folio.totalCharges) ||
+      extractNumericAmount(booking.rawRecord?.grandTotal) ||
+      extractNumericAmount(booking.rawRecord?.subtotal) ||
+      extractNumericAmount(booking.amount);
+
+    const totalPayments = extractNumericAmount(folio.totalPayments);
+    const netBalance = folio.balance !== undefined ? extractNumericAmount(folio.balance) : Math.max(0, totalCharges - totalPayments);
+
+    const isLockedOrClosed = (folio.status || '').toLowerCase() === 'locked' || (folio.status || '').toLowerCase() === 'closed';
+    const isUnpaid = !isLockedOrClosed && (netBalance > 0 || (totalCharges > 0 && totalPayments === 0));
+
+    if (isUnpaid) {
+      const dueAmount = netBalance > 0 ? netBalance : totalCharges;
+      const formattedBalance = dueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      showToast(
+        `Cannot Check-Out: Outstanding balance of ₹${formattedBalance} remaining. Please settle payment in Folio.`,
+        'error'
+      );
+      setSelectedBooking(null);
+      setSelectedFolioBooking(booking);
+      return false;
+    }
+
+    try {
+      if (!isLockedOrClosed) {
+        await bookingService.lockFolio(booking.id);
+      }
+    } catch (lockErr) { }
+
+    try {
+      await updateBookingStatus(booking.id, 'CHECKED_OUT');
+      showToast(`Check-Out completed successfully for ${booking.guest?.name || 'Guest'}! Folio sealed.`, 'success');
+      if (refetch) refetch();
+    } catch (err) {
+      showToast('Failed to update status to Checked-Out.', 'error');
+    }
+
+    setSelectedBooking(null);
+    return true;
   };
 
   // Helper to check if a booking folio is locked
@@ -368,7 +386,7 @@ export default function UpcomingBookings() {
         try {
           const d = new Date(r.checkInDateTime || raw.checkInDateTime || booking.checkIn);
           if (!isNaN(d.getTime())) formattedCheckIn = d.toISOString().slice(0, 16);
-        } catch {}
+        } catch { }
       }
       if (!formattedCheckIn) {
         const d = new Date();
@@ -381,7 +399,7 @@ export default function UpcomingBookings() {
         try {
           const d = new Date(r.checkOutDateTime || raw.checkOutDateTime || booking.checkOut);
           if (!isNaN(d.getTime())) formattedCheckOut = d.toISOString().slice(0, 16);
-        } catch {}
+        } catch { }
       }
       if (!formattedCheckOut) {
         const d = new Date();
@@ -462,6 +480,14 @@ export default function UpcomingBookings() {
         }
       }
 
+      if (editBookingForm.bookingStatus === 'checked_out' || editBookingForm.bookingStatus === 'CHECKED_OUT') {
+        const canCheckOut = await handleCheckOutWithGuard(editingBooking);
+        if (!canCheckOut) {
+          setIsSavingBookingEdit(false);
+          return;
+        }
+      }
+
       const bookingPayload = {
         bookingStatus: editBookingForm.bookingStatus,
         bookingSource: editBookingForm.bookingSource,
@@ -496,6 +522,7 @@ export default function UpcomingBookings() {
     try {
       await updateBookingStatus(bookingId, newStatus);
       showToast(`Reservation status updated to ${label}!`, 'success');
+      if (refetch) refetch();
     } catch (err) {
       showToast(`Failed to update status to ${label}.`, 'error');
     }
@@ -799,41 +826,32 @@ export default function UpcomingBookings() {
                 </span>
                 <div className={styles.paginationControls}>
                   <button
+                    type="button"
                     className={styles.pageBtn}
-                    disabled={currentPage === 1}
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    aria-label="Previous Page"
+                    disabled={currentPage === 1}
                   >
-                    &lt;
+                    Previous
                   </button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-                    <button
-                      key={num}
-                      className={`${styles.pageBtn} ${
-                        currentPage === num ? styles.activePageBtn : ''
-                      }`}
-                      onClick={() => setCurrentPage(num)}
-                    >
-                      {num}
-                    </button>
-                  ))}
+
+                  <span className={styles.pageIndicator}>
+                    Page {currentPage} of {totalPages}
+                  </span>
+
                   <button
+                    type="button"
                     className={styles.pageBtn}
-                    disabled={currentPage >= totalPages}
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                    aria-label="Next Page"
+                    disabled={currentPage === totalPages}
                   >
-                    &gt;
+                    Next
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <div className={styles.emptyState} data-testid="upcoming-empty">
-              <p className={styles.emptyTitle}>No matching upcoming reservations found</p>
-              <p className={styles.emptySubtitle}>
-                Try adjusting your search query or filter category.
-              </p>
+            <div className={styles.emptyState}>
+              <p>No reservations found matching your criteria.</p>
             </div>
           )}
         </>
@@ -842,7 +860,7 @@ export default function UpcomingBookings() {
       {/* Selected Booking Details & Actions Modal */}
       {selectedBooking && (
         <div className={styles.modalBackdrop} onClick={() => setSelectedBooking(null)}>
-          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()} style={{ minWidth: '580px', maxWidth: '650px' }}>
             <div className={styles.modalHeader}>
               <h3 className={styles.modalTitle}>Reservation Details</h3>
               <button
@@ -855,7 +873,7 @@ export default function UpcomingBookings() {
             </div>
             <div className={styles.modalBody}>
               <p><strong>Booking Ref:</strong> {selectedBooking.bookingRef}</p>
-              <p><strong>Guest:</strong> {selectedBooking.guest?.name} ({selectedBooking.guest?.email})</p>
+              <p><strong>Guest:</strong> {selectedBooking.guest?.name} ({selectedBooking.guest?.email || 'N/A'})</p>
               <p><strong>Phone:</strong> {selectedBooking.guest?.phone || 'N/A'}</p>
               <p><strong>Room Category:</strong> {selectedBooking.roomType}</p>
               <p><strong>Check-In:</strong> {selectedBooking.checkIn}</p>
@@ -864,7 +882,7 @@ export default function UpcomingBookings() {
               <p><strong>Total Amount:</strong> {selectedBooking.amount}</p>
               <p><strong>Current Status:</strong> {selectedBooking.status}</p>
             </div>
-            <div className={styles.modalFooter} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div className={styles.modalFooter} style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'center' }}>
               <Button
                 variant="primary"
                 onClick={() => {
@@ -876,6 +894,7 @@ export default function UpcomingBookings() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
+                  whiteSpace: 'nowrap',
                   background: isBookingFolioLocked(selectedBooking) ? '#0284c7' : '#16a34a',
                   borderColor: isBookingFolioLocked(selectedBooking) ? '#0284c7' : '#16a34a',
                   color: '#fff',
@@ -888,43 +907,44 @@ export default function UpcomingBookings() {
                 onClick={() => {
                   handleOpenEditBooking(selectedBooking);
                 }}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
               >
                 <Edit3 size={15} /> Edit
               </Button>
-              {selectedBooking.status !== 'CHECKED_IN' && selectedBooking.status !== 'CHECKED_OUT' && selectedBooking.status !== 'CANCELLED' && (
+              {(selectedBooking.status || '').toUpperCase() !== 'CHECKED_IN' && (selectedBooking.status || '').toUpperCase() !== 'CHECKED_OUT' && (selectedBooking.status || '').toUpperCase() !== 'CANCELLED' && (
                 <Button
                   variant="primary"
                   onClick={() => {
                     handleUpdateStatusWithToast(selectedBooking.id, 'CHECKED_IN', 'Checked-In');
                     setSelectedBooking(null);
                   }}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
                 >
                   <Clock size={15} /> Check-In
                 </Button>
               )}
-              {selectedBooking.status === 'CHECKED_IN' && (
+              {(selectedBooking.status || '').toUpperCase() === 'CHECKED_IN' && (
                 <Button
                   variant="primary"
                   onClick={() => handleCheckOutWithGuard(selectedBooking)}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap', background: '#dc2626', borderColor: '#dc2626' }}
                 >
                   <Clock size={15} /> Check-Out
                 </Button>
               )}
-              {selectedBooking.status !== 'CHECKED_OUT' && selectedBooking.status !== 'CANCELLED' && (
+              {(selectedBooking.status || '').toUpperCase() !== 'CHECKED_OUT' && (selectedBooking.status || '').toUpperCase() !== 'CANCELLED' && (
                 <Button
                   variant="secondary"
                   onClick={() => {
                     handleUpdateStatusWithToast(selectedBooking.id, 'CANCELLED', 'Cancelled');
                     setSelectedBooking(null);
                   }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap', background: '#fee2e2', color: '#dc2626', borderColor: '#fca5a5', fontWeight: 600 }}
                 >
-                  Cancel
+                  <Trash2 size={15} /> Cancel
                 </Button>
               )}
-              <Button variant="secondary" onClick={() => setSelectedBooking(null)}>
+              <Button variant="secondary" onClick={() => setSelectedBooking(null)} style={{ whiteSpace: 'nowrap' }}>
                 Close
               </Button>
             </div>

@@ -55,11 +55,11 @@ export default function InvoiceDrawer({ isOpen, onClose, invoice, onPaymentSucce
           userOrgId = u.organizationId;
           userBranchId = u.organizationBranchId;
         }
-      } catch (e) {}
+      } catch (e) { }
 
       const payload = {
-        organizationId: invoice?.rawRecord?.organizationId || userOrgId || '92bf5b18-d17e-45b2-a942-ebe86e1384fa',
-        organizationBranchId: invoice?.rawRecord?.organizationBranchId || userBranchId || activeBranchId || 'a76a16e3-878f-4565-9725-c6fe5eee837f',
+        organizationId: invoice?.rawRecord?.organizationId || userOrgId || undefined,
+        organizationBranchId: invoice?.rawRecord?.organizationBranchId || userBranchId || activeBranchId || undefined,
         paymentFor: 'booking',
         bookingId: invoice?.bookingId || invoice?.rawRecord?.bookingId || invoice?.id,
         invoiceId: invoice?.id,

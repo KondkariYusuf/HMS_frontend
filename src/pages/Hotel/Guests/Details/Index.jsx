@@ -19,7 +19,7 @@ export default function GuestDetailsPage() {
   const navigate = useNavigate();
   const { guestId } = useParams();
   const { guests, loading: listLoading } = useHotelGuests();
-  const { bookings } = useBookings();
+  const { bookings, loading: bookingsLoading } = useBookings();
 
   const [guest, setGuest] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -232,7 +232,13 @@ export default function GuestDetailsPage() {
           </div>
         </div>
 
-        {guestStays.length > 0 ? (
+        {bookingsLoading ? (
+          <div className={styles.historyEmpty} style={{ padding: '36px 20px' }}>
+            <span className={styles.historyIcon} style={{ animation: 'spin 1s linear infinite' }}>⏳</span>
+            <strong>Loading stay history...</strong>
+            <p>Fetching guest reservation records from server.</p>
+          </div>
+        ) : guestStays.length > 0 ? (
           <div style={{ overflowX: 'auto', marginTop: '16px' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 'var(--font-size-sm)' }}>
               <thead>

@@ -189,42 +189,52 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
     }
   };
 
-  // Regenerate PDF Invoice Action with ?regenerate=true
+  // Regenerate PDF Invoice Action using GET /api/invoice/:id/pdf?regenerate=true
   const handleRegeneratePdf = async () => {
     if (!booking?.id) return;
     setIsRegenerating(true);
     setErrorMsg('');
 
     try {
-      const permHeaders = getPermissionHeaders(['BOOKING_CREATE_FOLIO/LOCK', 'BOOKING_READ_FOLIO', 'FOLIO_LOCK', 'INVOICE_READALL']);
+      const permHeaders = getPermissionHeaders(['INVOICE_READ_PDF', 'INVOICE_READ', 'INVOICE_READALL']);
+      let targetInvoiceId = folioData?.invoiceId || folioData?.invoice?.id;
       let newPdfUrl = null;
 
-      try {
-        const res = await backendApi.post(
-          `/api/booking/${booking.id}/folio/lock?regenerate=true`,
-          { regenerate: true },
-          { headers: permHeaders }
-        );
-        newPdfUrl = res?.data?.data?.pdfUrl || res?.data?.data?.file?.url || res?.data?.pdfUrl || res?.data?.file?.url;
-      } catch (err1) {
+      // 1. If invoiceId is not on folioData, find matching invoice by bookingId
+      if (!targetInvoiceId) {
         try {
-          const res2 = await backendApi.get(
-            `/api/booking/${booking.id}/folio?regenerate=true`,
-            { headers: permHeaders }
-          );
-          newPdfUrl = res2?.data?.data?.pdfUrl || res2?.data?.data?.file?.url;
-        } catch {}
+          const invRes = await invoiceService.getAll();
+          const invList = invRes?.data?.data?.responses || invRes?.data?.responses || invRes?.data?.data || [];
+          if (Array.isArray(invList)) {
+            const match = invList.find((i) => String(i.bookingId) === String(booking.id) || String(i.sourceId) === String(booking.id));
+            if (match?.id) {
+              targetInvoiceId = match.id;
+            }
+          }
+        } catch (invErr) {}
       }
 
-      if (!newPdfUrl) {
-        const invRes = await invoiceService.getAll({ regenerate: 'true' });
-        const invList = invRes?.data?.data?.responses || invRes?.data?.responses || invRes?.data?.data || [];
-        if (Array.isArray(invList)) {
-          const match = invList.find((i) => String(i.bookingId) === String(booking.id) || String(i.sourceId) === String(booking.id));
-          if (match?.file?.url || match?.pdfUrl) {
-            newPdfUrl = match.file?.url || match.pdfUrl;
-          }
+      // 2. Call GET /api/invoice/:id/pdf?regenerate=true
+      if (targetInvoiceId) {
+        try {
+          const pdfRes = await invoiceService.regeneratePdf(targetInvoiceId);
+          const resData = pdfRes?.data?.data || pdfRes?.data?.response || pdfRes?.data || {};
+          newPdfUrl = resData.pdfUrl || resData.file?.url || resData.url;
+        } catch (pdfErr) {
+          console.warn('GET /api/invoice/:id/pdf?regenerate=true error:', pdfErr);
         }
+      }
+
+      // 3. Fallback to locking endpoint if targetInvoiceId was not found or getPdf 404s
+      if (!newPdfUrl) {
+        try {
+          const res = await backendApi.post(
+            `/api/booking/${booking.id}/folio/lock?regenerate=true`,
+            { regenerate: true },
+            { headers: permHeaders }
+          );
+          newPdfUrl = res?.data?.data?.pdfUrl || res?.data?.data?.file?.url || res?.data?.pdfUrl || res?.data?.file?.url;
+        } catch (errLock) {}
       }
 
       if (newPdfUrl) {
@@ -306,8 +316,8 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       } catch (errUser) {}
 
       const paymentPayload = {
-        organizationId: booking.rawRecord?.organizationId || userOrgId || '92bf5b18-d17e-45b2-a942-ebe86e1384fa',
-        organizationBranchId: booking.rawRecord?.organizationBranchId || userBranchId || activeBranchId || 'a76a16e3-878f-4565-9725-c6fe5eee837f',
+        organizationId: booking.rawRecord?.organizationId || userOrgId || undefined,
+        organizationBranchId: booking.rawRecord?.organizationBranchId || userBranchId || activeBranchId || undefined,
         paymentFor: 'booking',
         bookingId: booking.id,
         amount: amtNum,
@@ -333,6 +343,12 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
       try {
         await bookingService.postFolioTransaction(booking.id, folioCreditPayload);
       } catch (fErr) {}
+
+      if (isFolioLocked) {
+        try {
+          handleRegeneratePdf();
+        } catch (rErr) {}
+      }
 
       if (onToast) onToast(`Payment of ₹${amtNum.toLocaleString('en-IN')} recorded successfully!`, 'success');
 
@@ -494,40 +510,38 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
                 </button>
               </div>
 
-              {!isFolioLocked && (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      setShowRecordPayForm(!showRecordPayForm);
-                      setShowAddChargeForm(false);
-                      if (!showRecordPayForm && balanceDue > 0) {
-                        setPayForm((prev) => ({ ...prev, amount: balanceDue }));
-                      }
-                    }}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 12px', fontSize: '12px', background: '#16a34a', borderColor: '#16a34a' }}
-                  >
-                    <CreditCard size={14} /> {showRecordPayForm ? 'Cancel Payment' : '+ Record Payment'}
-                  </Button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    setShowRecordPayForm(!showRecordPayForm);
+                    setShowAddChargeForm(false);
+                    if (!showRecordPayForm && balanceDue > 0) {
+                      setPayForm((prev) => ({ ...prev, amount: balanceDue }));
+                    }
+                  }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 12px', fontSize: '12px', background: '#16a34a', borderColor: '#16a34a' }}
+                >
+                  <CreditCard size={14} /> {showRecordPayForm ? 'Cancel Payment' : 'Record Payment'}
+                </Button>
 
-                  {activeTab === 'ledger' && (
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setShowAddChargeForm(!showAddChargeForm);
-                        setShowRecordPayForm(false);
-                      }}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 12px', fontSize: '12px' }}
-                    >
-                      <Plus size={14} /> {showAddChargeForm ? 'Cancel Add' : '+ Add Charge'}
-                    </Button>
-                  )}
-                </div>
-              )}
+                {!isFolioLocked && activeTab === 'ledger' && (
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setShowAddChargeForm(!showAddChargeForm);
+                      setShowRecordPayForm(false);
+                    }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '6px 12px', fontSize: '12px' }}
+                  >
+                    <Plus size={14} /> {showAddChargeForm ? 'Cancel Add' : 'Add Charge'}
+                  </Button>
+                )}
+              </div>
             </div>
 
             {/* Record Payment Form Modal Inline */}
-            {showRecordPayForm && !isFolioLocked && (
+            {showRecordPayForm && (
               <form onSubmit={handleRecordPayment} className={styles.addTxnForm} style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
                 <h4 style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#15803d', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <CreditCard size={16} /> Collect / Record Guest Payment (PAYMENT_CREATE)

@@ -38,11 +38,11 @@ export default function BillingInvoicesPage() {
       setSelectedInvoice((prev) =>
         prev
           ? {
-              ...prev,
-              status: 'PAID',
-              amountPaid: (prev.amountPaid || 0) + paidAmount,
-              amountDue: 0,
-            }
+            ...prev,
+            status: 'PAID',
+            amountPaid: (prev.amountPaid || 0) + paidAmount,
+            amountDue: 0,
+          }
           : null
       );
     }

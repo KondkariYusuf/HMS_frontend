@@ -14,25 +14,13 @@ import { backendApi } from '@utils/backendApiClient';
 import { getPermissionHeaders } from '@utils/permissionHeaders';
 import styles from './FutureBookingModal.module.css';
 
-const DEFAULT_ROOMS = [
-  { id: 'f42a4d34-d3aa-4241-a8d4-7ed78619ea13', roomNumber: '1010', title: 'Ocean View', roomType: { type: 'Deluxe Suite' }, pricePerNight: '199.99' },
-  { id: 'f6301940-4865-48ca-a8b1-c8d940c2666c', roomNumber: '401', title: 'Executive Ocean Suite 401', roomType: { type: 'Executive Suite' }, pricePerNight: '299.99' },
-  { id: '4ab5c4c9-ed82-49a9-b4c1-424689ae259f', roomNumber: '3', title: 'naya room', roomType: { type: 'naya room type' }, pricePerNight: '11500.00' },
-  { id: 'room-101', roomNumber: '101', title: 'Deluxe Suite 101', roomType: { type: 'Deluxe Suite' }, pricePerNight: '250.00' },
-  { id: 'room-102', roomNumber: '102', title: 'Executive King 102', roomType: { type: 'Executive Suite' }, pricePerNight: '320.00' },
-  { id: 'room-201', roomNumber: '201', title: 'Junior Suite 201', roomType: { type: 'Junior Suite' }, pricePerNight: '280.00' },
-  { id: 'room-301', roomNumber: '301', title: 'Penthouse Suite 301', roomType: { type: 'Penthouse Suite' }, pricePerNight: '550.00' },
-];
-
 export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, onToast }) {
   const { guests } = useHotelGuests();
   const { bookings, refetch: refetchBookings } = useBookings();
 
-  // Guest Selection Mode: 'EXISTING' | 'NEW'
-  const [guestMode, setGuestMode] = useState('EXISTING');
+  // Guest details form state
+  const [guestMode, setGuestMode] = useState('NEW');
   const [selectedGuestId, setSelectedGuestId] = useState('');
-
-  // Primary Guest Details
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -40,7 +28,7 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
   const [idProofType, setIdProofType] = useState('passport');
   const [idNumber, setIdNumber] = useState('');
 
-  // Booking Source & Status
+  // Booking option state
   const [bookingSource, setBookingSource] = useState('walk_in');
   const [specialRequest, setSpecialRequest] = useState('');
 
@@ -58,27 +46,28 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
     return d.toISOString().slice(0, 16);
   }, []);
 
-  // Available Rooms list initialized with default rooms
-  const [availableRooms, setAvailableRooms] = useState(DEFAULT_ROOMS);
+  // Available Rooms list initialized dynamically from backend API
+  const [availableRooms, setAvailableRooms] = useState([]);
 
   useEffect(() => {
     async function loadAvailableRooms() {
       try {
         const permHeaders = getPermissionHeaders(['ROOM_READALL', 'ROOM_READ']);
         const res = await backendApi.get('/api/room', { headers: permHeaders });
-        const roomList = res?.data?.data?.responses || res?.data?.responses || res?.data?.data || [];
-        if (Array.isArray(roomList) && roomList.length > 0) {
-          const existingIds = new Set(roomList.map((r) => String(r.id)));
-          const combined = [...roomList];
-          DEFAULT_ROOMS.forEach((d) => {
-            if (!existingIds.has(String(d.id))) {
-              combined.push(d);
-            }
-          });
-          setAvailableRooms(combined);
+        const roomList = res?.data?.data?.responses || res?.data?.responses || res?.data?.rows || res?.data?.data || [];
+        if (Array.isArray(roomList)) {
+          setAvailableRooms(roomList);
+          if (roomList.length > 0) {
+            setRoomRequirements((prev) => {
+              if (prev.length > 0 && !prev[0].roomId) {
+                return prev.map((item, idx) => (idx === 0 ? { ...item, roomId: roomList[0].id } : item));
+              }
+              return prev;
+            });
+          }
         }
       } catch (err) {
-        console.warn('Could not fetch room list from backend API. Using default rooms list.', err);
+        console.warn('Could not fetch room list from backend API:', err);
       }
     }
     if (isOpen) {
@@ -183,7 +172,7 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
   const [roomRequirements, setRoomRequirements] = useState([
     {
       id: 'rr-1',
-      roomId: DEFAULT_ROOMS[0].id,
+      roomId: '',
       roomType: 'Deluxe Suite',
       checkInTime: defaultCheckIn,
       checkOutTime: defaultCheckOut,
@@ -298,7 +287,9 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
     try {
       let userOrgId = null;
       let userBranchId = null;
+      let activeBranchId = null;
       try {
+        activeBranchId = localStorage.getItem('syncstays_branch_id');
         const rawUser = localStorage.getItem('syncstays_user');
         if (rawUser) {
           const user = JSON.parse(rawUser);
@@ -308,16 +299,30 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
       } catch {
         // Ignore read errors
       }
-      const activeBranchId = localStorage.getItem('syncstays_branch_id');
+      const resolvedOrgId = userOrgId || availableRooms[0]?.organizationId || undefined;
+      const resolvedBranchId = userBranchId || activeBranchId || availableRooms[0]?.organizationBranchId || undefined;
 
-      const defaultRoomId = availableRooms[0]?.id || '4ab5c4c9-ed82-49a9-b4c1-424689ae259f';
+      const validRoomObj = availableRooms.find((r) => r.id && String(r.id).includes('-')) || availableRooms[0];
+      const defaultRoomId = validRoomObj?.id || undefined;
 
       // Check if any room is left unassigned
       const hasUnassignedRoom = roomRequirements.some((r) => !r.roomId);
 
+      const formattedRooms = roomRequirements.map((r) => {
+        const targetRoomId = r.roomId || defaultRoomId;
+        return {
+          roomId: targetRoomId,
+          checkInDateTime: new Date(r.checkInTime).toISOString(),
+          checkOutDateTime: new Date(r.checkOutTime).toISOString(),
+          noOfAdults: Number(r.noOfAdults || 2),
+          noOfChild: Number(r.noOfChild || 0),
+          noOfInfants: Number(r.noOfInfants || 0),
+        };
+      });
+
       const bookingPayload = {
-        organizationId: userOrgId || '92bf5b18-d17e-45b2-a942-ebe86e1384fa',
-        organizationBranchId: userBranchId || activeBranchId || 'a76a16e3-878f-4565-9725-c6fe5eee837f',
+        organizationId: resolvedOrgId,
+        organizationBranchId: resolvedBranchId,
         bookingSource: bookingSource || 'walk_in',
         bookingStatus: hasUnassignedRoom ? 'draft' : 'confirmed',
         specialRequest: specialRequest || undefined,
@@ -330,27 +335,24 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
           idProofType: idProofType || 'passport',
           idNumber: idNumber.trim() || undefined,
         } : undefined,
-        rooms: roomRequirements.map((r) => ({
-          roomId: r.roomId || defaultRoomId,
-          checkInDateTime: new Date(r.checkInTime).toISOString(),
-          checkOutDateTime: new Date(r.checkOutTime).toISOString(),
-          noOfAdults: Number(r.noOfAdults || 2),
-          noOfChild: Number(r.noOfChild || 0),
-          noOfInfants: Number(r.noOfInfants || 0),
-        })),
+        rooms: formattedRooms,
       };
 
       const res = await bookingService.create(bookingPayload);
       setIsSubmitting(false);
 
-      if (onToast) onToast(`Reservation created successfully for ${firstName.trim()}!`, 'success');
+      const guestDisplayName = firstName.trim() || 'Guest';
+      if (onToast) onToast(`Reservation created successfully for ${guestDisplayName}!`, 'success');
       if (onBookingCreated) {
         onBookingCreated(res?.data || bookingPayload);
       }
       onClose();
     } catch (err) {
-      console.warn('Backend reservation creation error. Falling back locally:', err);
+      console.warn('Backend reservation creation error:', err);
       setIsSubmitting(false);
+      const serverErr = err?.response?.data?.message || err?.response?.data?.error || err?.message || 'Failed to create booking.';
+      setErrorMsg(serverErr);
+      if (onToast) onToast(serverErr, 'error');
 
       const firstRoom = roomRequirements[0];
       const matched = availableRooms.find((r) => String(r.id) === String(firstRoom?.roomId));
