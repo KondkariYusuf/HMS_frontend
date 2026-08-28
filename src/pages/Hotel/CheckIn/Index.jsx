@@ -227,7 +227,9 @@ export default function HotelCheckInPage() {
                       booking.status === 'CHECKED_IN'
                         ? 'in-house'
                         : booking.status === 'CHECKED_OUT'
-                        ? 'regular'
+                        ? 'checked-out'
+                        : booking.status === 'CANCELLED'
+                        ? 'error'
                         : 'arriving'
                     }
                   >
@@ -280,7 +282,17 @@ export default function HotelCheckInPage() {
                   </h3>
                 </div>
 
-                <Badge variant={selectedBooking.status === 'CHECKED_IN' ? 'in-house' : 'regular'}>
+                <Badge
+                  variant={
+                    selectedBooking.status === 'CHECKED_IN'
+                      ? 'in-house'
+                      : selectedBooking.status === 'CHECKED_OUT'
+                      ? 'checked-out'
+                      : selectedBooking.status === 'CANCELLED'
+                      ? 'error'
+                      : 'regular'
+                  }
+                >
                   {selectedBooking.status}
                 </Badge>
               </div>
@@ -308,16 +320,22 @@ export default function HotelCheckInPage() {
               </div>
 
               <div className={styles.actionButtons}>
-                {selectedBooking.status !== 'CHECKED_IN' && selectedBooking.status !== 'CHECKED_OUT' && (
+                {selectedBooking.status !== 'CHECKED_IN' &&
+                  selectedBooking.status !== 'CHECKED_OUT' &&
+                  selectedBooking.status !== 'CANCELLED' && (
                   <Button
                     variant="primary"
                     onClick={async () => {
+                      if (selectedBooking.status === 'CANCELLED') {
+                        showToast('Cannot check in a cancelled booking.', 'error');
+                        return;
+                      }
                       try {
                         await updateBookingStatus(selectedBooking.id, 'CHECKED_IN');
                         setSelectedBooking((prev) => (prev ? { ...prev, status: 'CHECKED_IN' } : null));
                         showToast(`Check-In completed successfully for ${selectedBooking.primaryGuest?.name || 'Guest'}!`, 'success');
                       } catch (err) {
-                        showToast('Failed to complete check-in.', 'error');
+                        showToast(err.message || 'Failed to complete check-in.', 'error');
                       }
                     }}
                   >
@@ -334,16 +352,17 @@ export default function HotelCheckInPage() {
                   </Button>
                 )}
 
-                {selectedBooking.status !== 'CHECKED_OUT' && (
+                {selectedBooking.status !== 'CHECKED_OUT' &&
+                  selectedBooking.status !== 'CANCELLED' && (
                   <Button
                     variant="secondary"
                     onClick={async () => {
                       try {
                         await updateBookingStatus(selectedBooking.id, 'CANCELLED');
                         setSelectedBooking((prev) => (prev ? { ...prev, status: 'CANCELLED' } : null));
-                        showToast(`Booking ${selectedBooking.bookingRef} cancelled.`, 'info');
+                        showToast(`Booking ${selectedBooking.bookingRef || selectedBooking.id} cancelled.`, 'info');
                       } catch (err) {
-                        showToast('Failed to cancel booking.', 'error');
+                        showToast(err.message || 'Failed to cancel booking.', 'error');
                       }
                     }}
                   >

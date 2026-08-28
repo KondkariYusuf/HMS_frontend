@@ -413,14 +413,6 @@
   color: var(--color-text-primary);
 }
 
-.notice p {
-  margin: 5px 0 0;
-
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
-}
-
 .actionButtons {
   display: flex;
   justify-content: flex-end;

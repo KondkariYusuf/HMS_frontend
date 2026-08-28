@@ -533,6 +533,15 @@ export function useBookings() {
         setError(null);
         fetchBookings();
       } catch (requestError) {
+        if (requestError.response) {
+          const apiMsg =
+            requestError.response?.data?.message ||
+            requestError.response?.data?.error ||
+            `Failed to update booking status (${requestError.response.status}).`;
+          console.error('Backend status update error:', apiMsg, requestError);
+          throw new Error(apiMsg);
+        }
+
         console.warn(
           'Booking status API unavailable. Updating status locally.',
           requestError
@@ -572,6 +581,15 @@ export function useBookings() {
         fetchBookings();
         return rawUpdated;
       } catch (err) {
+        if (err.response) {
+          const apiMsg =
+            err.response?.data?.message ||
+            err.response?.data?.error ||
+            `Failed to update booking (${err.response.status}).`;
+          console.error('Backend update booking error:', apiMsg, err);
+          throw new Error(apiMsg);
+        }
+
         console.warn('Update booking API error, updating state locally.', err);
         setBookings((previous) =>
           previous.map((b) =>
