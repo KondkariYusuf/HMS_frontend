@@ -29,6 +29,8 @@ import {
 
 import useBookings from '@hooks/useBookings';
 import hotelGuestService from '@services/hotelGuestService';
+import bookingService from '@services/bookingService';
+import paymentService from '@services/paymentService';
 import { backendApi } from '@utils/backendApiClient';
 import { getPermissionHeaders } from '@utils/permissionHeaders';
 import Button from '@components/Button/Button';
@@ -40,6 +42,14 @@ import BookingFolioModal from '@components/BookingFolioModal/BookingFolioModal';
 import styles from './UpcomingBookings.module.css';
 
 const ITEMS_PER_PAGE = 10;
+
+const extractNumericAmount = (val) => {
+  if (val == null) return 0;
+  if (typeof val === 'number') return isNaN(val) ? 0 : val;
+  const cleaned = String(val).replace(/[^0-9.]/g, '');
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? 0 : num;
+};
 
 export default function UpcomingBookings() {
   const {
@@ -134,57 +144,84 @@ export default function UpcomingBookings() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Financial Guard: Prevent Check-Out if guest has an outstanding folio balance
+  // Handle Check-Out with Live Financial Balance Guard
   const handleCheckOutWithGuard = async (booking) => {
-    if (!booking) return false;
-    let folio = {};
+    if (!booking || !booking.id) return false;
     try {
-      const res = await bookingService.getFolio(booking.id);
-      folio = res?.data?.data || res?.data?.response || res?.data || {};
-    } catch (err) {
-      console.warn('Check-out getFolio response note:', err);
-      folio = booking.rawRecord?.bookingFolio || {};
-    }
+      // 1. Fetch Folio details
+      let folio = {};
+      try {
+        const res = await bookingService.getFolio(booking.id);
+        folio = res?.data?.data || res?.data?.response || res?.data || {};
+      } catch (err) {
+        console.warn('Check-out getFolio response note:', err);
+        folio = booking.rawRecord?.bookingFolio || {};
+      }
 
-    const totalCharges = extractNumericAmount(folio.totalCharges) ||
-      extractNumericAmount(booking.rawRecord?.grandTotal) ||
-      extractNumericAmount(booking.rawRecord?.subtotal) ||
-      extractNumericAmount(booking.amount);
+      // 2. Fetch Live Payments from paymentService
+      let livePaymentsTotal = extractNumericAmount(folio.totalPayments);
+      try {
+        const payRes = await paymentService.getAll({ bookingId: booking.id });
+        const payList = payRes?.data?.data?.responses || payRes?.data?.responses || payRes?.data?.rows || payRes?.data?.data || payRes?.data || [];
+        if (Array.isArray(payList) && payList.length > 0) {
+          const validPaySum = payList.reduce((sum, p) => {
+            const st = (p.status || '').toLowerCase();
+            if (st === 'failed' || st === 'refunded') return sum;
+            return sum + extractNumericAmount(p.amount);
+          }, 0);
+          if (validPaySum > 0) {
+            livePaymentsTotal = Math.max(livePaymentsTotal, validPaySum);
+          }
+        }
+      } catch (payErr) {
+        console.warn('Live payment fetch note:', payErr);
+      }
 
-    const totalPayments = extractNumericAmount(folio.totalPayments);
-    const netBalance = folio.balance !== undefined ? extractNumericAmount(folio.balance) : Math.max(0, totalCharges - totalPayments);
+      // 3. Compute Live Charges Total
+      const liveChargesTotal = extractNumericAmount(folio.totalCharges) ||
+        extractNumericAmount(booking.rawRecord?.grandTotal) ||
+        extractNumericAmount(booking.rawRecord?.subtotal) ||
+        extractNumericAmount(booking.amount);
 
-    const isLockedOrClosed = (folio.status || '').toLowerCase() === 'locked' || (folio.status || '').toLowerCase() === 'closed';
-    const isUnpaid = !isLockedOrClosed && (netBalance > 0 || (totalCharges > 0 && totalPayments === 0));
+      const isLockedOrClosed = (folio.status || '').toLowerCase() === 'locked' || (folio.status || '').toLowerCase() === 'closed';
 
-    if (isUnpaid) {
-      const dueAmount = netBalance > 0 ? netBalance : totalCharges;
-      const formattedBalance = dueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
-      showToast(
-        `Cannot Check-Out: Outstanding balance of ₹${formattedBalance} remaining. Please settle payment in Folio.`,
-        'error'
-      );
+      // 4. Calculate Net Remaining Balance
+      const folioBal = folio.balance !== undefined ? extractNumericAmount(folio.balance) : Math.max(0, liveChargesTotal - livePaymentsTotal);
+      const netBalance = Math.min(folioBal, Math.max(0, liveChargesTotal - livePaymentsTotal));
+
+      const isUnpaid = !isLockedOrClosed && netBalance > 0.01;
+
+      if (isUnpaid) {
+        const formattedBalance = netBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        showToast(
+          `Cannot Check-Out: Outstanding balance of ₹${formattedBalance} remaining. Please settle payment in Folio first.`,
+          'error'
+        );
+        setSelectedBooking(null);
+        setSelectedFolioBooking(booking);
+        return false;
+      }
+
+      // 2. If bill is cleared (zero balance), execute Check-Out request directly to backend API
+      await bookingService.checkOut(booking.id);
+
+      // 3. Seal folio
+      try {
+        if (!isLockedOrClosed) {
+          await bookingService.lockFolio(booking.id);
+        }
+      } catch (lockErr) {}
+
+      showToast(`Check-Out completed successfully for ${booking.guest?.name || 'Guest'}! Folio sealed.`, 'success');
       setSelectedBooking(null);
-      setSelectedFolioBooking(booking);
+      if (refetch) refetch();
+      return true;
+    } catch (err) {
+      console.error('Check-Out API Error:', err);
+      const errMsg = err?.response?.data?.message || err?.message || 'Failed to complete Check-Out.';
+      showToast(errMsg, 'error');
       return false;
     }
-
-    try {
-      if (!isLockedOrClosed) {
-        await bookingService.lockFolio(booking.id);
-      }
-    } catch (lockErr) { }
-
-    try {
-      await updateBookingStatus(booking.id, 'CHECKED_OUT');
-      showToast(`Check-Out completed successfully for ${booking.guest?.name || 'Guest'}! Folio sealed.`, 'success');
-      if (refetch) refetch();
-    } catch (err) {
-      showToast('Failed to update status to Checked-Out.', 'error');
-    }
-
-    setSelectedBooking(null);
-    return true;
   };
 
   // Helper to check if a booking folio is locked

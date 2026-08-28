@@ -11,6 +11,7 @@ import Badge from '@components/Badge/Badge';
 import Toast from '@components/Toast/Toast';
 import useBookings from '@hooks/useBookings';
 import bookingService from '@services/bookingService';
+import paymentService from '@services/paymentService';
 import BookingFolioModal from '@components/BookingFolioModal/BookingFolioModal';
 
 import styles from './Index.module.css';
@@ -52,20 +53,39 @@ export default function HotelCheckInPage() {
       folio = b.rawRecord?.bookingFolio || {};
     }
 
-    const totalCharges = extractNumericAmount(folio.totalCharges) ||
+    // Fetch Live Payments from paymentService
+    let livePaymentsTotal = extractNumericAmount(folio.totalPayments);
+    try {
+      const payRes = await paymentService.getAll({ bookingId: b.id });
+      const payList = payRes?.data?.data?.responses || payRes?.data?.responses || payRes?.data?.rows || payRes?.data?.data || payRes?.data || [];
+      if (Array.isArray(payList) && payList.length > 0) {
+        const validPaySum = payList.reduce((sum, p) => {
+          const st = (p.status || '').toLowerCase();
+          if (st === 'failed' || st === 'refunded') return sum;
+          return sum + extractNumericAmount(p.amount);
+        }, 0);
+        if (validPaySum > 0) {
+          livePaymentsTotal = Math.max(livePaymentsTotal, validPaySum);
+        }
+      }
+    } catch (payErr) {
+      console.warn('Live payment fetch note:', payErr);
+    }
+
+    const liveChargesTotal = extractNumericAmount(folio.totalCharges) ||
       extractNumericAmount(b.grandTotal) ||
       extractNumericAmount(b.subtotal) ||
       extractNumericAmount(b.totalAmount);
 
-    const totalPayments = extractNumericAmount(folio.totalPayments);
-    const netBalance = folio.balance !== undefined ? extractNumericAmount(folio.balance) : Math.max(0, totalCharges - totalPayments);
-
     const isLockedOrClosed = (folio.status || '').toLowerCase() === 'locked' || (folio.status || '').toLowerCase() === 'closed';
-    const isUnpaid = !isLockedOrClosed && (netBalance > 0 || (totalCharges > 0 && totalPayments === 0));
+
+    const folioBal = folio.balance !== undefined ? extractNumericAmount(folio.balance) : Math.max(0, liveChargesTotal - livePaymentsTotal);
+    const netBalance = Math.min(folioBal, Math.max(0, liveChargesTotal - livePaymentsTotal));
+
+    const isUnpaid = !isLockedOrClosed && netBalance > 0.01;
 
     if (isUnpaid) {
-      const dueAmount = netBalance > 0 ? netBalance : totalCharges;
-      const formattedBalance = dueAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+      const formattedBalance = netBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 });
       showToast(
         `Cannot Check-Out: Outstanding balance of ₹${formattedBalance} remaining. Please settle payment in Folio.`,
         'error'
