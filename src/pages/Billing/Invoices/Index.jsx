@@ -13,6 +13,7 @@ import styles from './Index.module.css';
 export default function BillingInvoicesPage() {
   const {
     invoices,
+    loading,
     searchQuery,
     setSearchQuery,
     categoryFilter,
@@ -98,14 +99,23 @@ export default function BillingInvoicesPage() {
                 <th>Date</th>
                 <th>Status</th>
                 <th className={styles.rightAlign}>Grand Total</th>
+                <th className={styles.rightAlign}>Amount Paid</th>
                 <th className={styles.rightAlign}>Balance Due</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {invoices.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="9" className={styles.emptyState} style={{ padding: '36px 20px', color: 'var(--color-text-secondary)' }}>
+                    ⏳ Loading invoices and billing ledger...
+                  </td>
+                </tr>
+              ) : invoices.length > 0 ? (
                 invoices.map((inv) => {
                   const isPaid = (inv.status || '').toUpperCase() === 'PAID' || Number(inv.amountDue || 0) <= 0;
+                  const amtPaid = Number(inv.amountPaid !== undefined ? inv.amountPaid : (isPaid ? inv.grandTotal : 0));
+                  const amtDue = Number(inv.amountDue !== undefined ? inv.amountDue : Math.max(0, Number(inv.grandTotal || 0) - amtPaid));
 
                   return (
                     <tr key={inv.id} className={styles.tableRow} onClick={() => handleRowClick(inv)}>
@@ -139,14 +149,17 @@ export default function BillingInvoicesPage() {
                       <td className={styles.rightAlign} style={{ fontWeight: 600 }}>
                         ₹{Number(inv.grandTotal || 0).toLocaleString('en-IN')}
                       </td>
+                      <td className={styles.rightAlign} style={{ fontWeight: 700, color: amtPaid > 0 ? '#16a34a' : 'var(--color-text-muted, #64748b)' }}>
+                        ₹{amtPaid.toLocaleString('en-IN')}
+                      </td>
                       <td className={`${styles.rightAlign} ${styles.dueAmount}`}>
-                        {!isPaid && Number(inv.amountDue || 0) > 0 ? (
+                        {amtDue > 0 ? (
                           <span style={{ color: '#dc2626', fontWeight: 700 }}>
-                            ₹{Number(inv.amountDue).toLocaleString('en-IN')}
+                            ₹{amtDue.toLocaleString('en-IN')}
                           </span>
                         ) : (
                           <span className={styles.paidText} style={{ color: '#16a34a', fontWeight: 700 }}>
-                            Paid (₹0.00)
+                            ₹0.00
                           </span>
                         )}
                       </td>
@@ -166,7 +179,7 @@ export default function BillingInvoicesPage() {
                 })
               ) : (
                 <tr>
-                  <td colSpan="8" className={styles.emptyState}>
+                  <td colSpan="9" className={styles.emptyState}>
                     No invoices found matching your filters.
                   </td>
                 </tr>
