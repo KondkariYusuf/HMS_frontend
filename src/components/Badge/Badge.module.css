@@ -26,7 +26,7 @@
 }
 
 .checked-out {
-  background-color: #f3f4f6;
+  background-color: var(--color-hover);
   color: var(--color-text-secondary);
 }
 
@@ -44,3 +44,15 @@
   background-color: #fee2e2;
   color: var(--color-error);
 }
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .warning { background-color: rgba(217,119,6,0.2); color: #fbbf24; }
+[data-theme="dark"] .purple { background-color: rgba(147,51,234,0.2); color: #c084fc; }
+[data-theme="dark"] .blue { background-color: rgba(37,99,235,0.2); color: #93c5fd; }
+[data-theme="dark"] .error { background-color: rgba(185,28,28,0.2); color: #fca5a5; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .warning { background-color: rgba(217,119,6,0.2) !important; color: #fbbf24 !important; }
+[data-theme="dark"] .purple { background-color: rgba(147,51,234,0.2) !important; color: #c084fc !important; }
+[data-theme="dark"] .blue { background-color: rgba(37,99,235,0.2) !important; color: #93c5fd !important; }
+[data-theme="dark"] .error { background-color: rgba(185,28,28,0.2) !important; color: #fca5a5 !important; }

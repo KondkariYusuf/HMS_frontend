@@ -1,42 +1,422 @@
 /**
- * FloorConfigurationModal.module.css
- * Expected classes: .container, .formGroup, .label, .input, .placeholderBlock
- * Tokens consumed: --color-border (#e5e7eb), --color-bg (#f7f9fa), --color-text-primary, --color-text-muted, --space-sm, --space-md, --radius-md, --font-size-sm
+ * @file FloorConfigurationModal.module.css
+ * @description Styles for Refined Floor Configuration Modal
  */
+
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: 24px;
+  width: 100%;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.sectionDescription {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+/* =========================
+   FLOOR SETTINGS
+========================= */
+
+.floorSettings {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(140px, 1fr);
+  gap: 16px;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 7px;
 }
 
 .label {
-  font-size: var(--font-size-sm);
+  font-size: 12px;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
 .input {
-  padding: var(--space-sm) var(--space-md);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-base);
-  background-color: var(--color-bg);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.placeholderBlock {
-  height: 120px;
-  background-color: var(--color-bg);
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-md);
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.1);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.readOnlyInput {
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+/* =========================
+   ROOMS HEADER
+========================= */
+
+.roomsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 4px;
+}
+
+.addRoomButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  flex-shrink: 0;
+
+  padding: 9px 14px;
+
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+
+  background: var(--color-surface);
+  color: var(--color-primary);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.addRoomButton:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.plus {
+  font-size: 17px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* =========================
+   ROOM TABLE
+========================= */
+
+.roomTable {
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+
+  background: var(--color-surface);
+}
+
+.tableHeader,
+.roomRow {
+  display: grid;
+  grid-template-columns:
+    minmax(100px, 0.9fr) minmax(160px, 1.7fr) minmax(130px, 1fr) 38px;
+
+  align-items: center;
+  gap: 12px;
+}
+
+.tableHeader {
+  min-height: 42px;
+  padding: 0 14px;
+
+  background: var(--color-table-header);
+  border-bottom: 1px solid var(--color-border);
+
+  color: var(--color-text-muted);
+
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.roomRows {
+  display: flex;
+  flex-direction: column;
+}
+
+.roomRow {
+  min-height: 58px;
+  padding: 9px 14px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.roomRow:last-child {
+  border-bottom: 0;
+}
+
+.roomInput,
+.roomSelect {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 9px 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+
+  font-family: inherit;
+  font-size: 12px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.roomInput:focus,
+.roomSelect:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.08);
+}
+
+.roomSelect {
+  cursor: pointer;
+}
+
+/* =========================
+   CAPACITY
+========================= */
+
+.capacityControl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 105px;
+  height: 34px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-surface);
+}
+
+.capacityButton {
+  width: 32px;
+  height: 100%;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--color-primary);
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.capacityButton:hover {
+  background: var(--color-highlight-bg);
+}
+
+.capacityValue {
+  min-width: 28px;
+  text-align: center;
+
+  color: var(--color-text-primary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================
+   DELETE
+========================= */
+
+.deleteButton {
+  width: 30px;
+  height: 30px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #e15c5c;
+
+  font-size: 19px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
 }
+
+.deleteButton:hover:not(:disabled) {
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.deleteButton:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+
+  background: var(--color-border);
+}
+
+.summary>div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  padding: 14px 16px;
+
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.summaryLabel {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.summary strong {
+  overflow: hidden;
+
+  color: var(--color-text-primary);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+  .floorSettings {
+    grid-template-columns: 1fr;
+  }
+
+  .roomsHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .addRoomButton {
+    width: 100%;
+  }
+
+  .roomTable {
+    overflow-x: auto;
+  }
+
+  .tableHeader,
+  .roomRow {
+    min-width: 570px;
+  }
+
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .footerActions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    gap: 20px;
+  }
+
+  .sectionTitle {
+    font-size: 15px;
+  }
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .available { background: rgba(22,163,74,0.15) !important; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .floorBorder { border-color: var(--color-border) !important; }
+[data-theme="dark"] .availableCell { background: rgba(22,163,74,0.15) !important; }

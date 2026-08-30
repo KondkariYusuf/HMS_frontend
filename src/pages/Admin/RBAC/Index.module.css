@@ -1,8 +1,525 @@
 /**
- * Admin/RBAC/Index.module.css
+ * @file Admin/RBAC/Index.module.css
+ * @description Styles for the RBAC roles and permissions page.
  */
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 22px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.eyebrow,
+.roleEyebrow {
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.eyebrow {
+  margin-bottom: 7px;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  margin: 7px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.rolesPanel,
+.permissionsPanel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
+}
+
+.rolesPanel {
+  overflow: hidden;
+}
+
+.panelHeader {
+  padding: 17px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panelHeader h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 14px;
+}
+
+.panelHeader span {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.roleList {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.roleCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 9px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.roleCard:hover {
+  background: var(--color-hover);
+}
+
+.selectedRole {
+  background: var(--color-highlight-bg);
+}
+
+.roleIcon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--color-highlight-bg);
+  color: #0b686d;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.roleInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+.roleInfo strong,
+.roleInfo span {
+  display: block;
+}
+
+.roleInfo strong {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.roleInfo span {
+  margin-top: 3px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.roleArrow {
+  color: var(--color-text-secondary);
+  font-size: 18px;
+}
+
+.permissionsPanel {
+  overflow: hidden;
+}
+
+.permissionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.permissionHeader h2 {
+  margin: 5px 0 0;
+  color: var(--color-text-primary);
+  font-size: 20px;
+}
+
+.permissionHeader p {
+  margin: 5px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.permissionSummary {
+  min-width: 80px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: var(--color-hover);
+  text-align: center;
+}
+
+.permissionSummary strong,
+.permissionSummary span {
+  display: block;
+}
+
+.permissionSummary strong {
+  color: #0b686d;
+  font-size: 20px;
+}
+
+.permissionSummary span {
+  margin-top: 2px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.fullAccessBanner {
+  margin: 16px 20px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: var(--color-highlight-bg);
+}
+
+.fullAccessBanner strong {
+  color: #0b686d;
+  font-size: 11px;
+}
+
+.fullAccessBanner span {
+  margin-left: 9px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+}
+
+.permissionGroup {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+}
+
+.groupHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 13px;
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.groupHeader span:last-child {
+  color: var(--color-text-secondary);
+}
+
+.permissionRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 13px;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.permissionRow:hover:not(:disabled) {
+  background: var(--color-hover);
+}
+
+.permissionRow:disabled {
+  cursor: default;
+}
+
+.permissionRow>div {
+  min-width: 0;
+}
+
+.permissionRow strong,
+.permissionRow div span {
+  display: block;
+}
+
+.permissionRow strong {
+  color: var(--color-text-primary);
+  font-size: 11px;
+}
+
+.permissionRow div span {
+  margin-top: 3px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.toggle {
+  width: 34px;
+  height: 19px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--color-border);
+  transition: background 0.16s ease;
+}
+
+.toggle>span {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.16s ease;
+}
+
+.toggleOn {
+  background: #0b777c;
+}
+
+.toggleOn>span {
+  transform: translateX(15px);
+}
+
+.saveBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px 20px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.saveStatus {
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.unsavedMessage {
+  color: #946a00;
+  font-weight: 600;
+}
+
+.savedMessage {
+  color: #08734f;
+  font-weight: 600;
+}
+
+.emptyRoles {
+  padding: 24px 16px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(13, 28, 29, 0.45);
+}
+
+.modal {
+  width: min(430px, calc(100% - 40px));
+  box-sizing: border-box;
+  padding: 22px;
+  border-radius: 13px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
+}
+
+.modal h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+}
+
+.modal>p {
+  margin: 5px 0 18px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.modal input {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 12px;
+}
+
+.modal input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.modal input:focus {
+  border-color: #0b777c;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-border);
+}
+
+.modalActions>button:first-child {
+  height: 38px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  padding: 0 14px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .roleList {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .header,
+  .permissionHeader,
+  .saveBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .roleList {
+    grid-template-columns: 1fr;
+  }
+
+  .permissionSummary {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .saveBar {
+    align-items: stretch;
+  }
+}
+
+/* Dark Mode Refinements */
+
+[data-theme='dark'] .rolesPanel,
+[data-theme='dark'] .permissionsPanel {
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .roleIcon {
+  background: rgba(20, 122, 126, 0.2);
+  color: #5eead4;
+}
+
+[data-theme='dark'] .selectedRole {
+  background: rgba(20, 122, 126, 0.16);
+}
+
+[data-theme='dark'] .permissionSummary {
+  background: rgba(20, 122, 126, 0.14);
+}
+
+[data-theme='dark'] .permissionSummary strong {
+  color: #5eead4;
+}
+
+[data-theme='dark'] .fullAccessBanner {
+  border-color: rgba(45, 180, 184, 0.25);
+  background: rgba(20, 122, 126, 0.12);
+}
+
+[data-theme='dark'] .fullAccessBanner strong {
+  color: #5eead4;
+}
+
+[data-theme='dark'] .groupHeader {
+  background: var(--color-hover);
+}
+
+[data-theme='dark'] .toggleOn {
+  background: #0b9da3;
+}
+
+[data-theme='dark'] .unsavedMessage {
+  color: #facc15;
+}
+
+[data-theme='dark'] .savedMessage {
+  color: #86efac;
 }

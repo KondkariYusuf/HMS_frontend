@@ -1,0 +1,54 @@
+[
+    {
+        "id": "g-0001",
+        "firstName": "Aarav",
+        "lastName": "Sharma",
+        "email": "aarav.sharma@example.com",
+        "phone": "+919812345678",
+        "nationality": "IN",
+        "idType": "PASSPORT",
+        "idNumber": "P1234567",
+        "hasIdProof": true,
+        "status": "ACTIVE",
+        "totalStays": 3
+    },
+    {
+        "id": "g-0002",
+        "firstName": "Eleanor",
+        "lastName": "Vance",
+        "email": "eleanor.vance@example.com",
+        "phone": "+919876543210",
+        "nationality": "US",
+        "idType": "PASSPORT",
+        "idNumber": "AB948102",
+        "hasIdProof": true,
+        "status": "ACTIVE",
+        "totalStays": 12
+    },
+    {
+        "id": "g-0003",
+        "firstName": "Marcus",
+        "lastName": "Brody",
+        "email": "marcus.brody@example.com",
+        "phone": "+919812340001",
+        "nationality": "IN",
+        "idType": "DRIVING_LICENSE",
+        "idNumber": "DL-48192",
+        "hasIdProof": true,
+        "status": "ACTIVE",
+        "totalStays": 5
+    },
+    {
+        "id": "g-0004",
+        "firstName": "Sarah",
+        "lastName": "Williams",
+        "email": "sarah.williams@example.com",
+        "phone": "+919812340002",
+        "nationality": "GB",
+        "idType": "PASSPORT",
+        "idNumber": "GB783421",
+        "hasIdProof": true,
+        "status": "INACTIVE",
+        "totalStays": 2
+    }
+]

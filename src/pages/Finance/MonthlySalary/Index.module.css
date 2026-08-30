@@ -1,0 +1,515 @@
+/**
+ * @file Index.module.css
+ * @description Styles for the Professional Monthly Salary dashboard.
+ * @figmaFrame Figma frame: Professional monthly salary dashboard
+ * @tokens Uses the shared Grand Horizon design-token system.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  min-width: 0;
+  padding: var(--space-xl);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: var(--space-sm) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: 1.5;
+}
+
+.printButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: var(--space-2xl);
+  padding: var(--space-md) var(--space-lg);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.printButton:hover {
+  background: var(--color-primary-tint);
+}
+
+.actionIcon {
+  width: var(--space-lg);
+  height: var(--space-lg);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.monthSelector {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 15rem;
+  min-height: var(--space-2xl);
+  padding: var(--space-md) var(--space-lg);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.calendarIcon {
+  width: var(--space-lg);
+  height: var(--space-lg);
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.monthChevron {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+}
+
+.filterDivider {
+  width: 1px;
+  height: var(--space-xl);
+  background: var(--color-border);
+}
+
+.departmentFilters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.departmentButton {
+  min-height: var(--space-2xl);
+  padding: var(--space-sm) var(--space-lg);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.departmentButton:hover {
+  color: var(--color-primary);
+}
+
+.departmentActive {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.salaryCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl);
+}
+
+.salaryCard {
+  min-width: 0;
+  min-height: 9rem;
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.cardIcon {
+  display: grid;
+  width: var(--space-2xl);
+  height: var(--space-2xl);
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.deductions .cardIcon {
+  background: var(--color-bg);
+  color: var(--color-error);
+}
+
+.net .cardIcon {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.cardIconSvg {
+  width: var(--space-lg);
+  height: var(--space-lg);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cardBadge {
+  padding: var(--space-sm);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.positive {
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.error {
+  background: var(--color-bg);
+  color: var(--color-error);
+}
+
+.neutral {
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+}
+
+.cardLabel {
+  margin-top: var(--space-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.cardAmount {
+  margin-top: var(--space-xs);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.registerCard {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.registerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+}
+
+.registerTitle {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.tableActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.tableActionButton {
+  display: grid;
+  width: var(--space-xl);
+  height: var(--space-xl);
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.tableActionIcon {
+  width: var(--space-lg);
+  height: var(--space-lg);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.payrollTable {
+  width: 100%;
+  min-width: 60rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.payrollTable th {
+  padding: var(--space-md);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.payrollTable td {
+  height: 6rem;
+  padding: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  text-align: center;
+}
+
+.payrollTable th:first-child,
+.payrollTable td:first-child {
+  text-align: left;
+}
+
+.staffColumn {
+  width: 17rem;
+}
+
+.staffCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.staffAvatar {
+  flex: 0 0 auto;
+  width: var(--space-2xl);
+  height: var(--space-2xl);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+.staffInfo {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.staffInfo strong {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.staffInfo span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+}
+
+.presentBadge,
+.doubleBadge {
+  display: inline-flex;
+  min-width: var(--space-xl);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.doubleBadge {
+  background: var(--color-primary-tint);
+}
+
+.moneyCell {
+  font-weight: 700;
+}
+
+.grossColumn {
+  background: color-mix(
+    in srgb,
+    var(--color-primary-tint) 45%,
+    var(--color-surface)
+  );
+  font-weight: 700;
+}
+
+.netColumn {
+  background: color-mix(
+    in srgb,
+    var(--color-primary-tint) 65%,
+    var(--color-surface)
+  );
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.advance {
+  color: var(--color-error) !important;
+}
+
+.actionCell {
+  color: var(--color-text-muted);
+}
+
+.registerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.pageArrow,
+.pageNumber {
+  display: grid;
+  width: var(--space-xl);
+  height: var(--space-xl);
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pageArrow {
+  border: 1px solid var(--color-border);
+}
+
+.pageArrow:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.pageNumberActive {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.chevronIcon {
+  width: var(--space-md);
+  height: var(--space-md);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 70rem) {
+  .salaryCards {
+    grid-template-columns: 1fr;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .printButton {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 48rem) {
+  .page {
+    padding: var(--space-lg);
+  }
+
+  .title {
+    font-size: var(--font-size-xl);
+  }
+
+  .subtitle {
+    font-size: var(--font-size-md);
+  }
+
+  .filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .monthSelector {
+    width: 100%;
+  }
+
+  .filterDivider {
+    display: none;
+  }
+
+  .departmentFilters {
+    width: 100%;
+  }
+
+  .departmentButton {
+    flex: 1 1 auto;
+  }
+
+  .registerFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

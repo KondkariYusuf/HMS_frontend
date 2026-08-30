@@ -10,7 +10,7 @@
  * @param {React.ReactNode} props.children - Modal inner content slot
  * @param {React.ReactNode} [props.footer] - Optional footer action buttons
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './Modal.module.css';
 
 export default function Modal({
@@ -20,6 +20,25 @@ export default function Modal({
   children,
   footer,
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (

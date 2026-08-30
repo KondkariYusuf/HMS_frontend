@@ -1,0 +1,680 @@
+/**
+ * @file Admin/ModulePermissions/Index.module.css
+ * @description Styles for the Module Permission Mapping page.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.eyebrow {
+  margin-bottom: 7px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  margin: 7px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.errorMessage {
+  padding: 12px 17px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.selectionPanel,
+.matrixPanel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.panelHeader {
+  padding: 17px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.panelHeader h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 14px;
+}
+
+.panelHeader span {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.selectionBody {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fieldLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.selectInput {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  color: var(--color-text-primary);
+  background: var(--color-input-bg);
+  font: inherit;
+  font-size: 12px;
+}
+
+.selectInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.subModuleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sectionTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.countBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: var(--color-hover);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.subModuleList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subModuleCard {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.subModuleCard:hover {
+  background: var(--color-hover);
+  border-color: var(--color-primary);
+}
+
+.selectedSubCard {
+  background: var(--color-highlight-bg);
+  border-color: var(--color-primary);
+}
+
+.subCardInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+.subCardInfo strong {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subCardInfo span {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subCardArrow {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+}
+
+.emptySubState,
+.loadingState {
+  padding: 20px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  text-align: center;
+}
+
+.matrixPanel {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+.matrixHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.targetEyebrow {
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.matrixHeader h2 {
+  margin: 4px 0 0;
+  color: var(--color-text-primary);
+  font-size: 20px;
+}
+
+.matrixHeader p {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.summaryBadge {
+  min-width: 90px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: var(--color-hover);
+  text-align: center;
+}
+
+.summaryBadge strong,
+.summaryBadge span {
+  display: block;
+}
+
+.summaryBadge strong {
+  color: var(--color-primary);
+  font-size: 22px;
+}
+
+.summaryBadge span {
+  margin-top: 2px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.matrixToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-table-header);
+}
+
+.searchWrap {
+  position: relative;
+  width: min(340px, 100%);
+}
+
+.searchWrap input {
+  width: 100%;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 12px 0 33px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  background: var(--color-input-bg);
+}
+
+.searchWrap input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchIcon {
+  position: absolute;
+  left: 11px;
+  top: 7px;
+  color: var(--color-text-secondary);
+  font-size: 17px;
+}
+
+.batchActions {
+  display: flex;
+  gap: 8px;
+}
+
+.batchActions button {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.batchActions button:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.permissionsList {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 20px;
+  gap: 8px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.permissionRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.permissionRow:hover {
+  background: var(--color-hover);
+}
+
+.permissionChecked {
+  border-color: var(--color-primary);
+  background: var(--color-highlight-bg);
+}
+
+.checkbox {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.permDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.permTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.permAction {
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.methodBadge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
+}
+
+.method_GET {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.method_POST {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.method_PUT {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.method_DELETE {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.codeTag {
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--color-text-secondary);
+  background: var(--color-hover);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.permPathRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.permPathRow code {
+  font-size: 11px;
+  color: var(--color-primary);
+  background: var(--color-hover);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.permDesc {
+  color: var(--color-text-secondary);
+}
+
+.permPaginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.permPaginationBtns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.permPaginationBtns button {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.permPaginationBtns button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.permPaginationBtns button:not(:disabled):hover {
+  background: var(--color-hover);
+  border-color: var(--color-primary);
+}
+
+.permPageNum {
+  padding: 0 4px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.saveBar {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-table-header);
+}
+
+.saveStatus {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.unsavedMessage {
+  color: #b45309;
+  font-weight: 700;
+}
+
+.saveActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.clearAllBtn {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #fca5a5;
+  border-radius: 7px;
+  background: #fff;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearAllBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clearAllBtn:not(:disabled):hover {
+  background: #fef2f2;
+}
+
+.noSubSelected,
+.emptyPermissions {
+  padding: 60px 20px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgb(13 28 29 / 45%);
+}
+
+.modal {
+  width: min(480px, 100%);
+  box-sizing: border-box;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 19px;
+}
+
+.modalHeader p {
+  margin: 5px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.close {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--color-hover);
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.deleteWarning {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 9px;
+  margin-top: 4px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-border);
+}
+
+.modalActions > button:first-child {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.modalActions > button:first-child:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 850px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .matrixToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchWrap {
+    width: 100%;
+  }
+
+  .saveBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

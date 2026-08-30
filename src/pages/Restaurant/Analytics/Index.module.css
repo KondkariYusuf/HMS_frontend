@@ -1,0 +1,617 @@
+/**
+ * @file Index.module.css
+ * @description CSS Module styling for Frame 5: Professional Food Order Analytics Dashboard.
+ * @reference Frame: Professional food order Analytics dashboard.jpeg
+ */
+
+.pageContainer {
+  padding: var(--space-xl);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+}
+
+/* Header */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.subLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.subLink {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.subLinkActive {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* KPI Summary Cards Grid */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+.kpiCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kpiContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+}
+
+.kpiValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+  margin: var(--space-xs) 0;
+}
+
+.kpiTrend {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.trendUp {
+  color: #15803d;
+}
+
+.trendDown {
+  color: var(--color-error);
+}
+
+.trendText {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  margin-left: var(--space-xs);
+}
+
+.kpiIconBox {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Chart Card */
+.chartCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chartTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 2px 0;
+}
+
+.chartSubtitle {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.chartControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.chartLegend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+}
+
+.dotOrders {
+  background-color: var(--color-sidebar-bg);
+}
+
+.dotRevenue {
+  background-color: var(--color-primary);
+}
+
+.exportBtn {
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chartContainer {
+  height: 180px;
+  position: relative;
+}
+
+/* Middle Section split (2 columns) */
+.middleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--space-lg);
+}
+
+.middleCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.middleTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.middleTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.moreIcon {
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.progressBarList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.progressItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.progressLabelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-base);
+}
+
+.itemLabel {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.itemValue {
+  color: var(--color-text-secondary);
+}
+
+.progressBarTrack {
+  height: 6px;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+}
+
+.viewAllBtn {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--color-border);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.viewAllBtn:hover {
+  background-color: var(--color-primary-tint);
+  border-color: var(--color-primary);
+}
+
+/* Right Section Stacked Cards */
+.rightStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.segmentedCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.segmentedBarTrack {
+  height: 12px;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  display: flex;
+}
+
+.segmentCompleted {
+  height: 100%;
+  background-color: var(--color-primary);
+}
+
+.segmentPending {
+  height: 100%;
+  background-color: #a5d3d5;
+}
+
+.segmentCancelled {
+  height: 100%;
+  background-color: var(--color-text-muted);
+}
+
+.segmentedLegend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.legendDotCol {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.legendDotCol strong {
+  color: var(--color-text-primary);
+}
+
+.dotPending {
+  background-color: #a5d3d5;
+}
+
+.dotCancelled {
+  background-color: var(--color-text-muted);
+}
+
+/* Smart Operational Insight Card */
+.insightCard {
+  background-color: var(--color-sidebar-bg);
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  box-shadow: var(--shadow-card);
+}
+
+.insightIconBox {
+  color: #fbbf24;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.insightContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.insightTitle {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.insightText {
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Bottom Transactions Table Card */
+.tableCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.tableHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchFilterGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-md);
+  width: 220px;
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+}
+
+.searchInput {
+  border: none;
+  background: none;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
+
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Recent Transactions Data Table */
+.tableContainer {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataTable th {
+  text-align: left;
+  padding: var(--space-md);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid var(--color-border);
+  letter-spacing: 0.5px;
+}
+
+.dataTable td {
+  padding: var(--space-md);
+  font-size: var(--font-size-base);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.txId {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.txLocation {
+  color: var(--color-text-secondary);
+}
+
+.txItems {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.txAmount {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* Badges for status in table */
+.statusBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.statusDelivered {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.statusInKitchen {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+}
+
+.statusPending {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.txTime {
+  color: var(--color-text-secondary);
+}
+
+.tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-md);
+}
+
+.footerInfo {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.pageBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.pageBtnActive {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.pageBtnActive:hover {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .statusGood { background-color: rgba(22,163,74,0.2); color: #86efac; }
+[data-theme="dark"] .statusWarning { background-color: rgba(217,119,6,0.2); color: #fbbf24; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .chartBar { background-color: var(--color-primary) !important; }
+[data-theme="dark"] .greenBadge { background-color: rgba(22,163,74,0.2) !important; color: #86efac !important; }
+[data-theme="dark"] .orangeBadge { background-color: rgba(217,119,6,0.2) !important; color: #fbbf24 !important; }

@@ -1,7 +1,6 @@
 /**
  * @file Toast.jsx
  * @description Toast notification banner for temporary feedback messages (success, error, info).
- * @figmaFrame Figma frame: Overlays - Toast Notification
  *
  * @param {Object} props
  * @param {string} [props.message] - Notification text
@@ -9,6 +8,7 @@
  * @param {Function} [props.onClose] - Close notification handler
  */
 import React from 'react';
+import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react';
 import styles from './Toast.module.css';
 
 export default function Toast({
@@ -17,9 +17,9 @@ export default function Toast({
   onClose,
 }) {
   const iconMap = {
-    success: '✅',
-    error: '⚠️',
-    info: 'ℹ️',
+    success: <CheckCircle2 size={18} style={{ color: '#16a34a' }} />,
+    error: <AlertTriangle size={18} style={{ color: '#dc2626' }} />,
+    info: <Info size={18} style={{ color: '#0284c7' }} />,
   };
 
   return (
@@ -27,16 +27,20 @@ export default function Toast({
       className={`${styles.toast} ${styles[type]}`}
       data-testid="toast"
       role="status"
+      style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
     >
-      <span className={styles.icon}>{iconMap[type]}</span>
-      <span className={styles.message}>{message}</span>
+      <span className={styles.icon} style={{ display: 'flex', alignItems: 'center' }}>
+        {iconMap[type] || iconMap.success}
+      </span>
+      <span className={styles.message} style={{ flex: 1 }}>{message}</span>
       {onClose && (
         <button
           className={styles.closeBtn}
           onClick={onClose}
           aria-label="Dismiss"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', cursor: 'pointer' }}
         >
-          ✕
+          <X size={16} />
         </button>
       )}
     </div>

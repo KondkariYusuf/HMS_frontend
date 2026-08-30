@@ -1,8 +1,527 @@
-/**
- * Admin/Branches/Index.module.css
- */
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 22px;
 }
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.eyebrow {
+  margin-bottom: 7px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  margin: 7px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.statCard {
+  padding: 17px 18px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background: var(--color-surface);
+  box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
+}
+
+.statCard span,
+.statCard small {
+  display: block;
+}
+
+.statCard span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.statCard strong {
+  display: block;
+  margin-top: 7px;
+
+  color: var(--color-text-primary);
+  font-size: 25px;
+}
+
+.statCard small {
+  margin-top: 3px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+}
+
+.branchGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.branchCard,
+.addCard {
+  min-width: 0;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background: var(--color-surface);
+
+  box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
+}
+
+.branchCard {
+  padding: 18px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.branchIcon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: var(--color-highlight-bg);
+  color: var(--color-primary);
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.status i {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.statusActive {
+  color: #08734f;
+  background: var(--color-highlight-bg);
+}
+
+.statusInactive {
+  color: var(--color-text-secondary);
+  background: var(--color-hover);
+}
+
+.branchInfo {
+  margin-top: 18px;
+}
+
+.code {
+  color: var(--color-text-secondary);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.branchInfo h2 {
+  margin: 4px 0 0;
+
+  color: var(--color-text-primary);
+  font-size: 17px;
+}
+
+.branchInfo p {
+  margin: 5px 0 0;
+
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.manager {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  margin-top: 18px;
+  padding-top: 13px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.manager span {
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.manager strong {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  margin-top: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.metrics div {
+  padding: 10px;
+  text-align: center;
+}
+
+.metrics div+div {
+  border-left: 1px solid var(--color-border);
+}
+
+.metrics strong,
+.metrics span {
+  display: block;
+}
+
+.metrics strong {
+  color: var(--color-text-primary);
+  font-size: 15px;
+}
+
+.metrics span {
+  margin-top: 2px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+
+  margin-top: 15px;
+}
+
+.cardActions button {
+  flex: 1;
+
+  height: 34px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-surface);
+
+  color: var(--color-primary);
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.cardActions button:hover {
+  background: var(--color-hover);
+}
+
+.addCard {
+  min-height: 280px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px;
+
+  border-style: dashed;
+
+  cursor: pointer;
+
+  color: var(--color-text-secondary);
+
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.addCard:hover {
+  background: var(--color-surface);
+  border-color: #a9c6c7;
+}
+
+.addCard>span {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--color-highlight-bg);
+  color: var(--color-primary);
+
+  font-size: 22px;
+}
+
+.addCard strong {
+  margin-top: 11px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.addCard small {
+  margin-top: 5px;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(13, 28, 29, 0.45);
+}
+
+.modal {
+  width: min(500px, 100%);
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  padding: 24px;
+
+  border-radius: 14px;
+  background: var(--color-surface);
+
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+
+  margin-bottom: 2px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-size: 19px;
+}
+
+.modalHeader p {
+  margin: 5px 0 0;
+
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.close {
+  width: 28px;
+  height: 28px;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: var(--color-hover);
+
+  color: var(--color-text-secondary);
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.modal input {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+
+  padding: 0 11px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+
+  outline: none;
+
+  font: inherit;
+  font-size: 12px;
+}
+
+.modal input:focus {
+  border-color: #0b777c;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+
+  margin-top: 3px;
+  padding-top: 15px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.modalActions>button:first-child {
+  height: 38px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .branchGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .statusActive {
+  background: rgba(22, 163, 74, 0.2) !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .highlight {
+  background: var(--color-hover) !important;
+}
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .branchCard {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .activeStatus {
+  background: rgba(22, 163, 74, 0.2) !important;
+  color: #86efac !important;
+}
+
+[data-theme="dark"] .inactiveStatus {
+  background: var(--color-hover) !important;
+  color: var(--color-text-muted) !important;
+}
+
+[data-theme="dark"] .branchInfo h2 {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .title {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .statCard strong {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .metrics strong {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .modalHeader h2 {
+  color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .cardActions button {
+  background: var(--color-surface) !important;
+  color: var(--color-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .cardActions button:hover {
+  background: var(--color-hover) !important;
+}

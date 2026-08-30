@@ -1,0 +1,638 @@
+/**
+ * @file Index.module.css
+ * @description Styles for the Refined Housekeeping Management Dashboard.
+ */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    width: 100%;
+    padding-bottom: var(--space-xl);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HEADER
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--space-lg);
+}
+
+.breadcrumb {
+    margin-bottom: var(--space-xs);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.title {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.filterButton,
+.printButton {
+    min-height: 40px;
+    padding: 0 var(--space-md);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filterButton {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+}
+
+.filterButton:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.printButton {
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-white);
+    box-shadow: var(--shadow-button-primary);
+}
+
+.printButton:hover {
+    background: var(--color-primary-dark);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SUMMARY CARDS
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+}
+
+.summaryCard {
+    min-height: 92px;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.summaryLabel {
+    display: block;
+    margin-bottom: var(--space-sm);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.summaryValueRow {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+}
+
+.summaryValue {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.summaryDetail {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.tasks .summaryDetail,
+.staff .summaryDetail {
+    color: var(--color-primary);
+}
+
+.rooms .summaryValue {
+    color: var(--color-primary);
+}
+
+.rooms .summaryDetail {
+    color: var(--color-primary);
+}
+
+.urgent {
+    background: var(--color-primary-tint);
+    border-color: var(--color-primary-tint);
+}
+
+.urgent .summaryValue {
+    color: var(--color-primary);
+}
+
+.urgent .summaryDetail {
+    color: var(--color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CLEANING TASKS
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.tasksCard {
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.tasksHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.tasksTitle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.tasksTitle h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.cleaningIcon {
+    color: var(--color-primary);
+    font-size: var(--font-size-lg);
+}
+
+.taskLegend {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.taskLegend span {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.taskLegend i {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+}
+
+.vacatedDot {
+    background: #f59e0b;
+}
+
+.occupiedDot {
+    background: #facc15;
+}
+
+.taskList {
+    padding: 0 var(--space-lg);
+}
+
+.taskRow {
+    position: relative;
+    display: grid;
+    grid-template-columns: 6px minmax(0, 1fr) minmax(180px, 220px) 42px;
+    align-items: center;
+    gap: var(--space-lg);
+    min-height: 125px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.taskAccent {
+    width: 5px;
+    height: 52px;
+    border-radius: var(--radius-full);
+}
+
+.vacated .taskAccent {
+    background: #f59e0b;
+}
+
+.urgent .taskAccent {
+    background: var(--color-error);
+}
+
+.ready .taskAccent {
+    background: #22c55e;
+}
+
+.occupied .taskAccent {
+    background: #facc15;
+}
+
+.taskMain {
+    min-width: 0;
+}
+
+.roomHeading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.roomHeading h3 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+}
+
+.roomType {
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.guestName {
+    margin: var(--space-xs) 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.taskStatus {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.vacatedStatus {
+    background: var(--color-surface);
+    color: #ea580c;
+}
+
+.urgentStatus {
+    background: #fef2f2;
+    color: var(--color-error);
+}
+
+.readyStatus {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.occupiedStatus {
+    background: #fefce8;
+    color: #ca8a04;
+}
+
+.taskMeta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-xs);
+    text-align: right;
+}
+
+.metaLabel {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.metaValue {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+}
+
+.urgent .metaValue {
+    color: var(--color-error);
+}
+
+.taskAction {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+}
+
+.taskAction:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-tint);
+}
+
+.viewAllButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    min-height: 55px;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-primary);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+}
+
+.viewAllButton:hover {
+    color: var(--color-primary-dark);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BOTTOM DASHBOARD
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.bottomGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    gap: var(--space-lg);
+}
+
+.activityCard,
+.activeStaffCard {
+    min-height: 300px;
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+
+.panelHeader h2 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.activityDots {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.activityDots span {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+}
+
+.activityDots .activeDot {
+    background: var(--color-primary);
+}
+
+.activityChart {
+    position: relative;
+    min-height: 220px;
+}
+
+.chartLine {
+    position: absolute;
+    right: 0;
+    bottom: 45px;
+    left: 0;
+    height: 1px;
+    background: var(--color-border);
+}
+
+.timeLabels {
+    position: absolute;
+    right: 0;
+    bottom: 15px;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.currentTime {
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   ACTIVE STAFF
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.moreButton {
+    border: 0;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.staffList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+}
+
+.staffItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.staffItem strong {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.staffItem span {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.staffItem.working {
+    background: var(--color-bg);
+}
+
+.staffItem.working span {
+    color: #16a34a;
+}
+
+.staffItem.supervisor span {
+    color: var(--color-primary);
+}
+
+.assignButton {
+    width: 100%;
+    min-height: 40px;
+    margin-top: var(--space-md);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.assignButton:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   RESPONSIVE
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bottomGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 850px) {
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .headerActions {
+        width: 100%;
+    }
+
+    .taskRow {
+        grid-template-columns: 5px minmax(0, 1fr) 42px;
+        gap: var(--space-md);
+    }
+
+    .taskMeta {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .page {
+        gap: var(--space-md);
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .headerActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filterButton,
+    .printButton {
+        width: 100%;
+    }
+
+    .tasksHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .taskLegend {
+        flex-wrap: wrap;
+    }
+
+    .taskList {
+        padding: 0 var(--space-md);
+    }
+
+    .taskRow {
+        grid-template-columns: 5px minmax(0, 1fr) 38px;
+        gap: var(--space-sm);
+        min-height: 115px;
+    }
+
+    .roomHeading h3 {
+        font-size: var(--font-size-lg);
+    }
+
+    .taskAction {
+        width: 36px;
+        height: 36px;
+    }
+
+    .activityCard,
+    .activeStaffCard {
+        padding: var(--space-md);
+    }
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .clean { background: rgba(22,163,74,0.15); }
+[data-theme="dark"] .dirty { background: rgba(217,119,6,0.15); }
+[data-theme="dark"] .urgent { background: rgba(185,28,28,0.15); }
+[data-theme="dark"] .statusCard { background: rgba(185,28,28,0.12); }
+[data-theme="dark"] .cleanCard { background: rgba(22,163,74,0.12); }
+[data-theme="dark"] .pendingCard { background: rgba(217,119,6,0.12); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .CLEAN { background: rgba(22,163,74,0.15) !important; }
+[data-theme="dark"] .DIRTY { background: rgba(217,119,6,0.15) !important; }
+[data-theme="dark"] .URGENT { background: rgba(185,28,28,0.15) !important; }
+[data-theme="dark"] .statusPanel { background: rgba(185,28,28,0.12) !important; }
+[data-theme="dark"] .cleanPanel { background: rgba(22,163,74,0.12) !important; }
+[data-theme="dark"] .pendingPanel { background: rgba(217,119,6,0.12) !important; }

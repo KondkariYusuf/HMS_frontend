@@ -1,8 +1,331 @@
 /**
- * Restaurant/Tables/Index.module.css
+ * @file Index.module.css
+ * @description CSS Module styling for Frame 3: Refined Restaurant POS Table Selection.
+ * @reference Frame: Redefined Restaurant POS Table Selection.jpeg
  */
-.page {
+
+.pageContainer {
+  padding: var(--space-xl);
+  background-color: var(--color-bg);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+  position: relative;
+  padding-bottom: 80px;
 }
+
+/* Header */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.headerTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-xs) 0;
+  letter-spacing: -0.5px;
+}
+
+.headerSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Summary KPI Row (4 Cards) */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpiCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.kpiIconBox {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconTotal {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.iconAvailable {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+}
+
+.iconOccupied {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.iconReserved {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.kpiContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpiLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+}
+
+.kpiValue {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+/* Filter Bar */
+.filterRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.filterPills {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.filterPill {
+  padding: var(--space-sm) var(--space-xl);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterPill:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.filterPillActive {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.filterPillActive:hover {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+}
+
+.updatedTime {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Tables Grid (5 columns) */
+.tablesGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1200px) {
+  .tablesGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .tablesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .tablesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tableCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.tableCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(15, 92, 94, 0.12);
+  border-color: var(--color-primary);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tableNum {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statusBadgeDot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+}
+
+.statusOccupied {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+.statusOccupied .statusBadgeDot {
+  background-color: #b91c1c;
+}
+
+.statusAvailable {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+}
+.statusAvailable .statusBadgeDot {
+  background-color: var(--color-primary);
+}
+
+.statusReserved {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+.statusReserved .statusBadgeDot {
+  background-color: #c2410c;
+}
+
+.cardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guestText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.subtext {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* Bottom Floating Interactive Button */
+.floatingButtonWrapper {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.floorPlanButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.floorPlanButton:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: scale(1.03);
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .tableAvailable { background-color: rgba(37,99,235,0.15); }
+[data-theme="dark"] .tableOccupied { background-color: rgba(217,119,6,0.15); }
+[data-theme="dark"] .tableDirty { background-color: rgba(185,28,28,0.15); }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .AVAILABLE { background-color: rgba(37,99,235,0.15) !important; }
+[data-theme="dark"] .OCCUPIED { background-color: rgba(217,119,6,0.15) !important; }
+[data-theme="dark"] .DIRTY, [data-theme="dark"] .RESERVED { background-color: rgba(185,28,28,0.15) !important; }

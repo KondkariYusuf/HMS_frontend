@@ -1,8 +1,549 @@
 /**
- * Restaurant/Menu/Index.module.css
+ * @file Index.module.css
+ * @description CSS Module styling for Frame 1: Refined Food Menu Management Dashboard.
+ * @reference Frame: Redefined food Menu Management Dashboard.jpeg
  */
-.page {
+
+.pageContainer {
+  padding: var(--space-xl);
+  background-color: var(--color-bg);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
+  font-family: var(--font-family);
+  color: var(--color-text-primary);
+}
+
+/* =========================
+   HEADER SECTION
+========================= */
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+.headerTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin: 0 0 var(--space-xs) 0;
+  letter-spacing: -0.5px;
+}
+
+.headerSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.metaBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* =========================
+   SECTION CARDS
+========================= */
+
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+}
+
+/* =========================
+   FOOD ORDERING URL CARD
+========================= */
+
+.urlCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  position: relative;
+}
+
+.iconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.urlContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.urlLabel {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.urlSubtext {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.urlInputGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.urlInput {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-primary-dark);
+  font-family: monospace;
+  font-size: var(--font-size-base);
+  outline: none;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.copyButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* =========================
+   TABLE SECTION
+========================= */
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.menuTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 var(--space-sm);
+}
+
+.menuTable th {
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.tableRow {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s ease;
+}
+
+.tableCell {
+  padding: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.tableCell:first-child {
+  border-left: 1px solid var(--color-border);
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.tableCell:last-child {
+  border-right: 1px solid var(--color-border);
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+/* =========================
+   TABLE INPUTS
+========================= */
+
+.cellInput {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  outline: none;
+  transition: border-color 0.2s ease;
+  height: 36px;
+}
+
+.cellInput:focus {
+  border-color: var(--color-primary);
+}
+
+.priceWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+}
+
+.currencySymbol {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.priceInput {
+  border: none;
+  padding: var(--space-sm) 0;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: transparent;
+}
+
+.cellSelect {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  outline: none;
+  cursor: pointer;
+  height: 36px;
+}
+
+/* =========================
+   DELETE BUTTON
+========================= */
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.deleteButton:hover {
+  color: var(--color-error);
+  background-color: #fee2e2;
+}
+
+/* =========================
+   TABLE FOOTER ACTIONS
+========================= */
+
+.tableActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
+  background: none;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addButton:hover {
+  background-color: var(--color-primary-tint);
+}
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-xl);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-button-primary);
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.toastSuccess {
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* =========================
+   BOTTOM GRID
+========================= */
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.infoCard {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.securityCard {
+  border-left: 4px solid #d97706;
+}
+
+.infoCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoCardTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.infoIcon {
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   HOURS
+========================= */
+
+.hoursList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.hoursRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) 0;
+}
+
+.hoursLabel {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.hoursTime {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.infoCardText {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.infoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: #b45309;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: auto;
+  cursor: pointer;
+}
+
+.infoLink:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+[data-theme='dark'] .headerTitle {
+  color: var(--color-text-primary);
+}
+
+[data-theme='dark'] .urlInput {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+}
+
+[data-theme='dark'] .deleteButton:hover {
+  background-color: rgba(185, 28, 28, 0.15);
+}
+
+[data-theme='dark'] .securityCard {
+  border-left-color: #fbbf24;
+}
+
+[data-theme='dark'] .infoLink {
+  color: #fbbf24;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .headerRow {
+    flex-direction: column;
+  }
+
+  .metaBadge {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: var(--space-lg);
+    gap: var(--space-lg);
+  }
+
+  .card {
+    padding: var(--space-lg);
+  }
+
+  .urlCard {
+    flex-direction: column;
+  }
+
+  .urlInputGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .copyButton {
+    justify-content: center;
+  }
+
+  .tableActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-md);
+  }
+
+  .addButton,
+  .saveButton {
+    justify-content: center;
+  }
+
+  .tableContainer {
+    margin-inline: calc(var(--space-lg) * -1);
+    padding-inline: var(--space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    padding: var(--space-md);
+  }
+
+  .card,
+  .infoCard {
+    padding: var(--space-md);
+  }
+
+  .headerTitle {
+    font-size: var(--font-size-xl);
+  }
+
+  .headerSubtitle {
+    font-size: var(--font-size-base);
+  }
+
+  .metaBadge {
+    white-space: normal;
+  }
+
+  .urlLabel {
+    font-size: var(--font-size-sm);
+  }
+
+  .tableActions {
+    margin-top: var(--space-md);
+  }
 }

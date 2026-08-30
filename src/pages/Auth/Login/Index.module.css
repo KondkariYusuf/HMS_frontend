@@ -1,7 +1,7 @@
 /**
  * Auth/Login/Index.module.css
- * Expected classes: .container, .card, .brandBlock, .title, .subtitle, .form, .field, .label, .input, .linksRow, .link, .footerText
- * Tokens consumed: --color-bg, --color-surface, --color-primary, --color-border, --color-text-primary, --color-text-secondary, --radius-lg, --radius-md, --space-md, --space-lg, --font-size-2xl, --font-size-sm
+ * Expected classes: .container, .card, .brandBlock, .title, .subtitle, .form, .field, .label, .input, .linksRow, .link, .footerText, .linkButton, .linksCenterRow, .actionButtons, .divider, .viewTransitionWrapper
+ * Tokens consumed: --color-bg, --color-surface, --color-primary, --color-border, --color-text-primary, --color-text-secondary, --radius-lg, --radius-md, --space-md, --space-lg, --font-size-2xl, --font-size-sm, --shadow-card, --theme-transition
  */
 .container {
   min-height: 100vh;
@@ -10,6 +10,8 @@
   justify-content: center;
   background-color: var(--color-bg);
   padding: var(--space-lg);
+  background-image: radial-gradient(circle at top right, var(--color-primary-tint), transparent 40%),
+                    radial-gradient(circle at bottom left, var(--color-primary-tint), transparent 40%);
 }
 
 .card {
@@ -19,10 +21,12 @@
   padding: var(--space-2xl);
   width: 100%;
   max-width: 420px;
-  box-shadow: var(--shadow-card);
+  box-shadow: 0 10px 40px -10px rgba(20, 122, 126, 0.15); /* Premium soft shadow */
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
+  backdrop-filter: blur(10px); /* Glassmorphism touch */
+  transition: var(--theme-transition);
 }
 
 .brandBlock {
@@ -36,11 +40,23 @@
   font-size: var(--font-size-2xl);
   font-weight: 700;
   color: var(--color-primary);
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.viewTransitionWrapper {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .form {
@@ -62,11 +78,19 @@
 }
 
 .input {
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
   background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .linksRow {
@@ -74,14 +98,90 @@
   justify-content: flex-end;
 }
 
+.linksCenterRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
 .link {
   color: var(--color-primary);
   font-size: var(--font-size-sm);
   font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--color-primary-dark);
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.linkButton:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.divider {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
 .footerText {
   text-align: center;
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+  margin: 0;
 }
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.passwordInput {
+  width: 100%;
+  padding-right: 42px !important;
+}
+
+.togglePasswordBtn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.togglePasswordBtn:hover {
+  color: var(--color-primary);
+}
+

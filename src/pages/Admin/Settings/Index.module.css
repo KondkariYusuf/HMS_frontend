@@ -1,70 +1,804 @@
 /**
- * Admin/Settings/Index.module.css
+ * @file Admin/Settings/Index.module.css
+ * @description Styles for Refined Hotel Configuration Dashboard
  */
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: 22px;
+  padding-bottom: 28px;
 }
 
-.header {
+.breadcrumb {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.breadcrumb strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .title {
-  font-size: var(--font-size-2xl);
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
   font-weight: 700;
   color: var(--color-text-primary);
 }
 
 .subtitle {
-  font-size: var(--font-size-sm);
+  margin: 6px 0 0;
+  font-size: 13px;
   color: var(--color-text-secondary);
 }
 
-.settingsSection {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  box-shadow: var(--shadow-card);
+.headerActions {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  max-width: 600px;
+  align-items: center;
+  gap: 10px;
 }
 
-.sectionTitle {
-  font-size: var(--font-size-lg);
+/* =========================
+   MAIN CARD
+========================= */
+
+.configurationCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 26px;
+  box-shadow: var(--shadow-card);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-text-primary);
+}
+
+.sectionAccent {
+  width: 4px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--color-primary);
+}
+
+.divider {
+  height: 1px;
+  margin: 28px 0;
+  background: var(--color-hover);
+}
+
+/* =========================
+   GENERAL INFORMATION
+========================= */
+
+.generalGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 7px;
 }
 
 .label {
-  font-size: var(--font-size-sm);
+  font-size: 10px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  z-index: 1;
+  color: var(--color-text-muted);
+  font-size: 13px;
 }
 
 .input,
 .select {
-  padding: var(--space-sm) var(--space-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-base);
-  background-color: var(--color-bg);
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 10px 12px 10px 34px;
+
+  border: 1px solid transparent;
+  border-radius: 9px;
+
+  background: var(--color-dropdown-bg);
+  color: var(--color-text-primary);
+
+  font-family: inherit;
+  font-size: 12px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.actions {
+.input:focus,
+.select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.08);
+  background: var(--color-surface);
+}
+
+.select {
+  appearance: auto;
+  cursor: pointer;
+}
+
+/* =========================
+   ORGANIZATION TYPES
+========================= */
+
+.orgTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,
+      minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.orgTypeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: 16px;
+
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.orgTypeCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.orgTypeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.orgTypeName {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.orgTypeDelete {
+  flex-shrink: 0;
+
+  padding: 0;
+
+  background: transparent;
+  border: none;
+
+  color: var(--color-error);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.orgTypeDelete:hover {
+  text-decoration: underline;
+}
+
+.orgTypeDescription {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* =========================
+   ADD ORGANIZATION TYPE MODAL
+========================= */
+
+.orgTypeModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.orgTypeModal {
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 32px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  box-shadow: var(--shadow-card);
+}
+
+.orgTypeModalTitle {
+  margin: 0;
+
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.orgTypeModalLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.orgTypeModalInput {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.orgTypeModalInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.orgTypeModalInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(20, 122, 126, 0.12);
+}
+
+.orgTypeModalActions {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--space-md);
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 8px;
+}
+
+/* =========================
+   ROOM MAPPING
+========================= */
+
+.mappingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+
+.legendDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.standardDot {
+  background: #147a7e;
+}
+
+.deluxeDot {
+  background: #a27a57;
+}
+
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(7,
+      minmax(0, 1fr));
+  gap: 14px;
+}
+
+.roomCard {
+  min-height: 86px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px 12px;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  box-shadow: 0 4px 14px rgba(27, 49, 56, 0.04);
+}
+
+.roomNumber {
+  font-size: 15px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #087b80;
+}
+
+.roomTypeSelect {
+  width: 100%;
+  min-height: 31px;
+
+  padding: 6px 9px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: var(--color-dropdown-bg);
+  color: var(--color-text-primary);
+
+  font-family: inherit;
+  font-size: 10px;
+
+  outline: none;
+  cursor: pointer;
+}
+
+.roomTypeSelect:focus {
+  box-shadow: 0 0 0 2px rgba(20, 122, 126, 0.12);
+}
+
+/* =========================
+   ARCHITECTURE PREVIEW
+========================= */
+
+.overlayPreview {
+  overflow: hidden;
+
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+
+  background: var(--color-surface);
+}
+
+.overlayHeader {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 16px;
+
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.expandButton {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: var(--color-text-secondary);
+
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.expandButton:hover {
+  background: var(--color-highlight-bg);
+}
+
+.overlayCanvas {
+  min-height: 290px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(135deg,
+      rgba(226, 232, 232, 0.95),
+      rgba(189, 197, 198, 0.95));
+}
+
+.previewContent {
+  min-width: 240px;
+
+  padding: 20px 22px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  background: var(--color-surface);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 12px;
+
+  text-align: center;
+
+  backdrop-filter: blur(5px);
+}
+
+.previewLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.previewContent strong {
+  font-size: 17px;
+  color: var(--color-text-primary);
+}
+
+.previewStats {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.previewStats span {
+  padding: 4px 7px;
+
+  border-radius: 999px;
+
+  background: var(--color-highlight-bg);
+  color: #147a7e;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+/* =========================
+   SAVE AREA
+========================= */
+
+.saveArea {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.editNote {
+  max-width: 390px;
+  margin: 0;
+
+  font-size: 10px;
+  line-height: 1.45;
+
+  text-align: right;
+
+  color: var(--color-text-muted);
+}
+
+/* =========================
+   ADMIN NOTE
+========================= */
+
+.adminNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 18px 20px;
+
+  background: #ddf3f4;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  color: #337d84;
+}
+
+.noteIcon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1px;
+
+  border: 1px solid #247a80;
+  border-radius: 50%;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.noteTitle {
+  display: block;
+  margin-bottom: 5px;
+
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.adminNote p {
+  margin: 0;
+
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+/* =========================
+   DARK MODE
+========================= */
+
+[data-theme="dark"] .expandButton:hover {
+  background: var(--color-hover);
+}
+
+[data-theme="dark"] .previewStats span {
+  background: rgba(20, 122, 126, 0.2);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .adminNote {
+  background: rgba(20, 122, 126, 0.12);
+  border-color: rgba(20, 122, 126, 0.3);
+  color: #5eead4;
+}
+
+[data-theme="dark"] .noteIcon {
+  border-color: rgba(20, 122, 126, 0.5);
+}
+
+[data-theme="dark"] .roomCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .saveArea {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .overlayCanvas {
+  background:
+    linear-gradient(135deg,
+      rgba(15, 23, 42, 0.9),
+      rgba(30, 41, 59, 0.9));
+}
+
+[data-theme="dark"] .previewContent {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .roomNumber {
+  color: var(--color-primary);
+}
+
+/* =========================
+   DARK MODE - ORGANIZATION TYPES
+========================= */
+
+[data-theme="dark"] .orgTypeCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .orgTypeCard:hover {
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .orgTypeName {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .orgTypeDescription {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .orgTypeDelete {
+  color: var(--color-error);
+}
+
+[data-theme="dark"] .orgTypeDelete:hover {
+  color: #f87171;
+}
+
+[data-theme="dark"] .orgTypeModalOverlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .orgTypeModal {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .orgTypeModalTitle {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .orgTypeModalLabel {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .orgTypeModalInput {
+  background: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .orgTypeModalInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+  .roomGrid {
+    grid-template-columns: repeat(4,
+        minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .generalGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .roomGrid {
+    grid-template-columns: repeat(3,
+        minmax(0, 1fr));
+  }
+
+  .pageHeader,
+  .mappingHeader,
+  .saveArea {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .headerActions {
+    width: 100%;
+  }
+
+  .editNote {
+    max-width: none;
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .configurationCard {
+    padding: 20px;
+  }
+
+  .roomGrid {
+    grid-template-columns: repeat(2,
+        minmax(0, 1fr));
+  }
+
+  .headerActions {
+    flex-direction: column;
+  }
+
+  .overlayCanvas {
+    min-height: 220px;
+  }
+
+  .orgTypeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .orgTypeModal {
+    padding: 24px;
+  }
+
+  .orgTypeModalActions {
+    flex-wrap: wrap;
+  }
 }

@@ -1,0 +1,571 @@
+/**
+ * @file Hotel/Rooms/OccupancyTimeline.module.css
+ * @description Styling for Refined Room Occupancy Timeline Dashboard
+ */
+
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    padding-bottom: 34px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.pageHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.title {
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.08;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.subtitle {
+    margin: 8px 0 0;
+    max-width: 360px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.periodSwitcher {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(24, 44, 52, 0.04);
+}
+
+.periodSwitcher button {
+    min-width: 84px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.periodSwitcher button:hover {
+    color: var(--color-primary);
+}
+
+.periodSwitcher .activePeriod {
+    background: var(--color-primary);
+    color: #ffffff;
+}
+
+.periodSwitcher .activePeriod:hover {
+    color: #ffffff;
+}
+
+.dateButton {
+    min-height: 54px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(24, 44, 52, 0.04);
+}
+
+.calendarIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--color-text-secondary);
+    font-size: 18px;
+}
+
+.newBookingButton {
+    min-height: 54px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 11px;
+    background: var(--color-primary);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(20, 122, 126, 0.18);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.newBookingButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 11px 22px rgba(20, 122, 126, 0.23);
+}
+
+.plusIcon {
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 300;
+}
+
+/* =========================
+   TIMELINE CARD
+========================= */
+
+.timelineCard {
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-card);
+}
+
+.timelineHeader {
+    display: grid;
+    grid-template-columns: 170px repeat(7, minmax(105px, 1fr));
+    min-width: 905px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.roomHeader {
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    min-height: 48px;
+    color: var(--color-text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dayHeader {
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-left: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+.dayHeader span {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.dayHeader strong {
+    font-size: 14px;
+    color: var(--color-text-primary);
+}
+
+.todayHeader {
+    background: var(--color-highlight-bg);
+}
+
+.todayHeader span,
+.todayHeader strong {
+    color: #08757a;
+}
+
+.timelineBody {
+    overflow-x: auto;
+}
+
+.timelineRow {
+    position: relative;
+    display: grid;
+    grid-template-columns: 170px repeat(7, minmax(105px, 1fr));
+    min-width: 905px;
+    min-height: 104px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.timelineRow:last-child {
+    border-bottom: 0;
+}
+
+.roomDetails {
+    z-index: 2;
+    align-self: center;
+    margin: 14px;
+    padding: 15px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 7px rgba(18, 40, 47, 0.03);
+}
+
+.roomDetails strong {
+    color: #08777c;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.roomDetails span {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.timelineCell {
+    border-left: 1px solid var(--color-border);
+}
+
+.todayColumn {
+    background: rgba(221, 241, 240, 0.18);
+}
+
+/* =========================
+   BOOKING BLOCKS
+========================= */
+
+.booking {
+    z-index: 3;
+    align-self: center;
+    min-height: 62px;
+    margin: 0 2px;
+    padding: 13px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-radius: 10px;
+    border-left: 4px solid;
+    overflow: hidden;
+}
+
+.bookingGuest {
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bookingDetail {
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.occupied {
+    background: var(--color-hover);
+    border-left-color: #ff7d75;
+    color: #e93d37;
+}
+
+.occupied .bookingDetail {
+    color: #ef6f69;
+}
+
+.pending {
+    background: color-mix(in srgb, currentColor 15%, transparent);
+    border-left-color: #ffc43e;
+    color: #805f4f;
+}
+
+.pending .bookingDetail {
+    color: #a48c7e;
+}
+
+.confirmed {
+    background: var(--color-highlight-bg);
+    border-left-color: #4db7b1;
+    color: #087b79;
+}
+
+.confirmed .bookingDetail {
+    color: #559b98;
+}
+
+.maintenance {
+    background: var(--color-hover);
+    border-left-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+/* =========================
+   LEGEND
+========================= */
+
+.legend {
+    min-width: 905px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    padding: 15px 18px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.legendTitle {
+    margin-right: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+}
+
+.legendItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    color: var(--color-text-secondary);
+}
+
+.legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.dot-occupied {
+    background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.dot-pending {
+    background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+.dot-confirmed {
+    background: #55b9b2;
+}
+
+.dot-maintenance {
+    background: #dce2e3;
+}
+
+/* =========================
+   BOTTOM SUMMARY
+========================= */
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.summaryCard {
+    min-height: 92px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-card);
+}
+
+.summaryLabel {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+}
+
+.summaryValueRow {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.summaryValue {
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.summarySuffix {
+    margin-bottom: 2px;
+    font-size: 10px;
+    color: var(--color-text-secondary);
+}
+
+.summarySecondary {
+    margin-bottom: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.summary-occupancy {
+    color: #087c80;
+}
+
+.secondary-occupancy {
+    color: #1f9f61;
+}
+
+.secondary-rate {
+    padding: 2px 5px;
+    border: 1px solid rgba(22,163,74,0.5);
+    color: #21a24d;
+    line-height: 1;
+}
+
+.summary-alert {
+    color: #de3030;
+}
+
+.secondary-alert {
+    color: #de3030;
+}
+
+/* =========================
+   FLOATING SEARCH
+========================= */
+
+.searchButton {
+    position: fixed;
+    right: 36px;
+    bottom: 32px;
+    z-index: 20;
+
+    width: 54px;
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: #075f63;
+    color: #ffffff;
+
+    font-size: 24px;
+    font-weight: 400;
+
+    cursor: pointer;
+
+    box-shadow: 0 10px 24px rgba(7, 95, 99, 0.2);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.searchButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 13px 28px rgba(7, 95, 99, 0.26);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1200px) {
+    .pageHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .headerActions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 28px;
+    }
+
+    .headerActions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .periodSwitcher {
+        width: 100%;
+    }
+
+    .periodSwitcher button {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .dateButton,
+    .newBookingButton {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .timelineCard {
+        overflow-x: auto;
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .searchButton {
+        right: 20px;
+        bottom: 20px;
+    }
+}
+
+/* === Dark Mode Overrides === */
+[data-theme="dark"] .available { background: rgba(22,163,74,0.15) !important; }
+[data-theme="dark"] .occupied { background: rgba(185,28,28,0.15) !important; }
+
+/* === Dark Mode Final === */
+[data-theme="dark"] .timelineCell { border-color: var(--color-border) !important; }
+[data-theme="dark"] .timelineHeader { border-color: var(--color-border) !important; }
+[data-theme="dark"] .roomRow { border-color: var(--color-border) !important; }
+[data-theme="dark"] .available { background: rgba(22,163,74,0.15) !important; }
+[data-theme="dark"] .occupied { background: rgba(185,28,28,0.2) !important; }
