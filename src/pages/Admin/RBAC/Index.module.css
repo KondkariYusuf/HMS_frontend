@@ -1,6 +1,6 @@
 /**
  * @file Admin/RBAC/Index.module.css
- * @description Styles for the RBAC roles and permissions page.
+ * @description Premium, modern styling for the RBAC Roles & Permissions management module.
  */
 
 .page {
@@ -9,11 +9,24 @@
   gap: 22px;
 }
 
+/* Page Header */
 .header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.headerOutlineBtn {
+  display: inline-flex;
+  align-items: center;
 }
 
 .eyebrow,
@@ -22,6 +35,7 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .eyebrow {
@@ -42,10 +56,37 @@
   font-size: 13px;
 }
 
+/* Error Banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.errorCloseBtn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #b91c1c;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Layout */
 .layout {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 18px;
   align-items: start;
 }
 
@@ -53,51 +94,52 @@
 .permissionsPanel {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(20, 40, 40, 0.035);
-}
-
-.rolesPanel {
+  border-radius: 13px;
+  box-shadow: 0 2px 12px rgba(20, 40, 40, 0.04);
   overflow: hidden;
 }
 
+/* Roles Sidebar */
 .panelHeader {
-  padding: 17px;
+  padding: 18px 20px;
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
 .panelHeader h2 {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .panelHeader span {
   display: block;
   margin-top: 4px;
   color: var(--color-text-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .roleList {
   display: flex;
   flex-direction: column;
-  padding: 8px;
+  padding: 10px;
+  gap: 4px;
 }
 
 .roleCard {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 11px 9px;
+  gap: 12px;
+  padding: 11px 12px;
   border: 0;
   border-radius: 9px;
   background: transparent;
   color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .roleCard:hover {
@@ -109,16 +151,16 @@
 }
 
 .roleIcon {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 9px;
   background: var(--color-highlight-bg);
   color: #0b686d;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -127,23 +169,24 @@
   flex: 1;
 }
 
-.roleInfo strong,
-.roleInfo span {
-  display: block;
-}
-
 .roleInfo strong {
+  display: block;
   overflow: hidden;
   color: var(--color-text-primary);
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .roleInfo span {
+  display: block;
   margin-top: 3px;
   color: var(--color-text-secondary);
-  font-size: 9px;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .roleArrow {
@@ -151,58 +194,135 @@
   font-size: 18px;
 }
 
-.permissionsPanel {
-  overflow: hidden;
+.cardQuickActions {
+  position: absolute;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
+.cardActionBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.cardActionBtn:hover {
+  background: var(--color-surface);
+  color: #0b777c;
+}
+
+.deleteActionBtn {
+  color: #ef4444;
+}
+
+.deleteActionBtn:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.emptyRoles {
+  padding: 30px 16px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Permissions Panel Header */
 .permissionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 20px;
+  padding: 22px 24px;
   border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
-.permissionHeader h2 {
-  margin: 5px 0 0;
+.headerLeft {
+  min-width: 0;
+  flex: 1;
+}
+
+.roleTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.roleTitle {
+  margin: 0;
   color: var(--color-text-primary);
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
-.permissionHeader p {
-  margin: 5px 0 0;
+.editRoleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  background: var(--color-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
   color: var(--color-text-secondary);
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editRoleBtn:hover {
+  background: var(--color-highlight-bg);
+  color: #0b777c;
+  border-color: #0b777c;
+}
+
+.roleDesc {
+  margin: 6px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .permissionSummary {
-  min-width: 80px;
-  padding: 10px 14px;
-  border-radius: 9px;
+  min-width: 90px;
+  padding: 12px 16px;
+  border-radius: 10px;
   background: var(--color-hover);
   text-align: center;
-}
-
-.permissionSummary strong,
-.permissionSummary span {
-  display: block;
+  border: 1px solid var(--color-border);
 }
 
 .permissionSummary strong {
+  display: block;
   color: #0b686d;
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .permissionSummary span {
+  display: block;
   margin-top: 2px;
   color: var(--color-text-secondary);
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 .fullAccessBanner {
-  margin: 16px 20px 0;
-  padding: 12px 14px;
+  margin: 16px 24px 0;
+  padding: 13px 16px;
   border: 1px solid var(--color-border);
   border-radius: 9px;
   background: var(--color-highlight-bg);
@@ -210,91 +330,345 @@
 
 .fullAccessBanner strong {
   color: #0b686d;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .fullAccessBanner span {
   margin-left: 9px;
   color: var(--color-text-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
+/* ========================================================
+   MODERN PERMISSIONS TOOLBAR (Search, Filter, Quick Select)
+   ======================================================== */
+.permToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--color-hover);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.searchContainer {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 40px;
+  padding: 0 36px 0 40px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.85;
+}
+
+.searchInput:focus {
+  border-color: #0b777c;
+  box-shadow: 0 0 0 3px rgba(11, 119, 124, 0.13);
+  background: var(--color-surface);
+}
+
+.clearSearchBtn {
+  position: absolute;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearSearchBtn:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.toolbarControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filterWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 13px;
+  color: #0b777c;
+  pointer-events: none;
+}
+
+.moduleSelect {
+  width: 100%;
+  height: 40px;
+  padding: 0 34px 0 36px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 12.5px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.moduleSelect:focus {
+  border-color: #0b777c;
+  box-shadow: 0 0 0 3px rgba(11, 119, 124, 0.13);
+}
+
+.bulkActionButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quickSelectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  background: rgba(11, 119, 124, 0.08);
+  border: 1.5px solid rgba(11, 119, 124, 0.28);
+  border-radius: 10px;
+  color: #0b777c;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.quickSelectBtn:hover {
+  background: rgba(11, 119, 124, 0.16);
+  border-color: #0b777c;
+}
+
+.quickDeselectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.quickDeselectBtn:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+/* ========================================================
+   PERMISSION MATRIX & GROUPS
+   ======================================================== */
 .matrix {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px;
+  gap: 14px;
+  padding: 20px 24px;
+}
+
+.loadingBox,
+.noResultsBox {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.noResultsBox p {
+  margin: 0 0 12px;
 }
 
 .permissionGroup {
   overflow: hidden;
   border: 1px solid var(--color-border);
-  border-radius: 9px;
+  border-radius: 10px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .groupHeader {
   display: flex;
   justify-content: space-between;
-  padding: 10px 13px;
+  align-items: center;
+  padding: 11px 16px;
   background: var(--color-hover);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.groupName {
   color: var(--color-text-secondary);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.groupHeader span:last-child {
+.groupCountBadge {
   color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .permissionRow {
   width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  padding: 12px 13px;
-  border: 0;
+  gap: 16px;
+  padding: 13px 16px;
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease;
+  user-select: none;
 }
 
-.permissionRow:hover:not(:disabled) {
+.permissionRow:first-of-type {
+  border-top: 0;
+}
+
+.permissionRow:hover {
   background: var(--color-hover);
 }
 
-.permissionRow:disabled {
-  cursor: default;
-}
-
-.permissionRow>div {
+.permTextContainer {
   min-width: 0;
+  flex: 1;
 }
 
-.permissionRow strong,
-.permissionRow div span {
-  display: block;
+.permNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.permissionRow strong {
+.permActionTitle {
   color: var(--color-text-primary);
-  font-size: 11px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.permissionRow div span {
+.permCodeBadge {
+  display: inline-block;
+  padding: 2px 7px;
+  background: var(--color-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  color: var(--color-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.permDesc {
+  display: block;
   margin-top: 3px;
   color: var(--color-text-secondary);
-  font-size: 9px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.permControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.permActionBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  opacity: 0.55;
+}
+
+.permissionRow:hover .permActionBtn {
+  opacity: 1;
+}
+
+.permActionBtn:hover {
+  background: var(--color-hover);
+  border-color: var(--color-border);
+  color: #0b777c;
+}
+
+.permDeleteBtn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
 }
 
 .toggle {
-  width: 34px;
-  height: 19px;
+  width: 36px;
+  height: 20px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -303,11 +677,13 @@
   border-radius: 999px;
   background: var(--color-border);
   transition: background 0.16s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .toggle>span {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--color-surface);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -319,23 +695,119 @@
 }
 
 .toggleOn>span {
-  transform: translateX(15px);
+  transform: translateX(16px);
 }
 
+/* ========================================================
+   PAGINATION BAR
+   ======================================================== */
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.pageInfo strong {
+  color: var(--color-text-primary);
+}
+
+.filteredBadge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  background: rgba(11, 119, 124, 0.1);
+  color: #0b777c;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pageControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pageSizeWrapper {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+
+.pageSizeSelect {
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+}
+
+.pageNav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageNavBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pageNavBtn:hover:not(:disabled) {
+  border-color: #0b777c;
+  color: #0b777c;
+  background: var(--color-highlight-bg);
+}
+
+.pageNavBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pageIndicator {
+  font-size: 12px;
+}
+
+.pageIndicator strong {
+  color: var(--color-text-primary);
+}
+
+/* Save Bar */
 .saveBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  padding: 13px 20px;
+  gap: 16px;
+  padding: 14px 24px;
   border-top: 1px solid var(--color-border);
   background: var(--color-hover);
   color: var(--color-text-secondary);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .saveStatus {
-  min-height: 18px;
+  min-height: 20px;
   display: flex;
   align-items: center;
 }
@@ -350,13 +822,7 @@
   font-weight: 600;
 }
 
-.emptyRoles {
-  padding: 24px 16px;
-  color: var(--color-text-secondary);
-  font-size: 11px;
-  text-align: center;
-}
-
+/* Modals */
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -366,28 +832,30 @@
   justify-content: center;
   padding: 20px;
   background: rgba(13, 28, 29, 0.45);
+  backdrop-filter: blur(2px);
 }
 
 .modal {
-  width: min(430px, calc(100% - 40px));
+  width: min(440px, calc(100% - 40px));
   box-sizing: border-box;
-  padding: 22px;
-  border-radius: 13px;
+  padding: 24px;
+  border-radius: 14px;
   background: var(--color-surface);
   color: var(--color-text-primary);
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
 }
 
 .modal h2 {
   margin: 0;
   color: var(--color-text-primary);
   font-size: 18px;
+  font-weight: 700;
 }
 
 .modal>p {
-  margin: 5px 0 18px;
+  margin: 6px 0 20px;
   color: var(--color-text-secondary);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .modal label {
@@ -395,52 +863,72 @@
   flex-direction: column;
   gap: 6px;
   color: var(--color-text-primary);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
 }
 
-.modal input {
+.modal input,
+.modalSelect {
   width: 100%;
-  height: 38px;
+  height: 40px;
   box-sizing: border-box;
-  padding: 0 11px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  padding: 0 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 9px;
   outline: none;
   color: var(--color-text-primary);
   background: var(--color-surface);
   font: inherit;
-  font-size: 12px;
+  font-size: 13px;
+  transition: border-color 0.15s ease;
 }
 
 .modal input::placeholder {
   color: var(--color-text-secondary);
 }
 
-.modal input:focus {
+.modal input:focus,
+.modalSelect:focus {
   border-color: #0b777c;
 }
 
 .modalActions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  margin-top: 20px;
-  padding-top: 15px;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 16px;
   border-top: 1px solid var(--color-border);
 }
 
 .modalActions>button:first-child {
-  height: 38px;
+  height: 40px;
   border: 1px solid var(--color-border);
-  border-radius: 7px;
-  padding: 0 14px;
+  border-radius: 8px;
+  padding: 0 16px;
   background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.15s ease;
 }
 
+.modalActions>button:first-child:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
@@ -450,13 +938,26 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+
+  .permToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchContainer {
+    max-width: 100%;
+  }
+
+  .toolbarControls {
+    justify-content: space-between;
+  }
 }
 
 @media (max-width: 600px) {
-
   .header,
   .permissionHeader,
-  .saveBar {
+  .saveBar,
+  .paginationBar {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -470,16 +971,29 @@
     box-sizing: border-box;
   }
 
+  .toolbarControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterWrapper {
+    width: 100%;
+  }
+
+  .bulkActionButtons {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .saveBar {
     align-items: stretch;
   }
 }
 
 /* Dark Mode Refinements */
-
 [data-theme='dark'] .rolesPanel,
 [data-theme='dark'] .permissionsPanel {
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.22);
 }
 
 [data-theme='dark'] .roleIcon {
@@ -522,4 +1036,49 @@
 
 [data-theme='dark'] .savedMessage {
   color: #86efac;
+}
+
+[data-theme='dark'] .editRoleBtn:hover {
+  color: #5eead4;
+  border-color: #5eead4;
+}
+
+[data-theme='dark'] .searchInput:focus,
+[data-theme='dark'] .moduleSelect:focus {
+  border-color: #0b9da3;
+  box-shadow: 0 0 0 3px rgba(11, 157, 163, 0.18);
+}
+
+[data-theme='dark'] .quickSelectBtn {
+  background: rgba(20, 122, 126, 0.18);
+  color: #5eead4;
+  border-color: rgba(94, 234, 212, 0.3);
+}
+
+[data-theme='dark'] .quickSelectBtn:hover {
+  background: rgba(20, 122, 126, 0.28);
+  border-color: #5eead4;
+}
+
+[data-theme='dark'] .pageNavBtn:hover:not(:disabled) {
+  border-color: #5eead4;
+  color: #5eead4;
+  background: rgba(20, 122, 126, 0.15);
+}
+
+[data-theme='dark'] .filteredBadge {
+  background: rgba(20, 122, 126, 0.22);
+  color: #5eead4;
+}
+
+[data-theme='dark'] .permActionBtn:hover {
+  background: rgba(20, 122, 126, 0.2);
+  color: #5eead4;
+  border-color: rgba(94, 234, 212, 0.3);
+}
+
+[data-theme='dark'] .permDeleteBtn:hover {
+  background: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
 }

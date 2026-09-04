@@ -19,6 +19,7 @@ import {
   User,
   CheckCircle2,
   AlertTriangle,
+  Trash2,
 } from 'lucide-react';
 
 import Button from '@components/Button/Button';
@@ -36,7 +37,7 @@ const ITEMS_PER_PAGE = 10;
 
 export default function HotelGuestsPage() {
   const navigate = useNavigate();
-  const { guests, loading, refetch, registerGuest, updateGuestStatus } = useHotelGuests();
+  const { guests, loading, refetch, registerGuest, updateGuestStatus, deleteGuest } = useHotelGuests();
   const { bookings } = useBookings();
 
   const [search, setSearch] = useState('');
@@ -72,6 +73,24 @@ export default function HotelGuestsPage() {
     idNumber: '',
   });
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+
+  // Delete Guest state
+  const [deletingGuest, setDeletingGuest] = useState(null);
+  const [isDeletingGuest, setIsDeletingGuest] = useState(false);
+
+  const handleDeleteGuestConfirm = async () => {
+    if (!deletingGuest || isDeletingGuest) return;
+    setIsDeletingGuest(true);
+    try {
+      await deleteGuest(deletingGuest.id);
+      showToast(`Guest ${deletingGuest.name} deleted successfully.`, 'success');
+      setDeletingGuest(null);
+    } catch (err) {
+      showToast('Failed to delete guest from server.', 'error');
+    } finally {
+      setIsDeletingGuest(false);
+    }
+  };
 
   // ESC key listener for modal closure
   useEffect(() => {
@@ -500,6 +519,28 @@ export default function HotelGuestsPage() {
                         >
                           <Edit3 size={15} />
                         </button>
+                        <button
+                          type="button"
+                          className={styles.iconBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeletingGuest(guest);
+                          }}
+                          title="Delete Guest"
+                          style={{
+                            padding: '6px',
+                            borderRadius: '6px',
+                            border: '1px solid #fca5a5',
+                            background: '#fee2e2',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#dc2626',
+                          }}
+                        >
+                          <Trash2 size={15} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -741,6 +782,41 @@ export default function HotelGuestsPage() {
           </div>
         </div>
       </Modal>
+
+      {/* Delete Guest Confirmation Modal */}
+      {deletingGuest && (
+        <Modal
+          isOpen={!!deletingGuest}
+          onClose={() => {
+            if (!isDeletingGuest) setDeletingGuest(null);
+          }}
+          title="Delete Guest Confirmation"
+        >
+          <div style={{ padding: '8px 0' }}>
+            <p style={{ margin: '0 0 16px 0', fontSize: '14px', color: 'var(--color-text-main)' }}>
+              Are you sure you want to delete guest <strong>{deletingGuest.name}</strong>?
+              This action permanently removes the guest record from the backend database.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <Button
+                variant="secondary"
+                onClick={() => setDeletingGuest(null)}
+                disabled={isDeletingGuest}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleDeleteGuestConfirm}
+                disabled={isDeletingGuest}
+                style={{ background: '#dc2626', borderColor: '#dc2626' }}
+              >
+                {isDeletingGuest ? 'Deleting...' : 'Delete Guest'}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ export const ROOM_ENDPOINTS = {
   CREATE: '/api/room',
   UPDATE: (id) => `/api/room/${id}`,
   DELETE: (id) => `/api/room/${id}`,
+  BULK_DELETE: '/api/room/bulk-delete',
 };
 
 const buildQueryString = (params = {}) => {
@@ -54,6 +55,17 @@ export const roomService = {
     backendApi.put(ROOM_ENDPOINTS.UPDATE(id), data, options),
   delete: (id, options) =>
     backendApi.delete(ROOM_ENDPOINTS.DELETE(id), options),
+  bulkDelete: (roomIds, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_DELETE');
+    const mergedOptions = {
+      ...options,
+      headers: {
+        ...permHeaders,
+        ...options?.headers,
+      },
+    };
+    return backendApi.post(ROOM_ENDPOINTS.BULK_DELETE, { roomIds }, mergedOptions);
+  },
 };
 
 export default roomService;

@@ -158,6 +158,43 @@ export default function HotelRoomsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
   const [deletingRoom, setDeletingRoom] = useState(null);
+  const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+
+  const toggleSelectRoom = (roomId) => {
+    setSelectedRoomIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(roomId)) next.delete(roomId);
+      else next.add(roomId);
+      return next;
+    });
+  };
+
+  const toggleSelectAllRooms = () => {
+    if (selectedRoomIds.size === paginatedTableRooms.length && paginatedTableRooms.length > 0) {
+      setSelectedRoomIds(new Set());
+    } else {
+      setSelectedRoomIds(new Set(paginatedTableRooms.map((r) => r.id)));
+    }
+  };
+
+  const handleBulkDeleteConfirm = async () => {
+    if (selectedRoomIds.size === 0) return;
+    setIsSubmitting(true);
+    try {
+      const roomIds = Array.from(selectedRoomIds);
+      const res = await roomService.bulkDelete(roomIds);
+      showToast(res?.message || `Successfully deleted ${roomIds.length} rooms.`, 'success');
+      setSelectedRoomIds(new Set());
+      setShowBulkDeleteModal(false);
+      await fetchRooms();
+    } catch (err) {
+      console.error('API Error bulk deleting rooms:', err);
+      showToast(err.message || 'Failed to bulk delete rooms.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Form Field State for Add/Edit
   const [formData, setFormData] = useState({
@@ -622,6 +659,16 @@ export default function HotelRoomsPage() {
         </div>
 
         <div className={styles.headerActions}>
+          {selectedRoomIds.size > 0 && (
+            <button
+              type="button"
+              className={styles.configureButton}
+              onClick={() => setShowBulkDeleteModal(true)}
+              style={{ color: '#dc2626', borderColor: '#fca5a5', background: '#fee2e2' }}
+            >
+              Bulk Delete ({selectedRoomIds.size})
+            </button>
+          )}
           <button
             type="button"
             className={styles.configureButton}
@@ -755,6 +802,13 @@ export default function HotelRoomsPage() {
             <table className={styles.table}>
               <thead>
                 <tr>
+                  <th className={styles.th} style={{ width: '40px' }}>
+                    <input
+                      type="checkbox"
+                      checked={paginatedTableRooms.length > 0 && selectedRoomIds.size === paginatedTableRooms.length}
+                      onChange={toggleSelectAllRooms}
+                    />
+                  </th>
                   <th className={styles.th}>Room Number</th>
                   <th className={styles.th}>Floor</th>
                   <th className={styles.th}>Room Type</th>
@@ -767,13 +821,13 @@ export default function HotelRoomsPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className={styles.emptyState}>
+                    <td colSpan={8} className={styles.emptyState}>
                       Fetching room inventory from backend (http://localhost:5000/api/room)...
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={7} className={styles.emptyState}>
+                    <td colSpan={8} className={styles.emptyState}>
                       <div style={{ color: 'var(--color-error)', marginBottom: 'var(--space-sm)' }}>
                         ⚠️ {error}
                       </div>
@@ -785,6 +839,13 @@ export default function HotelRoomsPage() {
                 ) : paginatedTableRooms.length > 0 ? (
                   paginatedTableRooms.map((rm) => (
                     <tr key={rm.id} className={styles.tr}>
+                      <td className={styles.td} style={{ width: '40px' }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedRoomIds.has(rm.id)}
+                          onChange={() => toggleSelectRoom(rm.id)}
+                        />
+                      </td>
                       <td className={styles.td}>
                         <span className={styles.codeBadge}>{rm.roomNumber}</span>
                       </td>
@@ -842,7 +903,7 @@ export default function HotelRoomsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className={styles.emptyState}>
+                    <td colSpan={8} className={styles.emptyState}>
                       No rooms match the selected filter criteria.
                     </td>
                   </tr>
@@ -1082,6 +1143,19 @@ export default function HotelRoomsPage() {
         onConfirm={handleDeleteConfirm}
         title="Delete Room"
         message={`Are you sure you want to delete room ${deletingRoom?.roomNumber}?`}
+        isDestructive={true}
+      />
+
+      {/* Bulk Delete Rooms Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showBulkDeleteModal}
+        onClose={() => {
+          if (isSubmitting) return;
+          setShowBulkDeleteModal(false);
+        }}
+        onConfirm={handleBulkDeleteConfirm}
+        title="Bulk Delete Rooms"
+        message={`Are you sure you want to permanently delete ${selectedRoomIds.size} selected rooms? This action cannot be undone.`}
         isDestructive={true}
       />
     </div>

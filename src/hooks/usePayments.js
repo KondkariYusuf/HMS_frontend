@@ -176,6 +176,17 @@ export default function usePayments(bookingIdFilter = null) {
     }
   };
 
+  // Fetch Payment details by ID directly from backend API
+  const getPaymentById = async (id) => {
+    try {
+      const response = await paymentService.getById(id);
+      return response?.data || response;
+    } catch (err) {
+      console.warn(`Fetching payment ${id} from API failed:`, err);
+      return payments.find((p) => p.id === id) || null;
+    }
+  };
+
   return {
     payments: filteredPayments,
     rawPayments: payments,
@@ -193,6 +204,7 @@ export default function usePayments(bookingIdFilter = null) {
     createPayment,
     updatePaymentStatus,
     voidPayment,
+    getPaymentById,
     refetch: fetchPayments,
   };
 }

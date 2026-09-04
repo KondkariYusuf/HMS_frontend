@@ -46,9 +46,18 @@ export const bookingService = {
   endpoints: BOOKING_ENDPOINTS,
 
   getAvailability: (params = {}, options = {}) => {
+    const branchId = params.organizationBranchId || localStorage.getItem('syncstays_branch_id') || undefined;
+    const checkIn = params.checkInDateTime || params.checkIn || params.startDate || undefined;
+    const checkOut = params.checkOutDateTime || params.checkOut || params.endDate || undefined;
+    const normalizedParams = {
+      ...params,
+      ...(branchId ? { organizationBranchId: branchId } : {}),
+      ...(checkIn ? { checkInDateTime: new Date(checkIn).toISOString() } : {}),
+      ...(checkOut ? { checkOutDateTime: new Date(checkOut).toISOString() } : {}),
+    };
     const permHeaders = getPermissionHeaders(['BOOKING_READ_AVAILABILITY', 'BOOKING_READ', 'BOOKING_READALL']);
     return backendApi.get(
-      `${BOOKING_ENDPOINTS.GET_AVAILABILITY}${buildQueryString(params)}`,
+      `${BOOKING_ENDPOINTS.GET_AVAILABILITY}${buildQueryString(normalizedParams)}`,
       { ...options, headers: { ...permHeaders, ...options?.headers } }
     );
   },

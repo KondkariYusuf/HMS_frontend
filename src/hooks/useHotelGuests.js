@@ -171,6 +171,18 @@ export default function useHotelGuests() {
     }
   };
 
+  const deleteGuest = async (guestId) => {
+    try {
+      await hotelGuestService.delete(guestId);
+      setGuests((prev) => prev.filter((g) => String(g.id) !== String(guestId)));
+      return true;
+    } catch (err) {
+      console.warn('Backend delete guest error, updating locally:', err);
+      setGuests((prev) => prev.filter((g) => String(g.id) !== String(guestId)));
+      throw err;
+    }
+  };
+
   return {
     guests,
     loading,
@@ -178,5 +190,6 @@ export default function useHotelGuests() {
     refetch: fetchGuests,
     registerGuest,
     updateGuestStatus,
+    deleteGuest,
   };
 }

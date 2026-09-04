@@ -565,6 +565,19 @@ export default function UpcomingBookings() {
     }
   };
 
+  const handleViewBookingDetails = async (bookingSummaryItem) => {
+    setSelectedBooking(bookingSummaryItem);
+    try {
+      const res = await bookingService.getById(bookingSummaryItem.id);
+      const detailed = res?.data || res;
+      if (detailed && detailed.id) {
+        setSelectedBooking((prev) => (prev && prev.id === detailed.id ? { ...prev, ...detailed, rawRecord: detailed } : prev));
+      }
+    } catch (err) {
+      console.warn('Could not load detailed booking from API:', err);
+    }
+  };
+
   return (
     <div className={styles.container} data-testid="upcoming-bookings-page">
       {/* Toast Notification Banner */}
@@ -772,7 +785,7 @@ export default function UpcomingBookings() {
                       key={b.id}
                       className={styles.tr}
                     >
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <div className={styles.guestCell}>
                           <Avatar name={b.guest?.name || 'Guest'} size="sm" />
                           <div className={styles.guestInfo}>
@@ -782,19 +795,19 @@ export default function UpcomingBookings() {
                         </div>
                       </td>
 
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <span className={styles.dateText}>{b.checkIn}</span>
                       </td>
 
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <span className={styles.dateText}>{b.checkOut}</span>
                       </td>
 
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <span className={styles.roomTypeBadge}>{b.roomType}</span>
                       </td>
 
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <div className={styles.channelCell}>
                           <span className={styles.channelIcon} style={{ display: 'inline-flex', alignItems: 'center' }}>
                             <Globe size={14} />
@@ -803,11 +816,11 @@ export default function UpcomingBookings() {
                         </div>
                       </td>
 
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <span className={styles.bookingIdText}>{b.bookingRef}</span>
                       </td>
 
-                      <td className={styles.td} onClick={() => setSelectedBooking(b)} style={{ cursor: 'pointer' }}>
+                      <td className={styles.td} onClick={() => handleViewBookingDetails(b)} style={{ cursor: 'pointer' }}>
                         <span className={styles.amountText}>{b.amount}</span>
                       </td>
 
@@ -816,7 +829,7 @@ export default function UpcomingBookings() {
                           <button
                             type="button"
                             className={styles.pillBtn}
-                            onClick={() => setSelectedBooking(b)}
+                            onClick={() => handleViewBookingDetails(b)}
                             title="View Details"
                             style={{ display: 'inline-flex', alignItems: 'center', padding: '6px' }}
                           >

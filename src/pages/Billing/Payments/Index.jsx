@@ -18,10 +18,12 @@ import {
   DollarSign,
   AlertCircle,
   FileText,
+  Eye,
 } from 'lucide-react';
 import usePayments from '@hooks/usePayments';
 import Toast from '@components/Toast/Toast';
 import Button from '@components/Button/Button';
+import Modal from '@components/Modal/Modal';
 import styles from './Index.module.css';
 
 export default function BillingPaymentsPage() {
@@ -37,10 +39,13 @@ export default function BillingPaymentsPage() {
     setStatusFilter,
     updatePaymentStatus,
     voidPayment,
+    getPaymentById,
     refetch,
   } = usePayments();
 
   const [toast, setToast] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -66,6 +71,21 @@ export default function BillingPaymentsPage() {
       } catch (err) {
         showToast('Failed to void payment.', 'error');
       }
+    }
+  };
+
+  const handleViewPayment = async (pay) => {
+    setSelectedPayment(pay);
+    setLoadingDetails(true);
+    try {
+      const detailed = await getPaymentById(pay.id);
+      if (detailed) {
+        setSelectedPayment((prev) => (prev && prev.id === pay.id ? { ...prev, ...detailed } : prev));
+      }
+    } catch (err) {
+      console.warn('Failed to load payment details from API:', err);
+    } finally {
+      setLoadingDetails(false);
     }
   };
 
@@ -273,6 +293,14 @@ export default function BillingPaymentsPage() {
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleViewPayment(pay)}
+                            title="View Payment Receipt & Details"
+                            style={{ padding: '4px 8px', fontSize: '12px', background: '#e0f2fe', color: '#0284c7', border: '1px solid #bae6fd', borderRadius: '6px', cursor: 'pointer' }}
+                          >
+                            <Eye size={13} />
+                          </button>
                           {isPaid && (
                             <button
                               type="button"
@@ -308,6 +336,59 @@ export default function BillingPaymentsPage() {
           </table>
         </div>
       </div>
+
+      {/* Payment Details & Receipt Modal */}
+      {selectedPayment && (
+        <Modal
+          isOpen={!!selectedPayment}
+          onClose={() => setSelectedPayment(null)}
+          title="Payment Transaction Details"
+        >
+          <div style={{ padding: '8px 0', fontSize: '13px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+              <div>
+                <strong style={{ color: '#64748b', display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Transaction ID</strong>
+                <span style={{ fontWeight: 600 }}>{selectedPayment.id}</span>
+              </div>
+              <div>
+                <strong style={{ color: '#64748b', display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Date & Time</strong>
+                <span>{selectedPayment.date ? new Date(selectedPayment.date).toLocaleString() : 'N/A'}</span>
+              </div>
+              <div>
+                <strong style={{ color: '#64748b', display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Guest Name</strong>
+                <span style={{ fontWeight: 600 }}>{selectedPayment.guestName}</span>
+              </div>
+              <div>
+                <strong style={{ color: '#64748b', display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Payment Method</strong>
+                <span style={{ textTransform: 'uppercase' }}>{selectedPayment.method?.replace('_', ' ')}</span>
+              </div>
+              <div>
+                <strong style={{ color: '#64748b', display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>UTR / Reference</strong>
+                <span style={{ fontFamily: 'monospace' }}>{selectedPayment.utr || 'N/A'}</span>
+              </div>
+              <div>
+                <strong style={{ color: '#64748b', display: 'block', fontSize: '11px', textTransform: 'uppercase' }}>Status</strong>
+                <span style={{ fontWeight: 700, color: (selectedPayment.status || '').toUpperCase() === 'PAID' ? '#15803d' : '#d97706' }}>
+                  {selectedPayment.status}
+                </span>
+              </div>
+            </div>
+
+            <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 600, color: '#334155' }}>Total Paid Amount</span>
+              <strong style={{ fontSize: '18px', color: '#16a34a' }}>
+                ₹{Number(selectedPayment.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+              </strong>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+              <Button variant="secondary" onClick={() => setSelectedPayment(null)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

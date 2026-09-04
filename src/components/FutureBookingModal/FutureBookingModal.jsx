@@ -48,6 +48,7 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
 
   // Available Rooms list initialized dynamically from backend API
   const [availableRooms, setAvailableRooms] = useState([]);
+  const [liveAvailableRoomIds, setLiveAvailableRoomIds] = useState(null);
 
   useEffect(() => {
     async function loadAvailableRooms() {
@@ -88,6 +89,37 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose, refetchBookings]);
+
+  // Query live availability from backend when date/time changes
+  useEffect(() => {
+    if (!isOpen) return;
+    const firstReq = roomRequirements[0];
+    if (!firstReq?.checkInTime || !firstReq?.checkOutTime) return;
+
+    let isMounted = true;
+    async function checkLiveAvailability() {
+      try {
+        const activeBranchId = localStorage.getItem('syncstays_branch_id');
+        const res = await bookingService.getAvailability({
+          organizationBranchId: activeBranchId,
+          checkInDateTime: firstReq.checkInTime,
+          checkOutDateTime: firstReq.checkOutTime,
+        });
+        const list = res?.data?.responses || res?.data?.rows || res?.data?.data || res?.data || [];
+        if (Array.isArray(list) && isMounted) {
+          const ids = list.map((item) => String(item.id || item.roomId)).filter(Boolean);
+          setLiveAvailableRoomIds(ids);
+        }
+      } catch (err) {
+        console.warn('Live availability check notice:', err);
+      }
+    }
+
+    checkLiveAvailability();
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, roomRequirements[0]?.checkInTime, roomRequirements[0]?.checkOutTime]);
 
   // Robust helper to get active reservation for a room
   const getActiveBookingForRoom = (room) => {
@@ -161,6 +193,10 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
     const numStr = r.roomNumber ? `#${r.roomNumber}` : '';
     const titleStr = r.title || r.roomType?.type || 'Room';
     const priceStr = `₹${r.pricePerNight || 250}/night`;
+
+    if (liveAvailableRoomIds !== null && !liveAvailableRoomIds.includes(String(r.id))) {
+      return `Room ${numStr} - ${titleStr} | ${priceStr} (Not available for selected dates)`;
+    }
 
     if (activeBooking) {
       return `Room ${numStr} - ${titleStr} | ${priceStr} (Reserved: ${activeBooking.checkIn} to ${activeBooking.checkOut})`;

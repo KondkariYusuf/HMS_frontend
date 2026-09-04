@@ -226,7 +226,7 @@ export function useBookings() {
         };
       });
 
-      setBookings(normalizedData.length > 0 ? normalizedData : DEMO_BOOKINGS);
+      setBookings(normalizedData);
     } catch (requestError) {
       console.warn(
         'Bookings API unavailable. Using demo bookings instead.',
@@ -604,6 +604,38 @@ export function useBookings() {
   );
 
   /**
+   * Fetch single booking by ID directly from backend API
+   */
+  const getBookingById = useCallback(
+    async (id) => {
+      try {
+        const response = await bookingService.getById(id);
+        return response?.data || response;
+      } catch (err) {
+        console.warn(`Failed to fetch booking ${id} from API:`, err);
+        return bookings.find((b) => b.id === id) || null;
+      }
+    },
+    [bookings]
+  );
+
+  /**
+   * Query real-time room availability from backend API
+   */
+  const checkAvailability = useCallback(
+    async (params) => {
+      try {
+        const response = await bookingService.getAvailability(params);
+        return response?.data || response;
+      } catch (err) {
+        console.warn('Failed to check availability from API:', err);
+        throw err;
+      }
+    },
+    []
+  );
+
+  /**
    * Recent guests.
    */
   const recentGuests = useMemo(() => {
@@ -791,6 +823,10 @@ export function useBookings() {
     updateBookingStatus,
 
     updateBooking,
+
+    getBookingById,
+
+    checkAvailability,
   };
 }
 
