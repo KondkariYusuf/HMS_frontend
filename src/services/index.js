@@ -8,6 +8,7 @@ export { default as organizationService } from './organizationService';
 export { default as orgTypeService } from './orgTypeService';
 export { default as branchService } from './branchService';
 export { default as subscriptionService } from './subscriptionService';
+export { default as organizationSubscriptionService } from './organizationSubscriptionService';
 export { default as permissionService } from './permissionService';
 export { default as lookupService } from './lookupService';
 export { default as fileService } from './fileService';
