@@ -125,11 +125,15 @@ export function AuthProvider({ children }) {
             name: b.branchName || b.name,
             code: b.code || `BR-${b.id}`,
             location: b.address || b.addressLine1 || b.location || 'Branch Location',
+            countryId: b.countryId || b.country_id || null,
+            stateId: b.stateId || b.state_id || null,
+            cityId: b.cityId || b.city_id || null,
             manager: b.manager || 'Unassigned',
             rooms: b.rooms || 0,
             staff: b.staff || 0,
             occupancy: b.occupancy || 0,
             status: b.status === 'INACTIVE' ? 'Inactive' : 'Active',
+            rawRecord: b,
           }));
           setBranches(apiBranches);
           persistJson(BRANCHES_STORAGE_KEY, apiBranches);
@@ -174,6 +178,9 @@ export function AuthProvider({ children }) {
         `BR-${Date.now()}`,
       location:
         branchData.location?.trim() || 'Not specified',
+      countryId: branchData.countryId || null,
+      stateId: branchData.stateId || null,
+      cityId: branchData.cityId || null,
       manager:
         branchData.manager?.trim() || 'Unassigned',
       rooms: Number(branchData.rooms) || 0,
@@ -217,6 +224,12 @@ export function AuthProvider({ children }) {
         location:
           branchData.location?.trim() ||
           branch.location,
+        countryId:
+          branchData.countryId !== undefined ? branchData.countryId : branch.countryId,
+        stateId:
+          branchData.stateId !== undefined ? branchData.stateId : branch.stateId,
+        cityId:
+          branchData.cityId !== undefined ? branchData.cityId : branch.cityId,
         manager:
           branchData.manager?.trim() ||
           'Unassigned',

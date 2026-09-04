@@ -15,6 +15,8 @@ const emptyForm = {
   code: '',
   location: '',
   countryId: '',
+  stateId: '',
+  cityId: '',
   manager: '',
   rooms: '',
 };
@@ -46,27 +48,56 @@ export default function AdminBranchesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingBranch, setEditingBranch] = useState(null);
   const [form, setForm] = useState(emptyForm);
-  const [countries, setCountries] = useState([
-    { id: '1', name: 'United States' },
-    { id: '2', name: 'India' },
-    { id: '3', name: 'United Kingdom' },
-    { id: '4', name: 'Canada' },
-  ]);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loadingCountries, setLoadingCountries] = useState(false);
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingCities, setLoadingCities] = useState(false);
 
   useEffect(() => {
     async function loadCountries() {
+      setLoadingCountries(true);
       try {
-        const res = await lookupService.getCountries();
-        const countryList = res?.data?.responses || res?.data?.rows || res?.data?.data || (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        const res = await lookupService.getCountries({
+          fetchAll: 'true',
+          getAllCountry: 'true',
+        });
+        const countryList =
+          res?.data?.responses ||
+          res?.data?.rows ||
+          res?.data?.data ||
+          (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
         if (Array.isArray(countryList) && countryList.length > 0) {
           setCountries(countryList);
         }
       } catch (err) {
         console.warn('Country lookup API fallback:', err);
+      } finally {
+        setLoadingCountries(false);
       }
     }
     loadCountries();
   }, []);
+
+  useEffect(() => {
+    if (!showModal) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showModal]);
 
   const activeBranches = useMemo(
     () =>
@@ -99,34 +130,91 @@ export default function AdminBranchesPage() {
   const openCreate = () => {
     setEditingBranch(null);
     setForm({ ...emptyForm });
+    setStates([]);
+    setCities([]);
     setShowModal(true);
   };
 
-  const openEdit = (branch) => {
+  const openEdit = async (branch) => {
     setEditingBranch(branch);
+
+    const initialCountryId = branch?.countryId || branch?.country_id || '';
+    const initialStateId = branch?.stateId || branch?.state_id || '';
+    const initialCityId = branch?.cityId || branch?.city_id || '';
 
     setForm({
       name: branch?.name || '',
       code: branch?.code || '',
-      location: branch?.location || '',
+      location: branch?.location || branch?.addressLine1 || '',
+      countryId: initialCountryId,
+      stateId: initialStateId,
+      cityId: initialCityId,
       manager:
         branch?.manager === 'Unassigned'
           ? ''
           : branch?.manager || '',
       rooms:
         branch?.rooms === undefined ||
-          branch?.rooms === null
+        branch?.rooms === null
           ? ''
           : String(branch.rooms),
     });
 
     setShowModal(true);
+
+    if (initialCountryId) {
+      setLoadingStates(true);
+      try {
+        const stateRes = await lookupService.getStates(initialCountryId, {
+          fetchAll: 'true',
+          getAllState: 'true',
+        });
+        const stateList =
+          stateRes?.data?.responses ||
+          stateRes?.data?.rows ||
+          stateRes?.data?.data ||
+          (Array.isArray(stateRes?.data) ? stateRes.data : (Array.isArray(stateRes) ? stateRes : []));
+        setStates(Array.isArray(stateList) ? stateList : []);
+      } catch (err) {
+        console.warn('Failed to load states on edit:', err);
+        setStates([]);
+      } finally {
+        setLoadingStates(false);
+      }
+    } else {
+      setStates([]);
+    }
+
+    if (initialStateId) {
+      setLoadingCities(true);
+      try {
+        const cityRes = await lookupService.getCities(initialStateId, {
+          fetchAll: 'true',
+          getAllCity: 'true',
+        });
+        const cityList =
+          cityRes?.data?.responses ||
+          cityRes?.data?.rows ||
+          cityRes?.data?.data ||
+          (Array.isArray(cityRes?.data) ? cityRes.data : (Array.isArray(cityRes) ? cityRes : []));
+        setCities(Array.isArray(cityList) ? cityList : []);
+      } catch (err) {
+        console.warn('Failed to load cities on edit:', err);
+        setCities([]);
+      } finally {
+        setLoadingCities(false);
+      }
+    } else {
+      setCities([]);
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setEditingBranch(null);
     setForm({ ...emptyForm });
+    setStates([]);
+    setCities([]);
   };
 
   const handleChange = (event) => {
@@ -138,6 +226,78 @@ export default function AdminBranchesPage() {
         name === 'code'
           ? value.toUpperCase()
           : value,
+    }));
+  };
+
+  const handleCountryChange = async (event) => {
+    const selectedCountryId = event.target.value;
+    setForm((current) => ({
+      ...current,
+      countryId: selectedCountryId,
+      stateId: '',
+      cityId: '',
+    }));
+    setStates([]);
+    setCities([]);
+
+    if (selectedCountryId) {
+      setLoadingStates(true);
+      try {
+        const res = await lookupService.getStates(selectedCountryId, {
+          fetchAll: 'true',
+          getAllState: 'true',
+        });
+        const stateList =
+          res?.data?.responses ||
+          res?.data?.rows ||
+          res?.data?.data ||
+          (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        setStates(Array.isArray(stateList) ? stateList : []);
+      } catch (err) {
+        console.warn('Failed to load states for country:', err);
+        setStates([]);
+      } finally {
+        setLoadingStates(false);
+      }
+    }
+  };
+
+  const handleStateChange = async (event) => {
+    const selectedStateId = event.target.value;
+    setForm((current) => ({
+      ...current,
+      stateId: selectedStateId,
+      cityId: '',
+    }));
+    setCities([]);
+
+    if (selectedStateId) {
+      setLoadingCities(true);
+      try {
+        const res = await lookupService.getCities(selectedStateId, {
+          fetchAll: 'true',
+          getAllCity: 'true',
+        });
+        const cityList =
+          res?.data?.responses ||
+          res?.data?.rows ||
+          res?.data?.data ||
+          (Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []));
+        setCities(Array.isArray(cityList) ? cityList : []);
+      } catch (err) {
+        console.warn('Failed to load cities for state:', err);
+        setCities([]);
+      } finally {
+        setLoadingCities(false);
+      }
+    }
+  };
+
+  const handleCityChange = (event) => {
+    const selectedCityId = event.target.value;
+    setForm((current) => ({
+      ...current,
+      cityId: selectedCityId,
     }));
   };
 
@@ -158,6 +318,9 @@ export default function AdminBranchesPage() {
       name,
       code,
       location,
+      countryId: form.countryId || undefined,
+      stateId: form.stateId || undefined,
+      cityId: form.cityId || undefined,
       manager,
       rooms,
     };
@@ -439,37 +602,78 @@ export default function AdminBranchesPage() {
             </div>
 
             <label>
-              Location
-
+              Location / Address
               <input
                 name="location"
                 value={form.location}
                 onChange={handleChange}
-                placeholder="Branch location"
+                placeholder="Street address or location details"
                 required
               />
             </label>
 
-            <label>
-              Country
+            <div className={styles.formGrid}>
+              <label>
+                Country
+                <select
+                  name="countryId"
+                  value={form.countryId}
+                  onChange={handleCountryChange}
+                  disabled={loadingCountries}
+                >
+                  <option value="">
+                    {loadingCountries ? 'Loading Countries...' : 'Select Country'}
+                  </option>
+                  {countries.map((country) => (
+                    <option key={country.id || country.code || country.name} value={country.id}>
+                      {country.name || country.code}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
+              <label>
+                State / Province
+                <select
+                  name="stateId"
+                  value={form.stateId}
+                  onChange={handleStateChange}
+                  disabled={!form.countryId || loadingStates}
+                >
+                  <option value="">
+                    {!form.countryId
+                      ? 'Select Country First'
+                      : loadingStates
+                        ? 'Loading States...'
+                        : 'Select State'}
+                  </option>
+                  {states.map((state) => (
+                    <option key={state.id || state.name} value={state.id}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <label>
+              City
               <select
-                name="countryId"
-                value={form.countryId}
-                onChange={handleChange}
-                style={{
-                  width: '100%',
-                  padding: '0.6rem 0.8rem',
-                  borderRadius: '6px',
-                  border: '1px solid #cbd5e1',
-                  marginTop: '0.25rem',
-                  backgroundColor: '#fff',
-                }}
+                name="cityId"
+                value={form.cityId}
+                onChange={handleCityChange}
+                disabled={!form.stateId || loadingCities}
               >
-                <option value="">Select Country</option>
-                {countries.map((country) => (
-                  <option key={country.id || country.code || country.name} value={country.id || country.code || country.name}>
-                    {country.name || country.code}
+                <option value="">
+                  {!form.stateId
+                    ? 'Select State First'
+                    : loadingCities
+                      ? 'Loading Cities...'
+                      : 'Select City'}
+                </option>
+                {cities.map((city) => (
+                  <option key={city.id || city.name} value={city.id}>
+                    {city.name}
                   </option>
                 ))}
               </select>
