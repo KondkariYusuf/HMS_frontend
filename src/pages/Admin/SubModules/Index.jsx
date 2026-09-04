@@ -37,6 +37,7 @@ export default function AdminSubModulesPage() {
   const [editingSubModule, setEditingSubModule] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
+  const [fetchingDetails, setFetchingDetails] = useState(false);
 
   // Delete confirmation state
   const [deletingSubModule, setDeletingSubModule] = useState(null);
@@ -148,11 +149,12 @@ export default function AdminSubModulesPage() {
       ...emptyForm,
       moduleId: parentModules[0]?.id || '',
     });
+    setFetchingDetails(false);
     setShowModal(true);
   };
 
-  // Open Edit Modal
-  const openEdit = (subMod) => {
+  // Open Edit Modal with fresh getById call
+  const openEdit = async (subMod) => {
     setEditingSubModule(subMod);
     setForm({
       moduleId: subMod.moduleId || subMod.module?.id || subMod.moduleData?.id || '',
@@ -161,12 +163,33 @@ export default function AdminSubModulesPage() {
       isActive: subMod.isActive !== undefined ? Boolean(subMod.isActive) : true,
     });
     setShowModal(true);
+    setFetchingDetails(true);
+
+    try {
+      const res = await subModuleService.getById(subMod.id, { moduleData: 'true' });
+      if (res && res.success !== false) {
+        const item = res.data?.data || res.data || res;
+        if (item && item.id) {
+          setForm({
+            moduleId: item.moduleId || item.module?.id || item.moduleData?.id || subMod.moduleId || '',
+            name: item.name || '',
+            description: item.description || '',
+            isActive: item.isActive !== undefined ? Boolean(item.isActive) : true,
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch latest sub-module details:', err);
+    } finally {
+      setFetchingDetails(false);
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setEditingSubModule(null);
     setForm(emptyForm);
+    setFetchingDetails(false);
   };
 
   const handleChange = (e) => {
@@ -452,7 +475,11 @@ export default function AdminSubModulesPage() {
             <div className={styles.modalHeader}>
               <div>
                 <h2>{editingSubModule ? 'Edit Sub-Module' : 'Create Sub-Module'}</h2>
-                <p>Configure granular sub-module details below.</p>
+                <p>
+                  {fetchingDetails
+                    ? 'Loading latest sub-module details...'
+                    : 'Configure granular sub-module details below.'}
+                </p>
               </div>
               <button type="button" onClick={closeModal} className={styles.close} aria-label="Close modal">
                 ×
@@ -514,8 +541,12 @@ export default function AdminSubModulesPage() {
               <button type="button" onClick={closeModal}>
                 Cancel
               </button>
-              <Button variant="primary" type="submit" disabled={submitting || !parentModules.length}>
-                {submitting ? 'Saving...' : editingSubModule ? 'Save Changes' : 'Create Sub-Module'}
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={submitting || fetchingDetails || !parentModules.length}
+              >
+                {submitting ? 'Saving...' : fetchingDetails ? 'Loading...' : editingSubModule ? 'Save Changes' : 'Create Sub-Module'}
               </Button>
             </div>
           </form>

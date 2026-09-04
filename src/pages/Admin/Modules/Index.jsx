@@ -33,6 +33,7 @@ export default function AdminModulesPage() {
   const [editingModule, setEditingModule] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
+  const [fetchingDetails, setFetchingDetails] = useState(false);
 
   // Delete confirmation modal state
   const [deletingModule, setDeletingModule] = useState(null);
@@ -102,11 +103,12 @@ export default function AdminModulesPage() {
   const openCreate = () => {
     setEditingModule(null);
     setForm(emptyForm);
+    setFetchingDetails(false);
     setShowModal(true);
   };
 
-  // Open Edit Modal
-  const openEdit = (mod) => {
+  // Open Edit Modal with fresh getById call
+  const openEdit = async (mod) => {
     setEditingModule(mod);
     setForm({
       name: mod.name || '',
@@ -114,12 +116,32 @@ export default function AdminModulesPage() {
       isActive: mod.isActive !== undefined ? Boolean(mod.isActive) : true,
     });
     setShowModal(true);
+    setFetchingDetails(true);
+
+    try {
+      const res = await moduleService.getById(mod.id);
+      if (res && res.success !== false) {
+        const item = res.data?.data || res.data || res;
+        if (item && item.id) {
+          setForm({
+            name: item.name || '',
+            description: item.description || '',
+            isActive: item.isActive !== undefined ? Boolean(item.isActive) : true,
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to fetch latest module details:', err);
+    } finally {
+      setFetchingDetails(false);
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setEditingModule(null);
     setForm(emptyForm);
+    setFetchingDetails(false);
   };
 
   const handleChange = (e) => {
@@ -377,7 +399,11 @@ export default function AdminModulesPage() {
             <div className={styles.modalHeader}>
               <div>
                 <h2>{editingModule ? 'Edit Module' : 'Create Module'}</h2>
-                <p>Configure higher-level domain module details below.</p>
+                <p>
+                  {fetchingDetails
+                    ? 'Loading latest module details...'
+                    : 'Configure higher-level domain module details below.'}
+                </p>
               </div>
               <button type="button" onClick={closeModal} className={styles.close} aria-label="Close modal">
                 ×
@@ -423,8 +449,8 @@ export default function AdminModulesPage() {
               <button type="button" onClick={closeModal}>
                 Cancel
               </button>
-              <Button variant="primary" type="submit" disabled={submitting}>
-                {submitting ? 'Saving...' : editingModule ? 'Save Changes' : 'Create Module'}
+              <Button variant="primary" type="submit" disabled={submitting || fetchingDetails}>
+                {submitting ? 'Saving...' : fetchingDetails ? 'Loading...' : editingModule ? 'Save Changes' : 'Create Module'}
               </Button>
             </div>
           </form>

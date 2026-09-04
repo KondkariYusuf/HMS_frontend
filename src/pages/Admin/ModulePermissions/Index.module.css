@@ -678,3 +678,186 @@
     align-items: stretch;
   }
 }
+
+/* ==========================================================================
+   INLINE MAPPING RECORD INSPECTOR STYLES
+   ========================================================================== */
+
+.permissionItemWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.permHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.inspectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--color-dropdown-bg, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.inspectBtn:hover {
+  background: var(--color-hover);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.inspectBtnActive {
+  background: var(--color-primary-tint, rgba(20, 122, 126, 0.15));
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.inlineInspector {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  padding: 14px 16px;
+  margin-top: -4px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inspectorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.inspectorTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.inspectorIdTag {
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: normal;
+  padding: 2px 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-muted);
+}
+
+.inspectorClose {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.inspectorClose:hover {
+  background: var(--color-hover);
+  color: var(--color-text-primary);
+}
+
+.inspectorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.inspectorItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.inspectorItem label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.inspectorItem span,
+.inspectorItem strong {
+  font-size: 12px;
+  color: var(--color-text-primary);
+  word-break: break-all;
+}
+
+.inspectorItem code {
+  font-family: monospace;
+  font-size: 11px;
+  background: var(--color-surface);
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.inspectorLoading,
+.inspectorError {
+  padding: 10px 0;
+  font-size: 12px;
+  text-align: center;
+}
+
+.inspectorLoading {
+  color: var(--color-text-secondary);
+}
+
+.inspectorError {
+  color: var(--color-error);
+}
+
+/* Dark mode overrides for inspector */
+[data-theme="dark"] .inlineInspector {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .inspectBtn {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .inspectBtnActive {
+  background: rgba(20, 122, 126, 0.25);
+  border-color: var(--color-primary);
+}

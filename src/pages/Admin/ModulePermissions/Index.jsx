@@ -25,6 +25,14 @@ export default function AdminModulePermissionsPage() {
   const [selectedPermissionIds, setSelectedPermissionIds] = useState(new Set());
   const [initialAssignedIds, setInitialAssignedIds] = useState(new Set());
 
+  // Mapping record IDs map: permissionId -> mappingRecordId
+  const [permissionMappingMap, setPermissionMappingMap] = useState({});
+  // Inspected mapping state for GET /api/module-permission/:id
+  const [inspectedMappingId, setInspectedMappingId] = useState(null);
+  const [inspectedMappingData, setInspectedMappingData] = useState(null);
+  const [inspectingLoading, setInspectingLoading] = useState(false);
+  const [inspectingError, setInspectingError] = useState(null);
+
   // Search & frontend-only pagination for permissions
   const [permSearch, setPermSearch] = useState('');
   const [permPage, setPermPage] = useState(1);
@@ -134,11 +142,16 @@ export default function AdminModulePermissionsPage() {
     if (!selectedSubModuleId) {
       setSelectedPermissionIds(new Set());
       setInitialAssignedIds(new Set());
+      setPermissionMappingMap({});
+      setInspectedMappingId(null);
+      setInspectedMappingData(null);
       setPermPage(1);
       return;
     }
 
     setLoadingPermissions(true);
+    setInspectedMappingId(null);
+    setInspectedMappingData(null);
     setPermPage(1);
     try {
       const res = await modulePermissionService.getAll({
@@ -151,25 +164,33 @@ export default function AdminModulePermissionsPage() {
         const mappings = responseData.responses || responseData.rows || (Array.isArray(res.data) ? res.data : []);
 
         const assignedSet = new Set();
+        const mappingIdMap = {};
         if (Array.isArray(mappings)) {
           mappings.forEach((item) => {
-            const permId = item.permissionId || item.permissionData?.id || item.id;
+            const permId = item.permissionId || item.permissionData?.id;
+            const mappingId = item.id;
             if (permId) {
               assignedSet.add(permId);
+              if (mappingId) {
+                mappingIdMap[permId] = mappingId;
+              }
             }
           });
         }
 
         setSelectedPermissionIds(new Set(assignedSet));
         setInitialAssignedIds(new Set(assignedSet));
+        setPermissionMappingMap(mappingIdMap);
       } else {
         setSelectedPermissionIds(new Set());
         setInitialAssignedIds(new Set());
+        setPermissionMappingMap({});
       }
     } catch (err) {
       console.warn('Assigned permissions fetch warning:', err);
       setSelectedPermissionIds(new Set());
       setInitialAssignedIds(new Set());
+      setPermissionMappingMap({});
     } finally {
       setLoadingPermissions(false);
     }
@@ -178,6 +199,39 @@ export default function AdminModulePermissionsPage() {
   useEffect(() => {
     loadAssignedPermissions();
   }, [loadAssignedPermissions]);
+
+  // Inspect individual mapping record (GET /api/module-permission/:id)
+  const handleInspectMapping = async (permId) => {
+    const mappingRecordId = permissionMappingMap[permId];
+    if (!mappingRecordId) return;
+
+    if (inspectedMappingId === mappingRecordId) {
+      // Toggle close if already inspecting this record
+      setInspectedMappingId(null);
+      setInspectedMappingData(null);
+      setInspectingError(null);
+      return;
+    }
+
+    setInspectedMappingId(mappingRecordId);
+    setInspectedMappingData(null);
+    setInspectingLoading(true);
+    setInspectingError(null);
+
+    try {
+      const res = await modulePermissionService.getById(mappingRecordId);
+      if (res && res.success !== false) {
+        const data = res.data?.data || res.data || res;
+        setInspectedMappingData(data);
+      } else {
+        setInspectingError(res?.message || 'Failed to load mapping record details.');
+      }
+    } catch (err) {
+      setInspectingError(err.message || 'Error fetching mapping record details.');
+    } finally {
+      setInspectingLoading(false);
+    }
+  };
 
   // Filter full system permissions dataset by search query
   const filteredPermissions = useMemo(() => {
@@ -448,44 +502,164 @@ export default function AdminModulePermissionsPage() {
                   displayedPermissions.map((perm) => {
                     const isChecked = selectedPermissionIds.has(perm.id);
                     const method = (perm.method || 'GET').toUpperCase();
+                    const mappingRecordId = permissionMappingMap[perm.id];
+                    const isAssigned = Boolean(mappingRecordId);
+                    const isInspecting = inspectedMappingId === mappingRecordId;
 
                     return (
-                      <label
-                        key={perm.id}
-                        className={`${styles.permissionRow} ${
-                          isChecked ? styles.permissionChecked : ''
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => togglePermission(perm.id)}
-                          className={styles.checkbox}
-                        />
+                      <div key={perm.id} className={styles.permissionItemWrap}>
+                        <label
+                          className={`${styles.permissionRow} ${
+                            isChecked ? styles.permissionChecked : ''
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => togglePermission(perm.id)}
+                            className={styles.checkbox}
+                          />
 
-                        <div className={styles.permDetails}>
-                          <div className={styles.permTitleRow}>
-                            <span className={styles.permAction}>
-                              {perm.actionName || perm.code}
-                            </span>
-                            <span
-                              className={`${styles.methodBadge} ${
-                                styles[`method_${method}`] || ''
-                              }`}
-                            >
-                              {method}
-                            </span>
-                            {perm.code && <span className={styles.codeTag}>{perm.code}</span>}
-                          </div>
+                          <div className={styles.permDetails}>
+                            <div className={styles.permTitleRow}>
+                              <span className={styles.permAction}>
+                                {perm.actionName || perm.code}
+                              </span>
+                              <span
+                                className={`${styles.methodBadge} ${
+                                  styles[`method_${method}`] || ''
+                                }`}
+                              >
+                                {method}
+                              </span>
+                              {perm.code && <span className={styles.codeTag}>{perm.code}</span>}
 
-                          <div className={styles.permPathRow}>
-                            {perm.path && <code>{perm.path}</code>}
-                            {perm.description && (
-                              <span className={styles.permDesc}>{perm.description}</span>
-                            )}
+                              {isAssigned && (
+                                <div className={styles.permHeaderRight}>
+                                  <button
+                                    type="button"
+                                    className={`${styles.inspectBtn} ${
+                                      isInspecting ? styles.inspectBtnActive : ''
+                                    }`}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleInspectMapping(perm.id);
+                                    }}
+                                    title="View mapping record details (GET /api/module-permission/:id)"
+                                  >
+                                    ℹ️ {isInspecting ? 'Hide Details' : 'Details'}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className={styles.permPathRow}>
+                              {perm.path && <code>{perm.path}</code>}
+                              {perm.description && (
+                                <span className={styles.permDesc}>{perm.description}</span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </label>
+                        </label>
+
+                        {/* Inline Inspector Section */}
+                        {isInspecting && (
+                          <div className={styles.inlineInspector}>
+                            <div className={styles.inspectorHeader}>
+                              <div className={styles.inspectorTitle}>
+                                <span>Mapping Record Details</span>
+                                <span className={styles.inspectorIdTag}>
+                                  ID: {mappingRecordId}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                className={styles.inspectorClose}
+                                onClick={() => {
+                                  setInspectedMappingId(null);
+                                  setInspectedMappingData(null);
+                                }}
+                                title="Close inspector"
+                              >
+                                ✕
+                              </button>
+                            </div>
+
+                            {inspectingLoading ? (
+                              <div className={styles.inspectorLoading}>
+                                Fetching mapping details from server...
+                              </div>
+                            ) : inspectingError ? (
+                              <div className={styles.inspectorError}>
+                                {inspectingError}
+                              </div>
+                            ) : inspectedMappingData ? (
+                              <div className={styles.inspectorGrid}>
+                                <div className={styles.inspectorItem}>
+                                  <label>Sub-Module</label>
+                                  <strong>
+                                    {inspectedMappingData.subModuleData?.name ||
+                                      selectedSubModule?.name ||
+                                      '—'}
+                                  </strong>
+                                </div>
+
+                                <div className={styles.inspectorItem}>
+                                  <label>Permission Action</label>
+                                  <span>
+                                    {inspectedMappingData.permissionData?.actionName ||
+                                      perm.actionName ||
+                                      '—'}
+                                  </span>
+                                </div>
+
+                                <div className={styles.inspectorItem}>
+                                  <label>Permission Code</label>
+                                  <code>
+                                    {inspectedMappingData.permissionData?.code ||
+                                      perm.code ||
+                                      '—'}
+                                  </code>
+                                </div>
+
+                                <div className={styles.inspectorItem}>
+                                  <label>HTTP Method & Path</label>
+                                  <code>
+                                    {inspectedMappingData.permissionData?.method || method}{' '}
+                                    {inspectedMappingData.permissionData?.path ||
+                                      inspectedMappingData.permissionData?.baseUrl ||
+                                      perm.path ||
+                                      '—'}
+                                  </code>
+                                </div>
+
+                                <div className={styles.inspectorItem}>
+                                  <label>Created At</label>
+                                  <span>
+                                    {inspectedMappingData.createdAt
+                                      ? new Date(
+                                          inspectedMappingData.createdAt
+                                        ).toLocaleString()
+                                      : '—'}
+                                  </span>
+                                </div>
+
+                                <div className={styles.inspectorItem}>
+                                  <label>Last Updated</label>
+                                  <span>
+                                    {inspectedMappingData.updatedAt
+                                      ? new Date(
+                                          inspectedMappingData.updatedAt
+                                        ).toLocaleString()
+                                      : '—'}
+                                  </span>
+                                </div>
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
+                      </div>
                     );
                   })
                 )}
