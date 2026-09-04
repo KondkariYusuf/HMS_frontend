@@ -127,6 +127,30 @@ export default function AdminSettingsPage() {
 
   const [saved, setSaved] = useState(false);
 
+  // Regional & Currency Activation State
+  const [activationTab, setActivationTab] = useState('countries'); // 'countries' | 'states' | 'cities' | 'currencies'
+  const [actCountries, setActCountries] = useState([]);
+  const [actStates, setActStates] = useState([]);
+  const [actCities, setActCities] = useState([]);
+  const [actCurrencies, setActCurrencies] = useState([]);
+
+  // Hierarchical Selectors (States & Cities tabs)
+  const [selectedActCountryId, setSelectedActCountryId] = useState('');
+  const [selectedActStateId, setSelectedActStateId] = useState('');
+  const [hierarchyStates, setHierarchyStates] = useState([]);
+
+  // Search, Filter, Pagination, Selection
+  const [activationSearch, setActivationSearch] = useState('');
+  const [activationStatusFilter, setActivationStatusFilter] = useState('all'); // 'all' | 'inactive' | 'active'
+  const [activationPage, setActivationPage] = useState(1);
+  const [selectedActivationIds, setSelectedActivationIds] = useState(new Set());
+
+  // Loading & Feedback
+  const [actLoading, setActLoading] = useState(false);
+  const [actHierarchyLoading, setActHierarchyLoading] = useState(false);
+  const [activating, setActivating] = useState(false);
+  const [actFeedback, setActFeedback] = useState(null); // { type: 'success' | 'error', message: string }
+
   // Security / Change Password State
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -138,6 +162,387 @@ export default function AdminSettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Helper to determine if an entity is active
+  const isItemActive = (item, tab) => {
+    if (!item) return false;
+    if (tab === 'currencies') {
+      return item.status === 'active' || item.isActive === true;
+    }
+    return Boolean(item.isActive === true || item.isActive === 1 || item.status === 'active');
+  };
+
+  // Data Fetchers for Master Lookups
+  const fetchAllCountries = async () => {
+    setActLoading(true);
+    try {
+      const res = await lookupService.getCountries({
+        fetchAll: 'true',
+        getAllCountry: 'true',
+      });
+      const list =
+        res?.data?.responses ||
+        res?.data?.rows ||
+        res?.data?.data ||
+        (Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []);
+      setActCountries(Array.isArray(list) ? list : []);
+    } catch (err) {
+      console.warn('Failed to load countries for activation:', err);
+      setActCountries([]);
+    } finally {
+      setActLoading(false);
+    }
+  };
+
+  const fetchStatesForCountry = async (countryId) => {
+    if (!countryId) {
+      setActStates([]);
+      return;
+    }
+    setActLoading(true);
+    try {
+      const res = await lookupService.getStates(countryId, {
+        fetchAll: 'true',
+        getAllState: 'true',
+      });
+      const list =
+        res?.data?.responses ||
+        res?.data?.rows ||
+        res?.data?.data ||
+        (Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []);
+      setActStates(Array.isArray(list) ? list : []);
+    } catch (err) {
+      console.warn('Failed to load states for activation:', err);
+      setActStates([]);
+    } finally {
+      setActLoading(false);
+    }
+  };
+
+  const fetchHierarchyStatesForCityTab = async (countryId) => {
+    if (!countryId) {
+      setHierarchyStates([]);
+      return;
+    }
+    setActHierarchyLoading(true);
+    try {
+      const res = await lookupService.getStates(countryId, {
+        fetchAll: 'true',
+        getAllState: 'true',
+      });
+      const list =
+        res?.data?.responses ||
+        res?.data?.rows ||
+        res?.data?.data ||
+        (Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []);
+      setHierarchyStates(Array.isArray(list) ? list : []);
+    } catch (err) {
+      console.warn('Failed to load hierarchy states for cities tab:', err);
+      setHierarchyStates([]);
+    } finally {
+      setActHierarchyLoading(false);
+    }
+  };
+
+  const fetchCitiesForState = async (stateId) => {
+    if (!stateId) {
+      setActCities([]);
+      return;
+    }
+    setActLoading(true);
+    try {
+      const res = await lookupService.getCities(stateId, {
+        fetchAll: 'true',
+        getAllCity: 'true',
+      });
+      const list =
+        res?.data?.responses ||
+        res?.data?.rows ||
+        res?.data?.data ||
+        (Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []);
+      setActCities(Array.isArray(list) ? list : []);
+    } catch (err) {
+      console.warn('Failed to load cities for activation:', err);
+      setActCities([]);
+    } finally {
+      setActLoading(false);
+    }
+  };
+
+  const fetchAllCurrencies = async () => {
+    setActLoading(true);
+    try {
+      const res = await lookupService.getCurrencies({
+        fetchAll: 'true',
+        getAllCurrency: 'true',
+      });
+      const list =
+        res?.data?.responses ||
+        res?.data?.rows ||
+        res?.data?.data ||
+        (Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : []);
+      setActCurrencies(Array.isArray(list) ? list : []);
+    } catch (err) {
+      console.warn('Failed to load currencies for activation:', err);
+      setActCurrencies([]);
+    } finally {
+      setActLoading(false);
+    }
+  };
+
+  const handleTabChange = (nextTab) => {
+    setActivationTab(nextTab);
+    setActivationSearch('');
+    setActivationStatusFilter('all');
+    setActivationPage(1);
+    setSelectedActivationIds(new Set());
+    setActFeedback(null);
+
+    if (nextTab === 'countries') {
+      if (actCountries.length === 0) {
+        fetchAllCountries();
+      }
+    } else if (nextTab === 'states') {
+      if (actCountries.length === 0) {
+        fetchAllCountries();
+      }
+      if (selectedActCountryId) {
+        fetchStatesForCountry(selectedActCountryId);
+      }
+    } else if (nextTab === 'cities') {
+      if (actCountries.length === 0) {
+        fetchAllCountries();
+      }
+      if (selectedActCountryId && hierarchyStates.length === 0) {
+        fetchHierarchyStatesForCityTab(selectedActCountryId);
+      }
+      if (selectedActStateId) {
+        fetchCitiesForState(selectedActStateId);
+      }
+    } else if (nextTab === 'currencies') {
+      if (actCurrencies.length === 0) {
+        fetchAllCurrencies();
+      }
+    }
+  };
+
+  const handleActCountryChangeForStates = (event) => {
+    const countryId = event.target.value;
+    setSelectedActCountryId(countryId);
+    setActivationPage(1);
+    setActivationSearch('');
+    setSelectedActivationIds(new Set());
+    setActFeedback(null);
+    if (countryId) {
+      fetchStatesForCountry(countryId);
+    } else {
+      setActStates([]);
+    }
+  };
+
+  const handleActCountryChangeForCities = (event) => {
+    const countryId = event.target.value;
+    setSelectedActCountryId(countryId);
+    setSelectedActStateId('');
+    setHierarchyStates([]);
+    setActCities([]);
+    setActivationPage(1);
+    setActivationSearch('');
+    setSelectedActivationIds(new Set());
+    setActFeedback(null);
+    if (countryId) {
+      fetchHierarchyStatesForCityTab(countryId);
+    }
+  };
+
+  const handleActStateChangeForCities = (event) => {
+    const stateId = event.target.value;
+    setSelectedActStateId(stateId);
+    setActivationPage(1);
+    setActivationSearch('');
+    setSelectedActivationIds(new Set());
+    setActFeedback(null);
+    if (stateId) {
+      fetchCitiesForState(stateId);
+    } else {
+      setActCities([]);
+    }
+  };
+
+  // Selection handlers
+  const handleToggleSelectId = (id) => {
+    setSelectedActivationIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  // Filtered dataset for active tab
+  const filteredActivationItems = useMemo(() => {
+    let items = [];
+    if (activationTab === 'countries') items = actCountries;
+    else if (activationTab === 'states') items = actStates;
+    else if (activationTab === 'cities') items = actCities;
+    else if (activationTab === 'currencies') items = actCurrencies;
+
+    const term = activationSearch.trim().toLowerCase();
+
+    return items.filter((item) => {
+      const active = isItemActive(item, activationTab);
+      if (activationStatusFilter === 'active' && !active) return false;
+      if (activationStatusFilter === 'inactive' && active) return false;
+
+      if (!term) return true;
+
+      if (activationTab === 'countries') {
+        const name = (item.name || '').toLowerCase();
+        const iso = (item.isoCode || item.iso2 || item.iso3 || item.code || '').toLowerCase();
+        const phone = (item.phonecode || '').toLowerCase();
+        return name.includes(term) || iso.includes(term) || phone.includes(term);
+      }
+      if (activationTab === 'states') {
+        const name = (item.name || '').toLowerCase();
+        return name.includes(term);
+      }
+      if (activationTab === 'cities') {
+        const name = (item.name || '').toLowerCase();
+        return name.includes(term);
+      }
+      if (activationTab === 'currencies') {
+        const name = (item.name || '').toLowerCase();
+        const code = (item.code || '').toLowerCase();
+        const symbol = (item.symbol || '').toLowerCase();
+        return name.includes(term) || code.includes(term) || symbol.includes(term);
+      }
+      return true;
+    });
+  }, [
+    activationTab,
+    actCountries,
+    actStates,
+    actCities,
+    actCurrencies,
+    activationSearch,
+    activationStatusFilter,
+  ]);
+
+  const ITEMS_PER_PAGE = 12;
+  const totalPages = Math.max(1, Math.ceil(filteredActivationItems.length / ITEMS_PER_PAGE));
+  const paginatedActivationItems = useMemo(() => {
+    const start = (activationPage - 1) * ITEMS_PER_PAGE;
+    return filteredActivationItems.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredActivationItems, activationPage]);
+
+  const inactiveFilteredItems = useMemo(() => {
+    return filteredActivationItems.filter((item) => !isItemActive(item, activationTab));
+  }, [filteredActivationItems, activationTab]);
+
+  const allInactiveSelected =
+    inactiveFilteredItems.length > 0 &&
+    inactiveFilteredItems.every((item) => selectedActivationIds.has(item.id));
+
+  const handleToggleSelectAll = () => {
+    if (allInactiveSelected) {
+      // Deselect all inactive in current filtered list
+      setSelectedActivationIds((prev) => {
+        const next = new Set(prev);
+        inactiveFilteredItems.forEach((item) => next.delete(item.id));
+        return next;
+      });
+    } else {
+      // Select all inactive in current filtered list
+      setSelectedActivationIds((prev) => {
+        const next = new Set(prev);
+        inactiveFilteredItems.forEach((item) => next.add(item.id));
+        return next;
+      });
+    }
+  };
+
+  // Execution: Batch or Quick Activate
+  const executeActivation = async (ids) => {
+    if (!ids || ids.length === 0) return;
+    setActivating(true);
+    setActFeedback(null);
+    try {
+      let res;
+      if (activationTab === 'countries') {
+        res = await lookupService.updateCountry({ ids });
+      } else if (activationTab === 'states') {
+        res = await lookupService.updateState({ ids });
+      } else if (activationTab === 'cities') {
+        res = await lookupService.updateCity({ ids });
+      } else if (activationTab === 'currencies') {
+        res = await lookupService.updateCurrency({ ids });
+      }
+
+      if (res && (res.status === 200 || res.success || res.message)) {
+        setActFeedback({
+          type: 'success',
+          message: res.message || `Successfully activated ${ids.length} item(s)!`,
+        });
+
+        setSelectedActivationIds((prev) => {
+          const next = new Set(prev);
+          ids.forEach((id) => next.delete(id));
+          return next;
+        });
+
+        if (activationTab === 'countries') {
+          await fetchAllCountries();
+        } else if (activationTab === 'states') {
+          if (selectedActCountryId) {
+            await fetchStatesForCountry(selectedActCountryId);
+          }
+        } else if (activationTab === 'cities') {
+          if (selectedActStateId) {
+            await fetchCitiesForState(selectedActStateId);
+          }
+        } else if (activationTab === 'currencies') {
+          await fetchAllCurrencies();
+          try {
+            const curRes = await lookupService.getCurrencies();
+            const curList =
+              curRes?.data?.responses ||
+              curRes?.data?.rows ||
+              curRes?.data?.data ||
+              (Array.isArray(curRes?.data) ? curRes.data : []);
+            if (Array.isArray(curList) && curList.length > 0) {
+              setCurrencyList(curList);
+            }
+          } catch {
+            // ignore
+          }
+        }
+      } else {
+        setActFeedback({
+          type: 'error',
+          message: res?.message || 'Failed to activate selected items.',
+        });
+      }
+    } catch (err) {
+      setActFeedback({
+        type: 'error',
+        message: err.message || 'Error occurred while activating items.',
+      });
+    } finally {
+      setActivating(false);
+    }
+  };
+
+  const handleBatchActivate = () => {
+    if (selectedActivationIds.size === 0) return;
+    executeActivation(Array.from(selectedActivationIds));
+  };
+
+  const handleQuickActivate = (id) => {
+    executeActivation([id]);
+  };
 
   const handleChangePassword = async (event) => {
     event.preventDefault();
@@ -214,6 +619,9 @@ export default function AdminSettingsPage() {
           err,
         );
       }
+
+      // Initial preload for countries in activation tab
+      fetchAllCountries();
     }
 
     loadData();
@@ -840,6 +1248,556 @@ export default function AdminSettingsPage() {
                 : 'Save Configuration'}
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* =========================
+          REGIONAL & CURRENCY ACTIVATION
+      ========================= */}
+      <section className={styles.configurationCard} style={{ marginTop: 'var(--space-xl)' }}>
+        <div className={styles.section}>
+          <div className={styles.sectionHeading}>
+            <span className={styles.sectionAccent} />
+            <h2>Regional & Currency Activation</h2>
+          </div>
+
+          {actFeedback && (
+            <div
+              className={
+                actFeedback.type === 'success'
+                  ? styles.feedbackSuccess
+                  : styles.feedbackError
+              }
+            >
+              <span>{actFeedback.type === 'success' ? '✓' : '⚠'}</span>
+              <span>{actFeedback.message}</span>
+            </div>
+          )}
+
+          {/* Sub Tabs */}
+          <div className={styles.activationTabsContainer}>
+            <div className={styles.subTabsList}>
+              <button
+                type="button"
+                className={`${styles.subTabButton} ${
+                  activationTab === 'countries' ? styles.subTabButtonActive : ''
+                }`}
+                onClick={() => handleTabChange('countries')}
+              >
+                <span>Countries</span>
+                <span className={styles.tabBadge}>
+                  {actCountries.length > 0 ? actCountries.length : '0'}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.subTabButton} ${
+                  activationTab === 'states' ? styles.subTabButtonActive : ''
+                }`}
+                onClick={() => handleTabChange('states')}
+              >
+                <span>States</span>
+                {actStates.length > 0 && (
+                  <span className={styles.tabBadge}>{actStates.length}</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.subTabButton} ${
+                  activationTab === 'cities' ? styles.subTabButtonActive : ''
+                }`}
+                onClick={() => handleTabChange('cities')}
+              >
+                <span>Cities</span>
+                {actCities.length > 0 && (
+                  <span className={styles.tabBadge}>{actCities.length}</span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.subTabButton} ${
+                  activationTab === 'currencies' ? styles.subTabButtonActive : ''
+                }`}
+                onClick={() => handleTabChange('currencies')}
+              >
+                <span>Currencies</span>
+                <span className={styles.tabBadge}>
+                  {actCurrencies.length > 0 ? actCurrencies.length : '0'}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* Hierarchy Selectors for States / Cities */}
+          {activationTab === 'states' && (
+            <div className={styles.hierarchyGroup}>
+              <div className={styles.hierarchyItem}>
+                <label htmlFor="states-country-select" className={styles.hierarchyLabel}>
+                  Select Country to Browse States
+                </label>
+                <select
+                  id="states-country-select"
+                  className={styles.filterSelect}
+                  value={selectedActCountryId}
+                  onChange={handleActCountryChangeForStates}
+                >
+                  <option value="">-- Choose Country --</option>
+                  {actCountries.map((c) => (
+                    <option key={c.id || c.name} value={c.id}>
+                      {c.name} {c.isoCode || c.iso2 ? `(${c.isoCode || c.iso2})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
+          {activationTab === 'cities' && (
+            <div className={styles.hierarchyGroup}>
+              <div className={styles.hierarchyItem}>
+                <label htmlFor="cities-country-select" className={styles.hierarchyLabel}>
+                  Step 1: Select Country
+                </label>
+                <select
+                  id="cities-country-select"
+                  className={styles.filterSelect}
+                  value={selectedActCountryId}
+                  onChange={handleActCountryChangeForCities}
+                >
+                  <option value="">-- Choose Country --</option>
+                  {actCountries.map((c) => (
+                    <option key={c.id || c.name} value={c.id}>
+                      {c.name} {c.isoCode || c.iso2 ? `(${c.isoCode || c.iso2})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.hierarchyItem}>
+                <label htmlFor="cities-state-select" className={styles.hierarchyLabel}>
+                  Step 2: Select State / Province
+                </label>
+                <select
+                  id="cities-state-select"
+                  className={styles.filterSelect}
+                  value={selectedActStateId}
+                  onChange={handleActStateChangeForCities}
+                  disabled={!selectedActCountryId || actHierarchyLoading}
+                >
+                  <option value="">
+                    {!selectedActCountryId
+                      ? '-- Select Country First --'
+                      : actHierarchyLoading
+                      ? 'Loading States...'
+                      : '-- Choose State --'}
+                  </option>
+                  {hierarchyStates.map((s) => (
+                    <option key={s.id || s.name} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
+          {/* Search, Filter & Batch Action Toolbar */}
+          <div className={styles.activationToolbar}>
+            <div className={styles.toolbarFilters}>
+              <div className={styles.searchBox}>
+                <span className={styles.searchIcon}>🔍</span>
+                <input
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder={
+                    activationTab === 'countries'
+                      ? 'Search country name or code...'
+                      : activationTab === 'states'
+                      ? 'Search state name...'
+                      : activationTab === 'cities'
+                      ? 'Search city name...'
+                      : 'Search currency name, code or symbol...'
+                  }
+                  value={activationSearch}
+                  onChange={(e) => {
+                    setActivationSearch(e.target.value);
+                    setActivationPage(1);
+                  }}
+                />
+              </div>
+
+              <select
+                className={styles.filterSelect}
+                value={activationStatusFilter}
+                onChange={(e) => {
+                  setActivationStatusFilter(e.target.value);
+                  setActivationPage(1);
+                }}
+                aria-label="Filter by activation status"
+              >
+                <option value="all">All Statuses</option>
+                <option value="inactive">Inactive Only</option>
+                <option value="active">Active Only</option>
+              </select>
+            </div>
+
+            <div className={styles.toolbarActions}>
+              {selectedActivationIds.size > 0 && (
+                <div className={styles.selectionIndicator}>
+                  <span>Selected:</span>
+                  <span className={styles.selectionCount}>
+                    {selectedActivationIds.size}
+                  </span>
+                </div>
+              )}
+
+              <Button
+                variant="primary"
+                onClick={handleBatchActivate}
+                disabled={selectedActivationIds.size === 0 || activating}
+              >
+                {activating
+                  ? 'Activating...'
+                  : selectedActivationIds.size > 0
+                  ? `Activate Selected (${selectedActivationIds.size})`
+                  : 'Activate Selected'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className={styles.tableResponsive}>
+            <table className={styles.activationTable}>
+              <thead>
+                <tr>
+                  <th className={styles.checkboxCol}>
+                    <input
+                      type="checkbox"
+                      className={styles.itemCheckbox}
+                      checked={allInactiveSelected}
+                      disabled={inactiveFilteredItems.length === 0 || actLoading}
+                      onChange={handleToggleSelectAll}
+                      title="Select all inactive items"
+                      aria-label="Select all inactive items"
+                    />
+                  </th>
+                  {activationTab === 'countries' && (
+                    <>
+                      <th>Country Name</th>
+                      <th>ISO / Code</th>
+                      <th>Phone Code</th>
+                      <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Action</th>
+                    </>
+                  )}
+                  {activationTab === 'states' && (
+                    <>
+                      <th>State Name</th>
+                      <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Action</th>
+                    </>
+                  )}
+                  {activationTab === 'cities' && (
+                    <>
+                      <th>City Name</th>
+                      <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Action</th>
+                    </>
+                  )}
+                  {activationTab === 'currencies' && (
+                    <>
+                      <th>Currency Name</th>
+                      <th>Code</th>
+                      <th>Symbol</th>
+                      <th>Status</th>
+                      <th style={{ textAlign: 'right' }}>Action</th>
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {actLoading ? (
+                  <tr>
+                    <td colSpan={6} className={styles.tableEmptyMessage}>
+                      <div className={styles.emptyStateTitle}>Loading Master Records...</div>
+                      <p>Fetching data from lookup service</p>
+                    </td>
+                  </tr>
+                ) : activationTab === 'states' && !selectedActCountryId ? (
+                  <tr>
+                    <td colSpan={6} className={styles.tableEmptyMessage}>
+                      <div className={styles.emptyStateTitle}>No Country Selected</div>
+                      <p>Please choose a country from the dropdown above to view and activate its states.</p>
+                    </td>
+                  </tr>
+                ) : activationTab === 'cities' && (!selectedActCountryId || !selectedActStateId) ? (
+                  <tr>
+                    <td colSpan={6} className={styles.tableEmptyMessage}>
+                      <div className={styles.emptyStateTitle}>
+                        {!selectedActCountryId
+                          ? 'No Country Selected'
+                          : 'No State Selected'}
+                      </div>
+                      <p>
+                        {!selectedActCountryId
+                          ? 'Please select a country, then a state above to view and activate cities.'
+                          : 'Please choose a state from the dropdown above to view and activate its cities.'}
+                      </p>
+                    </td>
+                  </tr>
+                ) : paginatedActivationItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className={styles.tableEmptyMessage}>
+                      <div className={styles.emptyStateTitle}>No Records Found</div>
+                      <p>No matching items found for the selected filters.</p>
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedActivationItems.map((item) => {
+                    const active = isItemActive(item, activationTab);
+                    const isSelected = selectedActivationIds.has(item.id);
+
+                    return (
+                      <tr key={item.id || item.code || item.name}>
+                        <td className={styles.checkboxCol}>
+                          <input
+                            type="checkbox"
+                            className={styles.itemCheckbox}
+                            checked={isSelected}
+                            disabled={active || activating}
+                            onChange={() => handleToggleSelectId(item.id)}
+                            title={active ? 'Already Active' : 'Select for activation'}
+                            aria-label={`Select ${item.name || item.code}`}
+                          />
+                        </td>
+
+                        {activationTab === 'countries' && (
+                          <>
+                            <td>
+                              <div className={styles.itemNameCol}>
+                                {item.flag && item.flag.length <= 4 ? (
+                                  <span className={styles.flagEmoji}>{item.flag}</span>
+                                ) : null}
+                                <span>{item.name}</span>
+                              </div>
+                            </td>
+                            <td>
+                              <span className={styles.codeBadge}>
+                                {item.isoCode || item.iso2 || item.iso3 || item.code || '—'}
+                              </span>
+                            </td>
+                            <td>
+                              <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                                {item.phonecode || item.phoneCode ? `+${item.phonecode || item.phoneCode}` : '—'}
+                              </span>
+                            </td>
+                            <td>
+                              <span
+                                className={`${styles.statusBadge} ${
+                                  active ? styles.statusBadgeActive : styles.statusBadgeInactive
+                                }`}
+                              >
+                                {active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              {!active ? (
+                                <button
+                                  type="button"
+                                  className={styles.quickActivateButton}
+                                  onClick={() => handleQuickActivate(item.id)}
+                                  disabled={activating}
+                                >
+                                  Activate
+                                </button>
+                              ) : (
+                                <span className={styles.alreadyActiveText}>Active</span>
+                              )}
+                            </td>
+                          </>
+                        )}
+
+                        {activationTab === 'states' && (
+                          <>
+                            <td>
+                              <strong>{item.name}</strong>
+                            </td>
+                            <td>
+                              <span
+                                className={`${styles.statusBadge} ${
+                                  active ? styles.statusBadgeActive : styles.statusBadgeInactive
+                                }`}
+                              >
+                                {active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              {!active ? (
+                                <button
+                                  type="button"
+                                  className={styles.quickActivateButton}
+                                  onClick={() => handleQuickActivate(item.id)}
+                                  disabled={activating}
+                                >
+                                  Activate
+                                </button>
+                              ) : (
+                                <span className={styles.alreadyActiveText}>Active</span>
+                              )}
+                            </td>
+                          </>
+                        )}
+
+                        {activationTab === 'cities' && (
+                          <>
+                            <td>
+                              <strong>{item.name}</strong>
+                            </td>
+                            <td>
+                              <span
+                                className={`${styles.statusBadge} ${
+                                  active ? styles.statusBadgeActive : styles.statusBadgeInactive
+                                }`}
+                              >
+                                {active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              {!active ? (
+                                <button
+                                  type="button"
+                                  className={styles.quickActivateButton}
+                                  onClick={() => handleQuickActivate(item.id)}
+                                  disabled={activating}
+                                >
+                                  Activate
+                                </button>
+                              ) : (
+                                <span className={styles.alreadyActiveText}>Active</span>
+                              )}
+                            </td>
+                          </>
+                        )}
+
+                        {activationTab === 'currencies' && (
+                          <>
+                            <td>
+                              <strong>{item.name}</strong>
+                            </td>
+                            <td>
+                              <span className={styles.codeBadge}>{item.code || '—'}</span>
+                            </td>
+                            <td>
+                              <span style={{ fontSize: '13px', fontWeight: 600 }}>
+                                {item.symbol || '—'}
+                              </span>
+                            </td>
+                            <td>
+                              <span
+                                className={`${styles.statusBadge} ${
+                                  active ? styles.statusBadgeActive : styles.statusBadgeInactive
+                                }`}
+                              >
+                                {active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              {!active ? (
+                                <button
+                                  type="button"
+                                  className={styles.quickActivateButton}
+                                  onClick={() => handleQuickActivate(item.id)}
+                                  disabled={activating}
+                                >
+                                  Activate
+                                </button>
+                              ) : (
+                                <span className={styles.alreadyActiveText}>Active</span>
+                              )}
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination Controls */}
+          {filteredActivationItems.length > 0 && (
+            <div className={styles.paginationBar}>
+              <span>
+                Showing{' '}
+                <strong>
+                  {Math.min(
+                    (activationPage - 1) * ITEMS_PER_PAGE + 1,
+                    filteredActivationItems.length
+                  )}
+                </strong>{' '}
+                to{' '}
+                <strong>
+                  {Math.min(
+                    activationPage * ITEMS_PER_PAGE,
+                    filteredActivationItems.length
+                  )}
+                </strong>{' '}
+                of <strong>{filteredActivationItems.length}</strong> entries
+              </span>
+
+              <div className={styles.paginationButtons}>
+                <button
+                  type="button"
+                  className={styles.pageNavBtn}
+                  onClick={() => setActivationPage((p) => Math.max(1, p - 1))}
+                  disabled={activationPage === 1}
+                >
+                  Prev
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((p) => {
+                    if (totalPages <= 7) return true;
+                    if (p === 1 || p === totalPages) return true;
+                    return Math.abs(p - activationPage) <= 1;
+                  })
+                  .map((p, idx, arr) => {
+                    const prevPage = arr[idx - 1];
+                    const showEllipsis = prevPage && p - prevPage > 1;
+
+                    return (
+                      <React.Fragment key={p}>
+                        {showEllipsis && <span style={{ padding: '0 4px' }}>...</span>}
+                        <button
+                          type="button"
+                          className={`${styles.pageNavBtn} ${
+                            activationPage === p ? styles.pageNavBtnActive : ''
+                          }`}
+                          onClick={() => setActivationPage(p)}
+                        >
+                          {p}
+                        </button>
+                      </React.Fragment>
+                    );
+                  })}
+
+                <button
+                  type="button"
+                  className={styles.pageNavBtn}
+                  onClick={() =>
+                    setActivationPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={activationPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
