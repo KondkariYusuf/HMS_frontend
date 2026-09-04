@@ -46,6 +46,22 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
     return d.toISOString().slice(0, 16);
   }, []);
 
+  // Room requirements array
+  const [roomRequirements, setRoomRequirements] = useState([
+    {
+      id: 'rr-1',
+      roomId: '',
+      roomType: 'Deluxe Suite',
+      checkInTime: defaultCheckIn,
+      checkOutTime: defaultCheckOut,
+      noOfAdults: 2,
+      noOfChild: 0,
+      noOfInfants: 0,
+      rentPerNight: 250,
+      advanceDeposit: 50,
+    },
+  ]);
+
   // Available Rooms list initialized dynamically from backend API
   const [availableRooms, setAvailableRooms] = useState([]);
   const [liveAvailableRoomIds, setLiveAvailableRoomIds] = useState(null);
@@ -204,21 +220,6 @@ export default function FutureBookingModal({ isOpen, onClose, onBookingCreated, 
     return `Room ${numStr} - ${titleStr} | ${priceStr} (Available)`;
   };
 
-  // Room requirements array
-  const [roomRequirements, setRoomRequirements] = useState([
-    {
-      id: 'rr-1',
-      roomId: '',
-      roomType: 'Deluxe Suite',
-      checkInTime: defaultCheckIn,
-      checkOutTime: defaultCheckOut,
-      noOfAdults: 2,
-      noOfChild: 0,
-      noOfInfants: 0,
-      rentPerNight: 250,
-      advanceDeposit: 50,
-    },
-  ]);
 
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -73,6 +73,33 @@ export function getPermissionHeaders(permissionCode) {
       };
     }
 
+    // Standard module/submodule header fallback based on permission code
+    const primaryCode = codesToTry[0] || '';
+    if (primaryCode.startsWith('BOOKING')) {
+      return {
+        'x-module-name': 'Hotel Operations',
+        'x-submodule-name': 'Bookings & Check-In',
+      };
+    }
+    if (primaryCode.startsWith('ROOM')) {
+      return {
+        'x-module-name': 'Hotel Operations',
+        'x-submodule-name': 'Room Setup',
+      };
+    }
+    if (primaryCode.startsWith('HOTEL_GUEST') || primaryCode.startsWith('GUEST')) {
+      return {
+        'x-module-name': 'Hotel Operations',
+        'x-submodule-name': 'Guest Directory',
+      };
+    }
+    if (primaryCode.startsWith('INVOICE') || primaryCode.startsWith('PAYMENT')) {
+      return {
+        'x-module-name': 'Hotel Management',
+        'x-submodule-name': 'Billing & Payments',
+      };
+    }
+
     return {};
   } catch (error) {
     console.error('Error resolving permission headers:', error);
