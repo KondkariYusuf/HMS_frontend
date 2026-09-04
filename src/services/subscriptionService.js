@@ -24,7 +24,7 @@ const getAuthHeaders = () => {
 export const subscriptionService = {
   /**
    * List all subscription plans
-   * GET /api/subscription-plan?status=active
+   * GET /api/subscription-plan?page=1&limit=10
    */
   getAll: async (params = {}) => {
     const query = new window.URLSearchParams(params).toString();
@@ -40,7 +40,7 @@ export const subscriptionService = {
   /**
    * Get subscription plan details by ID
    * GET /api/subscription-plan/:id
-   * @param {string|number} id
+   * @param {string} id
    */
   getById: async (id) => {
     const res = await fetch(`${getApiBaseUrl()}/${id}`, {
@@ -53,7 +53,7 @@ export const subscriptionService = {
   /**
    * Create subscription plan
    * POST /api/subscription-plan
-   * @param {Object} data { planName, price, duration, features }
+   * @param {Object} data - { name, description, priceMonthly, priceYearly, trialDays, isActive, modules, resourceLimits }
    */
   create: async (data) => {
     const res = await fetch(getApiBaseUrl(), {
@@ -67,8 +67,8 @@ export const subscriptionService = {
   /**
    * Update subscription plan info
    * PUT /api/subscription-plan/:id
-   * @param {string|number} id
-   * @param {Object} data { planName, price, duration }
+   * @param {string} id
+   * @param {Object} data - { name, description, priceMonthly, priceYearly, trialDays, isActive, modules, resourceLimits }
    */
   update: async (id, data) => {
     const res = await fetch(`${getApiBaseUrl()}/${id}`, {
@@ -82,52 +82,90 @@ export const subscriptionService = {
   /**
    * Toggle subscription plan status
    * PATCH /api/subscription-plan/:id/status
-   * @param {string|number} id
-   * @param {boolean} status
+   * @param {string} id
+   * @param {boolean} isActive
    */
-  updateStatus: async (id, status) => {
+  updateStatus: async (id, isActive) => {
     const res = await fetch(`${getApiBaseUrl()}/${id}/status`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ isActive: Boolean(isActive) }),
     });
     return res.json();
   },
 
   /**
-   * Assign modules to plan
+   * Assign/toggle a single module for plan
    * PATCH /api/subscription-plan/:id/module
-   * @param {string|number} id
-   * @param {Array<string|number>} moduleIds
+   * @param {string} id
+   * @param {Object|string} moduleDataOrId - { moduleId, enable } or moduleId
+   * @param {boolean} [enableVal=true]
    */
-  assignModules: async (id, moduleIds) => {
+  updateModule: async (id, moduleDataOrId, enableVal = true) => {
+    const payload =
+      typeof moduleDataOrId === 'object' && moduleDataOrId !== null
+        ? {
+            moduleId: moduleDataOrId.moduleId || moduleDataOrId.module_id,
+            enable: moduleDataOrId.enable !== undefined ? Boolean(moduleDataOrId.enable) : true,
+          }
+        : {
+            moduleId: moduleDataOrId,
+            enable: Boolean(enableVal),
+          };
+
     const res = await fetch(`${getApiBaseUrl()}/${id}/module`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ moduleIds }),
+      body: JSON.stringify(payload),
     });
     return res.json();
   },
 
   /**
-   * Set plan resource limits
-   * PATCH /api/subscription-plan/:id/resource-limit
-   * @param {string|number} id
-   * @param {Object} limits { maxRooms, maxUsers }
+   * Alias for updateModule
    */
-  setResourceLimits: async (id, limits) => {
+  assignModules: async (id, moduleDataOrId, enableVal = true) => {
+    return subscriptionService.updateModule(id, moduleDataOrId, enableVal);
+  },
+
+  /**
+   * Set plan single resource limit
+   * PATCH /api/subscription-plan/:id/resource-limit
+   * @param {string} id
+   * @param {Object|string} codeOrData - { resourceCode, limit } or resourceCode
+   * @param {number} [limitVal]
+   */
+  updateResourceLimit: async (id, codeOrData, limitVal) => {
+    const payload =
+      typeof codeOrData === 'object' && codeOrData !== null
+        ? {
+            resourceCode: String(codeOrData.resourceCode).trim(),
+            limit: parseInt(codeOrData.limit, 10) || 0,
+          }
+        : {
+            resourceCode: String(codeOrData).trim(),
+            limit: parseInt(limitVal, 10) || 0,
+          };
+
     const res = await fetch(`${getApiBaseUrl()}/${id}/resource-limit`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
-      body: JSON.stringify(limits),
+      body: JSON.stringify(payload),
     });
     return res.json();
+  },
+
+  /**
+   * Alias for updateResourceLimit
+   */
+  setResourceLimits: async (id, codeOrData, limitVal) => {
+    return subscriptionService.updateResourceLimit(id, codeOrData, limitVal);
   },
 
   /**
    * Delete subscription plan by ID
    * DELETE /api/subscription-plan/:id
-   * @param {string|number} id
+   * @param {string} id
    */
   delete: async (id) => {
     const res = await fetch(`${getApiBaseUrl()}/${id}`, {
