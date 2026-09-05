@@ -46,14 +46,34 @@ export const roomTypeService = {
       mergedOptions
     );
   },
-  getById: (id, options) =>
-    backendApi.get(ROOM_TYPE_ENDPOINTS.GET_BY_ID(id), options),
-  create: (data, options) =>
-    backendApi.post(ROOM_TYPE_ENDPOINTS.CREATE, data, options),
-  update: (id, data, options) =>
-    backendApi.put(ROOM_TYPE_ENDPOINTS.UPDATE(id), data, options),
-  delete: (id, options) =>
-    backendApi.delete(ROOM_TYPE_ENDPOINTS.DELETE(id), options),
+  getById: (id, options = {}) => {
+    const permHeaders = getPermissionHeaders(['ROOM_TYPE_READ', 'ROOM_TYPE_READALL']);
+    return backendApi.get(ROOM_TYPE_ENDPOINTS.GET_BY_ID(id), {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+  create: (data, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_TYPE_CREATE');
+    return backendApi.post(ROOM_TYPE_ENDPOINTS.CREATE, data, {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+  update: (id, data, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_TYPE_UPDATE');
+    return backendApi.put(ROOM_TYPE_ENDPOINTS.UPDATE(id), data, {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+  delete: (id, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_TYPE_DELETE');
+    return backendApi.delete(ROOM_TYPE_ENDPOINTS.DELETE(id), {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
 };
 
 export default roomTypeService;

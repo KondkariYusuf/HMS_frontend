@@ -47,14 +47,34 @@ export const roomService = {
       mergedOptions
     );
   },
-  getById: (id, options) =>
-    backendApi.get(ROOM_ENDPOINTS.GET_BY_ID(id), options),
-  create: (data, options) =>
-    backendApi.post(ROOM_ENDPOINTS.CREATE, data, options),
-  update: (id, data, options) =>
-    backendApi.put(ROOM_ENDPOINTS.UPDATE(id), data, options),
-  delete: (id, options) =>
-    backendApi.delete(ROOM_ENDPOINTS.DELETE(id), options),
+  getById: (id, options = {}) => {
+    const permHeaders = getPermissionHeaders(['ROOM_READ', 'ROOM_READALL']);
+    return backendApi.get(ROOM_ENDPOINTS.GET_BY_ID(id), {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+  create: (data, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_CREATE');
+    return backendApi.post(ROOM_ENDPOINTS.CREATE, data, {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+  update: (id, data, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_UPDATE');
+    return backendApi.put(ROOM_ENDPOINTS.UPDATE(id), data, {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
+  delete: (id, options = {}) => {
+    const permHeaders = getPermissionHeaders('ROOM_DELETE');
+    return backendApi.delete(ROOM_ENDPOINTS.DELETE(id), {
+      ...options,
+      headers: { ...permHeaders, ...options?.headers },
+    });
+  },
   bulkDelete: (roomIds, options = {}) => {
     const permHeaders = getPermissionHeaders('ROOM_DELETE');
     const mergedOptions = {

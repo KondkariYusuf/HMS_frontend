@@ -19,6 +19,7 @@ export default function Modal({
   title = 'Modal Title',
   children,
   footer,
+  maxWidth,
 }) {
   useEffect(() => {
     if (!isOpen) return;
@@ -45,6 +46,7 @@ export default function Modal({
     <div className={styles.backdrop} onClick={onClose} data-testid="modal">
       <div
         className={styles.dialog}
+        style={maxWidth ? { maxWidth } : undefined}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

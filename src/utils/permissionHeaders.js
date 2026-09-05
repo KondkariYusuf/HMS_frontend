@@ -99,6 +99,18 @@ export function getPermissionHeaders(permissionCode) {
         'x-submodule-name': 'Billing & Payments',
       };
     }
+    if (primaryCode.startsWith('AMENITY') || primaryCode.startsWith('EXTRA_SERVICE')) {
+      return {
+        'x-module-name': 'Hotel Management',
+        'x-submodule-name': 'Hotel Services',
+      };
+    }
+    if (primaryCode.startsWith('FILE')) {
+      return {
+        'x-module-name': 'Hotel Operations',
+        'x-submodule-name': 'Room Setup',
+      };
+    }
 
     return {};
   } catch (error) {
