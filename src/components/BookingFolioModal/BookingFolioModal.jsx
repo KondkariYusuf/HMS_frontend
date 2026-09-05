@@ -23,6 +23,7 @@ import {
   History,
   CheckCircle2,
   DollarSign,
+  Eye,
 } from 'lucide-react';
 
 import bookingService from '@services/bookingService';
@@ -31,12 +32,14 @@ import { paymentService } from '@services/paymentService';
 import { backendApi } from '@utils/backendApiClient';
 import { getPermissionHeaders } from '@utils/permissionHeaders';
 import Button from '@components/Button/Button';
+import PaymentDetailsModal from '@components/PaymentDetailsModal/PaymentDetailsModal';
 import styles from './BookingFolioModal.module.css';
 
 export default function BookingFolioModal({ isOpen, onClose, booking, onToast }) {
   const [activeTab, setActiveTab] = useState('ledger'); // 'ledger' | 'payments'
   const [folioData, setFolioData] = useState(null);
   const [paymentHistory, setPaymentHistory] = useState([]);
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
@@ -709,20 +712,27 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
                 <table className={styles.table}>
                   <thead>
                     <tr>
-                      <th>PAYMENT ID / DATE</th>
+                      <th>PAYMENT REF / DATE</th>
                       <th>METHOD</th>
                       <th>TRANSACTION REF / UTR</th>
                       <th>STATUS</th>
                       <th style={{ textAlign: 'right' }}>AMOUNT PAID</th>
+                      <th style={{ width: '60px', textAlign: 'center' }}>DETAILS</th>
                     </tr>
                   </thead>
                   <tbody>
                     {paymentHistory && paymentHistory.length > 0 ? (
                       paymentHistory.map((pay) => (
-                        <tr key={pay.id || pay.createdAt}>
+                        <tr
+                          key={pay.id || pay.createdAt}
+                          onClick={() => setSelectedPaymentId(pay.id)}
+                          style={{ cursor: 'pointer' }}
+                          title="Click to view detailed payment receipt"
+                        >
                           <td>
                             <div style={{ fontWeight: 600, fontSize: '13px', color: '#0f172a' }}>
-                              {pay.id || 'PAY-REF'}
+                              {pay.paymentFor ? `${pay.paymentFor.toUpperCase()} #` : 'PAY-REF '}
+                              {pay.id ? pay.id.slice(0, 8) : ''}
                             </div>
                             <div style={{ fontSize: '11px', color: '#64748b' }}>
                               {new Date(pay.paidAt || pay.createdAt || Date.now()).toLocaleString()}
@@ -754,11 +764,32 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
                           <td style={{ textAlign: 'right', fontWeight: 700, color: '#16a34a', fontSize: '14px' }}>
                             ₹{Number(pay.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                           </td>
+                          <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedPaymentId(pay.id)}
+                              title="View Payment Details"
+                              style={{
+                                border: '1px solid #e2e8f0',
+                                background: '#f8fafc',
+                                borderRadius: '6px',
+                                padding: '5px 8px',
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#0284c7',
+                                transition: 'all 0.15s ease',
+                              }}
+                            >
+                              <Eye size={15} />
+                            </button>
+                          </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={5} style={{ textAlign: 'center', padding: '28px', color: '#64748b' }}>
+                        <td colSpan={6} style={{ textAlign: 'center', padding: '28px', color: '#64748b' }}>
                           <CreditCard size={24} style={{ display: 'block', margin: '0 auto 8px auto', opacity: 0.5 }} />
                           No payment receipts recorded for this booking yet.
                         </td>
@@ -836,6 +867,13 @@ export default function BookingFolioModal({ isOpen, onClose, booking, onToast })
           </Button>
         </div>
       </div>
+
+      {/* Detailed Payment View Modal (calls GET /api/payment/:id) */}
+      <PaymentDetailsModal
+        isOpen={Boolean(selectedPaymentId)}
+        paymentId={selectedPaymentId}
+        onClose={() => setSelectedPaymentId(null)}
+      />
     </div>
   );
 }

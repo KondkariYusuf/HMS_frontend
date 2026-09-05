@@ -23,6 +23,7 @@ import roomService from '@services/roomService';
 import roomTypeService from '@services/roomTypeService';
 import amenityService from '@services/amenityService';
 import fileService from '@services/fileService';
+import ImageViewerModal from '@components/ImageViewerModal/ImageViewerModal';
 import styles from './Index.module.css';
 
 const isValidUUID = (str) =>
@@ -470,6 +471,12 @@ export default function HotelRoomsPage() {
   const [selectedRoomDetail, setSelectedRoomDetail] = useState(null);
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+
+  // Lightbox Image Viewer State
+  const [viewerImages, setViewerImages] = useState([]);
+  const [viewerInitialIndex, setViewerInitialIndex] = useState(0);
+  const [viewerTitle, setViewerTitle] = useState('');
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   // Form Field State for Add/Edit (Strictly 19+ backend fields + image upload)
   const [formData, setFormData] = useState(defaultInitialFormData);
@@ -1392,7 +1399,20 @@ export default function HotelRoomsPage() {
                       <td className={styles.td}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           {rm.images && rm.images.length > 0 ? (
-                            <img src={rm.images[0].url} alt="" className={styles.tableThumb} />
+                            <img
+                              src={rm.images[0].url}
+                              alt=""
+                              className={styles.tableThumb}
+                              style={{ cursor: 'pointer' }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setViewerImages(rm.images);
+                                setViewerInitialIndex(0);
+                                setViewerTitle(`Room ${rm.roomNumber} - Photos`);
+                                setIsViewerOpen(true);
+                              }}
+                              title="Click to view & zoom photos"
+                            />
                           ) : null}
                           <span className={styles.codeBadge}>{rm.roomNumber}</span>
                         </div>
@@ -2050,11 +2070,29 @@ export default function HotelRoomsPage() {
             {/* Room Photos Gallery in Detail View */}
             {selectedRoomDetail.images && selectedRoomDetail.images.length > 0 && (
               <div className={styles.detailSection}>
-                <h4 className={styles.sectionTitle}>Room Photos ({selectedRoomDetail.images.length})</h4>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <h4 className={styles.sectionTitle} style={{ margin: 0 }}>Room Photos ({selectedRoomDetail.images.length})</h4>
+                  <span style={{ fontSize: '12px', color: 'var(--color-primary)', fontWeight: 500 }}>
+                    Click photo to zoom & inspect
+                  </span>
+                </div>
                 <div className={styles.imageGalleryGrid}>
                   {selectedRoomDetail.images.map((img, idx) => (
-                    <div key={idx} className={styles.imageCard}>
+                    <div
+                      key={idx}
+                      className={`${styles.imageCard} ${styles.zoomableImageCard}`}
+                      onClick={() => {
+                        setViewerImages(selectedRoomDetail.images);
+                        setViewerInitialIndex(idx);
+                        setViewerTitle(`Room ${selectedRoomDetail.roomNumber} - Photo ${idx + 1}`);
+                        setIsViewerOpen(true);
+                      }}
+                      title="Click to view & zoom photo"
+                    >
                       <img src={img.url} alt={img.name || `Photo ${idx + 1}`} className={styles.imageThumb} />
+                      <span className={styles.imageZoomOverlay}>
+                        <EyeIcon size={18} />
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -2221,6 +2259,15 @@ export default function HotelRoomsPage() {
         title="Bulk Delete Rooms"
         message={`Are you sure you want to permanently delete ${selectedRoomIds.size} selected rooms? This action cannot be undone.`}
         isDestructive={true}
+      />
+
+      {/* Lightbox Image Viewer Modal with Zoom In/Out & Pan */}
+      <ImageViewerModal
+        isOpen={isViewerOpen}
+        images={viewerImages}
+        initialIndex={viewerInitialIndex}
+        title={viewerTitle}
+        onClose={() => setIsViewerOpen(false)}
       />
     </div>
   );
