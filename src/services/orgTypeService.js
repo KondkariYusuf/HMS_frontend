@@ -38,15 +38,31 @@ export const orgTypeService = {
   },
 
   /**
+   * Get organization type by ID
+   * GET /api/organization-type/:id
+   * @param {string|number} id
+   */
+  getById: async (id) => {
+    const res = await fetch(`${getApiBaseUrl()}/${id}`, {
+      method: 'GET',
+      headers: getAuthHeaders(),
+    });
+    return res.json();
+  },
+
+  /**
    * Create a new organization type
    * POST /api/organization-type
-   * @param {Object} data { typeName, description }
+   * @param {Object} data { type, typeName, description }
    */
   create: async (data) => {
+    const payload = {
+      type: (data.type || data.typeName || data.name || '').trim(),
+    };
     const res = await fetch(getApiBaseUrl(), {
       method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
     return res.json();
   },
@@ -55,13 +71,16 @@ export const orgTypeService = {
    * Update organization type by ID
    * PUT /api/organization-type/:id
    * @param {string|number} id
-   * @param {Object} data { typeName, description }
+   * @param {Object} data { type, typeName, description }
    */
   update: async (id, data) => {
+    const payload = {
+      type: (data.type || data.typeName || data.name || '').trim(),
+    };
     const res = await fetch(`${getApiBaseUrl()}/${id}`, {
       method: 'PUT',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
     return res.json();
   },

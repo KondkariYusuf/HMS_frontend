@@ -12,6 +12,7 @@ import React, {
   useState,
 } from 'react';
 import { branchService } from '@services/branchService';
+import { authService } from '@services/authService';
 
 const AuthContext = createContext(null);
 
@@ -20,11 +21,6 @@ const TOKEN_STORAGE_KEY = 'syncstays_token';
 const BRANCHES_STORAGE_KEY = 'syncstays_branches';
 const ACTIVE_BRANCH_STORAGE_KEY = 'syncstays_branch_id';
 
-const DEFAULT_USER = {
-  name: 'Anita Sharma',
-  email: 'anita@grandhotel.com',
-  role: 'Owner',
-};
 
 const DEFAULT_BRANCHES = [
   {
@@ -290,21 +286,30 @@ export function AuthProvider({ children }) {
     );
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-
-    persistString(USER_STORAGE_KEY, null);
-    persistString(TOKEN_STORAGE_KEY, null);
-
+  const logout = async () => {
     try {
-      localStorage.removeItem(USER_STORAGE_KEY);
-      localStorage.removeItem(TOKEN_STORAGE_KEY);
-      localStorage.removeItem('authToken');
-      localStorage.removeItem(BRANCHES_STORAGE_KEY);
-      localStorage.removeItem(ACTIVE_BRANCH_STORAGE_KEY);
-    } catch {
-      // Ignore storage errors
+      await authService.logout();
+    } catch (err) {
+      console.warn('Backend logout error:', err);
+    } finally {
+      setUser(null);
+      setToken(null);
+
+      persistString(USER_STORAGE_KEY, null);
+      persistString(TOKEN_STORAGE_KEY, null);
+
+      try {
+        localStorage.removeItem(USER_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('syncstays_token');
+        localStorage.removeItem('syncstays_user');
+        localStorage.removeItem(BRANCHES_STORAGE_KEY);
+        localStorage.removeItem(ACTIVE_BRANCH_STORAGE_KEY);
+        localStorage.removeItem('syncstays_org_id');
+      } catch {
+        // Ignore storage errors
+      }
     }
   };
 

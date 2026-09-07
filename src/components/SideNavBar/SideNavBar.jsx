@@ -407,9 +407,9 @@ export default function SideNavBar() {
     }
   }
 
-  const handleLogout = (e) => {
+  const handleLogout = async (e) => {
     e.preventDefault();
-    logout();
+    await logout();
     navigate('/login', { replace: true });
   };
 

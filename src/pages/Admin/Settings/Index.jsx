@@ -10,6 +10,7 @@ import Button from '@components/Button/Button';
 import { lookupService } from '@services/lookupService';
 import { orgTypeService } from '@services/orgTypeService';
 import { userService } from '@services/userService';
+import { organizationService } from '@services/organizationService';
 import styles from './Index.module.css';
 
 const ROOM_TYPE_OPTIONS = ['2B', '3B', '4B', '5B'];
@@ -119,6 +120,10 @@ export default function AdminSettingsPage() {
   const [newTypeName, setNewTypeName] = useState('');
   const [newTypeDesc, setNewTypeDesc] = useState('');
   const [showOrgTypeModal, setShowOrgTypeModal] = useState(false);
+  const [editingOrgType, setEditingOrgType] = useState(null);
+  const [activeOrgId, setActiveOrgId] = useState(() => {
+    return localStorage.getItem('syncstays_org_id') || null;
+  });
 
   const [rooms, setRooms] = useState(() => {
     const settings = getStoredSettings();
@@ -214,6 +219,28 @@ export default function AdminSettingsPage() {
           err,
         );
       }
+
+      try {
+        const orgRes = await organizationService.getAll();
+        const list =
+          orgRes?.data?.rows ||
+          orgRes?.data?.responses ||
+          orgRes?.data?.data ||
+          (Array.isArray(orgRes?.data) ? orgRes.data : Array.isArray(orgRes) ? orgRes : []);
+
+        if (Array.isArray(list) && list.length > 0) {
+          const currentOrg = list[0];
+          if (currentOrg.id) {
+            setActiveOrgId(currentOrg.id);
+            localStorage.setItem('syncstays_org_id', currentOrg.id);
+          }
+          if (currentOrg.name && !localStorage.getItem('syncstays_admin_settings')) {
+            setHotelName(currentOrg.name);
+          }
+        }
+      } catch (err) {
+        console.warn('Organization API offline, using cached settings.', err);
+      }
     }
 
     loadData();
@@ -250,6 +277,12 @@ export default function AdminSettingsPage() {
       currency,
       rooms,
     };
+
+    if (activeOrgId) {
+      organizationService.update(activeOrgId, { name: hotelName }).catch((err) => {
+        console.warn('Could not update organization name on backend:', err);
+      });
+    }
 
     try {
       localStorage.setItem(
@@ -321,53 +354,82 @@ export default function AdminSettingsPage() {
     );
   };
 
-  const handleCreateOrgType = async (event) => {
+  const openEditOrgType = async (orgType) => {
+    setEditingOrgType(orgType);
+    const initialName = orgType.type || orgType.typeName || orgType.name || '';
+    setNewTypeName(initialName);
+    setNewTypeDesc(orgType.description || '');
+    setShowOrgTypeModal(true);
+
+    if (orgType.id) {
+      try {
+        const res = await orgTypeService.getById(orgType.id);
+        const fresh = res?.data || res;
+        if (fresh?.type || fresh?.typeName) {
+          setNewTypeName(fresh.type || fresh.typeName);
+        }
+      } catch (err) {
+        console.warn('Could not fetch fresh org type details:', err);
+      }
+    }
+  };
+
+  const handleSaveOrgType = async (event) => {
     event.preventDefault();
 
+    const typeStr = newTypeName.trim();
+    if (!typeStr) return;
+
     const payload = {
-      typeName: newTypeName.trim(),
+      type: typeStr,
+      typeName: typeStr,
       description: newTypeDesc.trim(),
     };
 
-    if (!payload.typeName) {
-      return;
-    }
-
-    try {
-      const res = await orgTypeService.create(
-        payload,
-      );
-
-      if (res && res.data) {
+    if (editingOrgType) {
+      try {
+        const res = await orgTypeService.update(editingOrgType.id, payload);
+        const updated = res?.data || { ...editingOrgType, ...payload };
+        setOrgTypes((prev) =>
+          prev.map((item) =>
+            item.id === editingOrgType.id
+              ? { ...item, ...updated, type: typeStr, typeName: typeStr }
+              : item
+          )
+        );
+      } catch (err) {
+        console.warn('Org type update fallback:', err);
+        setOrgTypes((prev) =>
+          prev.map((item) =>
+            item.id === editingOrgType.id ? { ...item, ...payload } : item
+          )
+        );
+      }
+    } else {
+      try {
+        const res = await orgTypeService.create(payload);
+        if (res && res.data) {
+          setOrgTypes((prev) => [...prev, res.data]);
+        } else {
+          setOrgTypes((prev) => [
+            ...prev,
+            { ...payload, id: Date.now() },
+          ]);
+        }
+      } catch (err) {
+        console.warn(
+          'Org type create API offline, using fallback:',
+          err,
+        );
         setOrgTypes((prev) => [
           ...prev,
-          res.data,
-        ]);
-      } else {
-        setOrgTypes((prev) => [
-          ...prev,
-          {
-            ...payload,
-            id: Date.now(),
-          },
+          { ...payload, id: Date.now() },
         ]);
       }
-    } catch (err) {
-      console.warn(
-        'Org type create API offline, using fallback:',
-        err,
-      );
-
-      setOrgTypes((prev) => [
-        ...prev,
-        {
-          ...payload,
-          id: Date.now(),
-        },
-      ]);
     }
 
     setShowOrgTypeModal(false);
+    setEditingOrgType(null);
     setNewTypeName('');
     setNewTypeDesc('');
   };
@@ -547,9 +609,12 @@ export default function AdminSettingsPage() {
 
             <Button
               variant="secondary"
-              onClick={() =>
-                setShowOrgTypeModal(true)
-              }
+              onClick={() => {
+                setEditingOrgType(null);
+                setNewTypeName('');
+                setNewTypeDesc('');
+                setShowOrgTypeModal(true);
+              }}
             >
               + Add Org Type
             </Button>
@@ -560,7 +625,8 @@ export default function AdminSettingsPage() {
               <article
                 key={
                   orgType.id ||
-                  orgType.typeName
+                  orgType.typeName ||
+                  orgType.type
                 }
                 className={styles.orgTypeCard}
               >
@@ -574,23 +640,35 @@ export default function AdminSettingsPage() {
                       styles.orgTypeName
                     }
                   >
-                    {orgType.typeName ||
+                    {orgType.type ||
+                      orgType.typeName ||
                       orgType.name}
                   </strong>
 
-                  <button
-                    type="button"
-                    className={
-                      styles.orgTypeDelete
-                    }
-                    onClick={() =>
-                      handleDeleteOrgType(
-                        orgType,
-                      )
-                    }
-                  >
-                    Delete
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      className={styles.orgTypeDelete}
+                      style={{ color: '#0b777c', borderColor: 'var(--color-border)' }}
+                      onClick={() =>
+                        openEditOrgType(orgType)
+                      }
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      className={styles.orgTypeDelete}
+                      onClick={() =>
+                        handleDeleteOrgType(
+                          orgType,
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
 
                 <p
@@ -610,9 +688,10 @@ export default function AdminSettingsPage() {
               className={
                 styles.orgTypeModalOverlay
               }
-              onClick={() =>
-                setShowOrgTypeModal(false)
-              }
+              onClick={() => {
+                setShowOrgTypeModal(false);
+                setEditingOrgType(null);
+              }}
             >
               <form
                 className={
@@ -622,7 +701,7 @@ export default function AdminSettingsPage() {
                   event.stopPropagation()
                 }
                 onSubmit={
-                  handleCreateOrgType
+                  handleSaveOrgType
                 }
               >
                 <h3
@@ -630,7 +709,9 @@ export default function AdminSettingsPage() {
                     styles.orgTypeModalTitle
                   }
                 >
-                  Add Organization Type
+                  {editingOrgType
+                    ? 'Edit Organization Type'
+                    : 'Add Organization Type'}
                 </h3>
 
                 <label
@@ -686,9 +767,10 @@ export default function AdminSettingsPage() {
                   <Button
                     type="button"
                     variant="secondary"
-                    onClick={() =>
-                      setShowOrgTypeModal(false)
-                    }
+                    onClick={() => {
+                      setShowOrgTypeModal(false);
+                      setEditingOrgType(null);
+                    }}
                   >
                     Cancel
                   </Button>
@@ -697,7 +779,9 @@ export default function AdminSettingsPage() {
                     type="submit"
                     variant="primary"
                   >
-                    Create Type
+                    {editingOrgType
+                      ? 'Update Type'
+                      : 'Create Type'}
                   </Button>
                 </div>
               </form>

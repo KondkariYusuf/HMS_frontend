@@ -140,6 +140,9 @@ export const authService = {
       localStorage.removeItem('authToken');
       localStorage.removeItem('syncstays_token');
       localStorage.removeItem('syncstays_user');
+      localStorage.removeItem('syncstays_branches');
+      localStorage.removeItem('syncstays_branch_id');
+      localStorage.removeItem('syncstays_org_id');
     }
   },
 };

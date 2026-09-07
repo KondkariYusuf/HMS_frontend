@@ -27,7 +27,7 @@ This guide explains how to start the HMS Node.js/Express backend server and test
 
 ## 2. Step-by-Step Module Testing Instructions
 
-### 🔑 1. Auth Module (`/api/auth`)
+### 🔑 1. Auth & Logout Module (`/api/auth`)
 * **Standard Login & OTP Flow**:
   1. Go to `/login`.
   2. Enter valid Email & Password $\rightarrow$ Click **Sign In**.
@@ -39,6 +39,10 @@ This guide explains how to start the HMS Node.js/Express backend server and test
   2. Enter registered Email $\rightarrow$ Click **Send Reset OTP**.
   3. Enter the OTP and your New Password $\rightarrow$ Click **Reset Password**.
   4. Once reset, log in using the new password.
+* **Backend Session Invalidation on Logout**:
+  1. Click the **Logout** button in the sidebar.
+  2. Inspect DevTools Network tab $\rightarrow$ Verify `POST /api/auth/logout` is dispatched with `Authorization: Bearer <token>`.
+  3. Local user session and tokens are securely wiped and user is redirected to `/login`.
 
 ---
 
@@ -55,15 +59,31 @@ This guide explains how to start the HMS Node.js/Express backend server and test
 ---
 
 ### 🏢 3. Organization Module (`/api/organization`)
-1. Go to Organization settings or registration modal.
-2. Form submits data to `POST /api/organization` with `{ name, email, phone, organizationTypeId, address }`.
-3. View listed organizations fetched from `GET /api/organization`.
+1. Navigate to **Organization & Branches** (`/admin/branches`) and click the **Organizations** tab.
+2. **List Organizations**: Triggers `GET /api/organization`.
+3. **View Details**: Click **View Details** on an organization $\rightarrow$ Triggers `GET /api/organization/:id` and displays full registered entity details.
+4. **Create Organization**: Click **+ Add Organization** $\rightarrow$ Fill out entity details and submit $\rightarrow$ Sends `POST /api/organization`.
+5. **Edit Organization**: Click **Edit** $\rightarrow$ Fetches fresh details via `GET /api/organization/:id`, update fields and submit $\rightarrow$ Sends `PUT /api/organization/:id`.
+6. **Delete Organization**: Click **Delete** with confirmation $\rightarrow$ Sends `DELETE /api/organization/:id`.
 
 ---
 
 ### 🏬 4. Organization Branch Module (`/api/organization-branch`)
-1. Test branch creation (`POST /api/organization-branch`) with `{ branchName, organizationId, cityId, stateId, countryId }`.
-2. Fetch branches filtered by organization ID (`GET /api/organization-branch?organizationId=`).
+1. Navigate to **Organization & Branches** (`/admin/branches`) and ensure **Properties & Branches** tab is active.
+2. **List Branches**: Fetches properties from `GET /api/organization-branch`.
+3. **Create Branch**: Click **+ Add Branch** $\rightarrow$ Fill Name, Code, Location Address, Manager, Rooms, Contact details $\rightarrow$ Sends `POST /api/organization-branch`.
+4. **Edit Branch**: Click **Edit Branch** $\rightarrow$ Triggers `GET /api/organization-branch/:id` to fetch fresh backend record, modify details and submit $\rightarrow$ Sends `PUT /api/organization-branch/:id`.
+5. **Activate / Deactivate**: Click the toggle status button $\rightarrow$ Sends `PUT /api/organization-branch/:id` with `{ status: 'ACTIVE' | 'INACTIVE' }`.
+6. **Delete Branch**: Click **Delete** $\rightarrow$ Sends `DELETE /api/organization-branch/:id`.
+
+---
+
+### 🏷️ 5. Organization Type Module (`/api/organization-type`)
+1. Navigate to **Settings** (`/admin/settings`) and locate **Organization Types**.
+2. **List Types**: Triggers `GET /api/organization-type`.
+3. **Create Type**: Click **+ Add Org Type** $\rightarrow$ Enter Type name (e.g. Resort, Boutique Hotel) $\rightarrow$ Sends `POST /api/organization-type`.
+4. **Edit Type**: Click **Edit** on any type card $\rightarrow$ Loads type details and allows renaming $\rightarrow$ Sends `PUT /api/organization-type/:id`.
+5. **Delete Type**: Click **Delete** on any type card $\rightarrow$ Sends `DELETE /api/organization-type/:id`.
 
 ---
 
